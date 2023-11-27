@@ -1,0 +1,1 @@
+select * from Trinn where Verdi="RA_a" and MaaleskalaId=91

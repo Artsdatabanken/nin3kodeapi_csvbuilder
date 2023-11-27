@@ -1,0 +1,304 @@
+Hovedtype;Prosedyrekategori;Hovedtypegruppe;Hovedtypenavn;Kode
+01;C;0;varmkildekompleks;0-C-01
+02;C;0;ferskvannskildekompleks;0-C-02
+03;C;0;ferskvanns- og våtmarkskildekompleks;0-C-03
+04;C;0;torvkildekompleks;0-C-04
+05;C;0;grunnkildekompleks;0-C-05
+06;C;0;fuglefjellkompleks;0-C-06
+07;C;0;saltpannekompleks;0-C-07
+08;C;0;snøleiekompleks;0-C-08
+01;D;0;flomskredkompleks;0-D-01
+02;D;0;rasmarkskompleks;0-D-02
+03;D;0;fossesprutkompleks;0-D-03
+01;E;0;sanddynekompleks;0-E-01
+02;E;0;skredmarkskompleks;0-E-02
+03;E;0;flommarkskompleks;0-E-03
+0A;0;A;;A-0-0A
+0B;0;A;;A-0-0B
+0C;0;A;;A-0-0C
+0D;0;A;;A-0-0D
+0E;0;A;;A-0-0E
+0F;0;A;;A-0-0F
+01A;0;A;kystvann;A-0-01A
+01B;0;A;brekappe;A-0-01B
+01C;0;A;elveløp i fast fjell med foss;A-0-01C
+01D;0;A;breelvdelta;A-0-01D
+01E;0;A;basseng i avsnørt havbukt;A-0-01E
+01F;0;A;gjenvoksningsmyr;A-0-01F
+02A;0;A;atlantisk vann;A-0-02A
+02B;0;A;sammensatt bre;A-0-02B
+02C;0;A;elveløp i fast fjell uten foss;A-0-02C
+02D;0;A;esker;A-0-02D
+02E;0;A;basseng betinget av strukturgeologiske prosesser;A-0-02E
+02F;0;A;flatmyr;A-0-02F
+03A;0;A;intermediært vann;A-0-03A
+03B;0;A;utløpsbre;A-0-03B
+03C;0;A;elveløp i karstfjell;A-0-03C
+03D;0;A;gjel;A-0-03D
+04A;0;A;dyphavsvann;A-0-04A
+04B;0;A;dalbre;A-0-04B
+04C;0;A;kame;A-0-04C
+05A;0;A;arktisk vann;A-0-05A
+05B;0;A;botnbre;A-0-05B
+05C;0;A;kameterrasse;A-0-05C
+06A;0;A;dalsidebre;A-0-06A
+06B;0;A;sandur;A-0-06B
+07A;0;A;regenerert bre;A-0-07A
+07B;0;A;bresjødelta;A-0-07B
+08A;0;A;isfonn;A-0-08A
+08B;0;A;spylefelt;A-0-08B
+09A;0;A;steinbre med bre-opphav;A-0-09A
+09B;0;A;spylerenne;A-0-09B
+10;0;A;tunneldal;A-0-10
+0A;0;B;;B-0-0A
+0B;0;B;;B-0-0B
+0C;0;B;;B-0-0C
+0D;0;B;;B-0-0D
+0E;0;B;;B-0-0E
+01A;0;B;tidevannsbetinget fullsirkulerende fjordvann;B-0-01A
+01B;0;B;stein- og blokkdominert fluvialt elveløp med kaskade- eller trappetrinnsmorfologi;B-0-01B
+01C;0;B;korallrev;B-0-01C
+01D;0;B;jord- og steinskredbasseng;B-0-01D
+01E;0;B;slakmyr;B-0-01E
+02A;0;B;øvre fjordvannlag med estuarin sirkulasjon;B-0-02A
+02B;0;B;fluvialt elveløp med jevn, grus- og steindominert bunn;B-0-02B
+02C;0;B;leirskredbasseng;B-0-02C
+02D;0;B;gjennomstrømningsmyr;B-0-02D
+03A;0;B;stabilisert varmt intermediært fjordvann;B-0-03A
+03B;0;B;fluvialt elveløp med kulp-strykmorfologi;B-0-03B
+03C;0;B;bakkemyr;B-0-03C
+04A;0;B;fjord-dypvann dannet fra atlantisk vann;B-0-04A
+04B;0;B;enkelt fluvialt elveløp med jevn, sand- og/eller finmaterialdominert bunn;B-0-04B
+04C;0;B;flarkmyr;B-0-04C
+05A;0;B;fjord-dypvann dannet fra kystvann;B-0-05A
+05B;0;B;strengmyr;B-0-05B
+06;0;B;stabilisert kaldt fjord-dypvann;B-0-06
+07;0;B;stabilisert iskaldt fjord-dypvann;B-0-07
+0A;0;C;;C-0-0A
+0B;0;C;;C-0-0B
+0C;0;C;;C-0-0C
+0D;0;C;;C-0-0D
+0E;0;C;;C-0-0E
+01A;0;C;stein- og blokkdominert glasifluvialt elveløp med kaskade- eller trappetrinnsmorfologi;C-0-01A
+01B;0;C;flomkanal fra bresjøtapping;C-0-01B
+01C;0;C;basseng på bre;C-0-01C
+01D;0;C;torvkilde;C-0-01D
+02A;0;C;glasifluvialt elveløp med jevn, grus- og steindominert bunn;C-0-02A
+02B;0;C;flombanke fra bresjøtapping;C-0-02B
+02C;0;C;basseng med terskel av breis;C-0-02C
+03A;0;C;glasifluvialt elveløp med kulp-strykmorfologi;C-0-03A
+03B;0;C;flomdyne fra bresjøtapping;C-0-03B
+04;0;C;oppskyllingsnivå fra bresjøtapping;C-0-04
+05;0;C;bresjøstrandlinje;C-0-05
+0A;0;D;;D-0-0A
+0B;0;D;;D-0-0B
+0C;0;D;;D-0-0C
+0D;0;D;;D-0-0D
+0E;0;D;;D-0-0E
+01A;0;D;elveløp gjennom leire;D-0-01A
+01B;0;D;elvebanke;D-0-01B
+01C;0;D;fjordsjøbasseng;D-0-01C
+01D;0;D;innsjøflommyr;D-0-01D
+02A;0;D;enkelt elveløp i torv;D-0-02A
+02B;0;D;elvedelta;D-0-02B
+02C;0;D;U-dalsbasseng;D-0-02C
+02D;0;D;elveflommyr;D-0-02D
+03A;0;D;enkelt elveløp gjennom torv, med sedimentbunn;D-0-03A
+03B;0;D;meanderbue;D-0-03B
+03C;0;D;skålbasseng;D-0-03C
+03D;0;D;saltflommyr;D-0-03D
+04A;0;D;ravine i bresjøsediment;D-0-04A
+04B;0;D;botnbasseng;D-0-04B
+05A;0;D;leirravine;D-0-05A
+05B;0;D;løsmassedemt dalbasseng;D-0-05B
+06A;0;D;ravine i morene;D-0-06A
+06B;0;D;torvdemt skålbasseng;D-0-06B
+07;0;D;elveskrent;D-0-07
+08;0;D;elveslette;D-0-08
+09;0;D;V-dal;D-0-09
+10;0;D;elvevifte;D-0-10
+11;0;D;elvevoll;D-0-11
+0A;0;E;;E-0-0A
+0B;0;E;;E-0-0B
+0C;0;E;;E-0-0C
+0D;0;E;;E-0-0D
+0E;0;E;;E-0-0E
+01A;0;E;elveprosesspreget kompleks elvemunning i innsjø;E-0-01A
+01B;0;E;aksedal;E-0-01B
+01C;0;E;morenebasseng;E-0-01C
+01D;0;E;øyblandingsmyr;E-0-01D
+02A;0;E;bølgeprosesspreget kompleks elvemunning i innsjø;E-0-02A
+02B;0;E;forkastningsrygg;E-0-02B
+02C;0;E;basseng i breelv-sedimenter;E-0-02C
+02D;0;E;palsmyr;E-0-02D
+03A;0;E;bølgeprosesspreget kompleks elvemunning i saltvann;E-0-03A
+03B;0;E;forkastningstrinn;E-0-03B
+03C;0;E;strengblandingsmyr;E-0-03C
+04A;0;E;tidevannspreget elvemunning;E-0-04A
+04B;0;E;sprekkekløft og sprekkedal;E-0-04B
+0A;0;F;;F-0-0A
+0B;0;F;;F-0-0B
+0C;0;F;;F-0-0C
+0D;0;F;;F-0-0D
+0E;0;F;;F-0-0E
+01A;0;F;elveløp med klart endret hydromorfologi;F-0-01A
+01B;0;F;iskile;F-0-01B
+01C;0;F;termokarst-basseng;F-0-01C
+01D;0;F;mellomstillingsmyr;F-0-01D
+02A;0;F;pingo;F-0-02A
+02B;0;F;pingo-basseng;F-0-02B
+03;0;F;steinbre;F-0-03
+04;0;F;strukturmark;F-0-04
+05;0;F;sigejordstunge;F-0-05
+06;0;F;termokarst;F-0-06
+0;0;FS;;FS-0-0
+0;0;FU;;FU-0-0
+01;0;FU;substratfrie livsmedier i ferskvann;FU-0-01
+0A;0;G;;G-0-0A
+0B;0;G;;G-0-0B
+0C;0;G;;G-0-0C
+0D;0;G;;G-0-0D
+01A;0;G;kunstige elveløp og elveløp med sterkt endret hydromorfologi;G-0-01A
+01B;0;G;doline;G-0-01B
+01C;0;G;karstbasseng;G-0-01C
+01D;0;G;terrengdekkende myr;G-0-01D
+02A;0;G;karstgrotte;G-0-02A
+02B;0;G;kalkgrottebasseng;G-0-02B
+03A;0;G;karstdekke;G-0-03A
+03B;0;G;kalksinterbasseng;G-0-03B
+04A;0;G;polje;G-0-04A
+04B;0;G;sprekkedal-basseng;G-0-04B
+05;0;G;sinterterrasse;G-0-05
+06;0;G;sokkelstein;G-0-06
+07;0;G;tafone;G-0-07
+08;0;G;tor;G-0-08
+0A;0;H;;H-0-0A
+0B;0;H;;H-0-0B
+0C;0;H;;H-0-0C
+01A;0;H;botn;H-0-01A
+01B;0;H;V-dalsbasseng;H-0-01B
+01C;0;H;atlantisk høgmyr;H-0-01C
+02A;0;H;de Geer-morene;H-0-02A
+02B;0;H;kanthøgmyr;H-0-02B
+03A;0;H;dødisgrop;H-0-03A
+03B;0;H;platåhøgmyr;H-0-03B
+04A;0;H;drumlin;H-0-04A
+04B;0;H;konsentrisk høgmyr;H-0-04B
+05A;0;H;egg;H-0-05A
+05B;0;H;skogshøgmyr;H-0-05B
+06A;0;H;flyttblokk;H-0-06A
+06B;0;H;eksentrisk høgmyr;H-0-06B
+07;0;H;flute;H-0-07
+08;0;H;dalsidesva;H-0-08
+09;0;H;fjord;H-0-09
+10;0;H;glasitektonisk grop og haug;H-0-10
+11;0;H;grunningssonekile;H-0-11
+12;0;H;hengende dal;H-0-12
+13;0;H;isfjellgrop;H-0-13
+14;0;H;iskjernemorene;H-0-14
+15;0;H;isfjellpløyespor;H-0-15
+16;0;H;isskuringsstripe;H-0-16
+17;0;H;jettegryte;H-0-17
+18;0;H;knaus og hale;H-0-18
+19;0;H;megaskala glasial lineasjon;H-0-19
+20;0;H;morenehaug;H-0-20
+21;0;H;murtoo-morene;H-0-21
+22;0;H;plastisk form;H-0-22
+23;0;H;randmorene;H-0-23
+24;0;H;rogenmorene;H-0-24
+25;0;H;rundsva;H-0-25
+26;0;H;sprekkefyllrygg;H-0-26
+27;0;H;tind;H-0-27
+28;0;H;traumunningsvifte;H-0-28
+29;0;H;U-dal;H-0-29
+30;0;H;veikimorene;H-0-30
+-;0;I;;I-0--
+0A;0;I;;I-0-0A
+0B;0;I;;I-0-0B
+0C;0;I;;I-0-0C
+04A;0;I;kystrestfjell;I-0-04A
+04B;0;I;elveslettebasseng;I-0-04B
+05A;0;I;leirslette;I-0-05A
+05B;0;I;kroksjø-basseng;I-0-05B
+06A;0;I;rauk;I-0-06A
+06B;0;I;innersving-basseng;I-0-06B
+07A;0;I;revle;I-0-07A
+07B;0;I;yttersving-basseng;I-0-07B
+08A;0;I;strandflate;I-0-08A
+08B;0;I;bakevje-basseng;I-0-08B
+09A;0;I;strandlinje;I-0-09A
+09B;0;I;trestammedemt basseng;I-0-09B
+10;0;I;strandvoll;I-0-10
+11;0;I;tidevannsslette;I-0-11
+12;0;I;tombolo;I-0-12
+0A;0;J;;J-0-0A
+0B;0;J;;J-0-0B
+01A;0;J;benk;J-0-01A
+01B;0;J;dynetrau-basseng;J-0-01B
+02;0;J;cuesta;J-0-02
+03;0;J;hogback;J-0-03
+04;0;J;platåfjell;J-0-04
+-;0;K;;K-0--
+0A;0;K;;K-0-0A
+0B;0;K;;K-0-0B
+0A;0;L;;L-0-0A
+0B;0;L;;L-0-0B
+0C;0;L;;L-0-0C
+01A;0;L;flomskredformer;L-0-01A
+01B;0;L;flarkgjøl-basseng;L-0-01B
+02A;0;L;fjellskredformer;L-0-02A
+02B;0;L;høljegjøl-basseng;L-0-02B
+03;0;L;jordpyramide;L-0-03
+04;0;L;jordskredformer;L-0-04
+05;0;L;leirskredgrop;L-0-05
+06;0;L;steinsprangblokk;L-0-06
+07;0;L;snøskredformer;L-0-07
+08;0;L;talus;L-0-08
+09;0;L;talusvoll;L-0-09
+10;0;L;undersjøiske skredformer;L-0-10
+-;0;M;;M-0--
+0A;0;M;;M-0-0A
+0B;0;M;;M-0-0B
+0C;0;M;;M-0-0C
+01A;0;M;havbunnskanal;M-0-01A
+01B;0;M;beverdam;M-0-01B
+01C;0;M;marine ås- og fjellandskap;M-0-01C
+02A;0;M;konturitt;M-0-02A
+02B;0;M;marine dallandskap;M-0-02B
+03A;0;M;havbunnssedimentbanke;M-0-03A
+03B;0;M;marine sletter;M-0-03B
+04;0;M;strømgrop;M-0-04
+05;0;M;sedimentbølge;M-0-05
+06;0;M;havbunnsstrømrenne;M-0-06
+07;0;M;havbunnsstrømningsspor;M-0-07
+0;0;MS;;MS-0-0
+0;0;MU;;MU-0-0
+0A;0;N;;N-0-0A
+0B;0;N;;N-0-0B
+01A;0;N;diapir;N-0-01A
+01B;0;N;reguleringsbasseng;N-0-01B
+02A;0;N;gasshydrateksplosjonskrater;N-0-02A
+02B;0;N;sedimentbunn-basseng;N-0-02B
+03A;0;N;gasshydratpingo;N-0-03A
+03B;0;N;fastfjellsbasseng;N-0-03B
+04A;0;N;pockmark;N-0-04A
+04B;0;N;basseng i nytt materiale;N-0-04B
+05;0;N;slamvulkan;N-0-05
+0A;0;O;;O-0-0A
+0B;0;O;;O-0-0B
+01;0;O;deflasjonsgrop;O-0-01
+02;0;O;flygesanddyne;O-0-02
+0;0;P;;P-0-0
+01;0;P;hydrotermisk haug;P-0-01
+02;0;P;hydrotermisk skorstein;P-0-02
+03;0;P;lavastrøm;P-0-03
+04;0;P;lavatunnel;P-0-04
+05;0;P;undervannsfjell;P-0-05
+06;0;P;vulkankjegle;P-0-06
+07;0;P;vulkankrater;P-0-07
+08;0;P;vulkanspalte;P-0-08
+0;0;S;;S-0-0
+0;0;T;;T-0-0
+0;0;TS;;TS-0-0
+0;0;TU;;TU-0-0
+0;0;V;;V-0-0

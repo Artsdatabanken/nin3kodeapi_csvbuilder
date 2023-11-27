@@ -1,0 +1,153 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!markdown
+
+## Structure of each element imported json
+...
+<code>
+  {
+    "Langkode": "NIN-3.0-T-A-LV-BM-FS-0-01-01",
+    "Klasse": "GT"
+  }</code>
+...
+
+#!csharp
+
+using System.IO;
+using System.Text.Json;
+using System.Linq;
+using System.Text.RegularExpressions;
+//<summary>
+// Klassetyper: HT, HTG, GT, KE, Type
+// Type = Type
+// HTG = Hovedtypegruppe
+// HT = Hovedtype
+// GT = Grunntype
+// KE = Kartleggingsenhet
+//</summary>
+public string FindKlasseByLangkode(string langkode)
+{
+    var estimatedType = "unknown";
+    ArrayList langkodeList = new ArrayList(langkode.Split('-'));
+    var trinncount = langkodeList.Count;
+    if(trinncount==6){estimatedType="Type";}
+    else if(trinncount==8){estimatedType="HTG";}
+    else if(trinncount==11){estimatedType="GT";}
+    else if(trinncount==9 && Regex.IsMatch(langkodeList[8].ToString(), @"^[a-zA-Z]+$")){estimatedType="HTG";}
+    else if(trinncount==10 && langkodeList[8].ToString().StartsWith("M0")){estimatedType="KE";}
+    else if(trinncount==9 && Regex.IsMatch(langkodeList[8].ToString(), @"^0|[1-9]\d*$")){estimatedType="HT";}
+    else if(trinncount==10 && (langkodeList[6].ToString()=="MB"||langkodeList[6].ToString()=="VM")){estimatedType="HT";}
+    else if(trinncount==10 && (langkodeList[4].ToString()=="LV"||langkodeList[4].ToString()=="PE")){estimatedType="GT";}
+    else if(trinncount==10 && (langkodeList[4].ToString()!="LV" || langkodeList[4].ToString()!="PE")){estimatedType="HT";}
+    return estimatedType;
+}
+
+#!csharp
+
+var jsonString = File.ReadAllText("inn_data/type_alle_langkoder.json");
+
+//All Langkode in "Type"-part of NINKodeAPIv3
+var collection = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(jsonString);
+var type_trinncount = new ArrayList();
+foreach (var element in collection)
+{    
+
+    var estimatedType = FindKlasseByLangkode(element["Langkode"], element["Klasse"]);
+    element.Add("EKlasse", estimatedType);
+    var antTrinn = element["Langkode"].Split('-').Length;
+    var summaryForElement = element["EKlasse"]+":"+element["Klasse"]+":"+antTrinn;
+    type_trinncount.Add(summaryForElement);
+}
+
+
+var groupByResult = type_trinncount.Cast<string>()
+    .GroupBy(x => x)
+    .Select(g => new { Value = g.Key, Count = g.Count()})
+    .ToList();
+Console.WriteLine("Estimertklasse:Klasse:Antall trinn:Antall tilfeller");
+foreach (var element in groupByResult)
+{
+    Console.WriteLine(element.Value+":"+element.Count);
+}
+
+#!csharp
+
+var filteredList = collection.Where(x => x["EKlasse"] != x["Klasse"]).ToList();
+Console.WriteLine("Langkode:Klasse:EKlasse");
+foreach(var fe in filteredList){
+    Console.WriteLine(fe["Langkode"]+":"+fe["Klasse"]+":"+fe["EKlasse"]);
+}
+
+#!csharp
+
+var langkodeWithCount = collection.Select(x => new Dictionary<string, string>
+{
+    {"Langkode", x["Langkode"]},
+    {"Klasse", x["Klasse"]},
+    {"antTrinn", x["Langkode"].Split('-').Length.ToString()}
+}).ToList();
+
+// print the first 3 elements of langkodeWithCount where klasse is HTG and antTrinn is 8
+var filteredList = langkodeWithCount.Where(x => x["Klasse"] == "HT" && x["antTrinn"] == "9").Take(5);
+foreach (var element in filteredList)
+{
+    Console.WriteLine(JsonSerializer.Serialize(element));
+}
+/*
+// print the first 3 elements of langkodeWithCount where klasse is HTG and antTrinn is 9
+filteredList = langkodeWithCount.Where(x => x["Klasse"] == "HTG" && x["antTrinn"] == "9").Take(5);
+foreach (var element in filteredList)
+{
+    Console.WriteLine(JsonSerializer.Serialize(element));
+}*/
+
+#!csharp
+
+//Looping key-values of enum
+    using System.ComponentModel;
+    public enum MaaleskalatypeEnum
+    {
+        [Description("binær")]
+        B,
+        [Description("telleskala, observert antall")]
+        D,
+        [Description("telleskala, observert antall")]
+        D0,
+        [Description("telleskala, observert antall")]
+        D1a,
+        [Description("telleskala, observert antall")]
+        D1b,
+        [Description("kontinuerlig, observert verdi")]
+        K,
+        [Description("generisk måleskala for andelsvariabel")]
+        P,
+        [Description("generisk måleskala for andelsvariabel")]
+        P6a,
+        [Description("generisk måleskala for andelsvariabel")]
+        P6c,
+        [Description("Prosentskala")]
+        P9a,
+        [Description("generisk måleskala for andelsvariabel, der n angir trinn om m angir variant")]
+        Pnm,
+        [Description("Variabelspesifikk, ikke-ordnet faktorverdi")]
+        SI,
+        [Description("Variabelspesifikk, ordnet faktorverdi")]
+        SO,
+        [Description("tetthetsskala, 2-logaritmisk")]
+        T,
+        [Description("tetthetsskala, 2-logaritmisk")]
+        T0,
+        [Description("tetthetsskala, 2-logaritmisk")]
+        T1a,
+        [Description("tetthetsskala, 2-logaritmisk")]
+        T1b,
+        [Description("tetthetsskala, 2-logaritmisk")]
+        T1c
+    }
+    //Looping key-values of enum
+    foreach (MaaleskalatypeEnum enumValue in Enum.GetValues(typeof(MaaleskalatypeEnum)))
+    {
+        Console.WriteLine(enumValue.ToString());
+    }

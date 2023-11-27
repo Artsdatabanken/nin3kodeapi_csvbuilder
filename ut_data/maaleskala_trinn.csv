@@ -1,0 +1,1054 @@
+Trinn;Trinnverdi;MåleskalaNavn
+nan_nan;;nan-nan
+KA_a;svært kalkfattig;KA-SO
+HS_KB;plukkhogst;HS-SI
+HS_U;uspesifisert lukket selektiv hogst;HS-SI
+nan_E2B;edellauvtrær dominerer, bartrær meddominerende;nan-SI
+nan_nan;;nan-nan
+nan_nan;;nan-nan
+nan_nan;;nan-nan
+NH_A;Grønlandshavet øst og Norskehavet nord;NH-SI
+NH_B;Barentshavet og Polhavet;NH-SI
+PI_0;uten iskantkontakt;PI-SI
+PI_A;iskantkontaktsonen;PI-SI
+PI_B;under polar havis;PI-SI
+nan_nan;;nan-nan
+BA_0;Norskehavet;BA-SO
+BA_a;Nordsjøen nord;BA-SO
+BA_b;Nordsjøen sør;BA-SO
+BA_c;Skagerrak vest;BA-SO
+BA_d;Skagerrak øst;BA-SO
+BP_0;uten isbrepreg;BP-SO
+BP_a;klart isbrepreget;BP-SO
+BP_b;sterkt isbrepreget;BP-SO
+FF_0;havvann uten ferskvannsinnflytelse;FF-SO
+FF_a;lite ferskvannspåvirket ytre fjord;FF-SO
+FF_b;moderat ferskvannspåvirket midtre fjord;FF-SO
+FF_c;klart ferskvannspåvirket indre fjord;FF-SO
+FF_d;sterkt ferskvannspåvirket indre fjord;FF-SO
+IP_0;uten innsjøpreg;IP-SO
+IP_a;noe innsjøpreget;IP-SO
+IP_b;klart innsjøpreget;IP-SO
+IP_c;sterkt innsjøpreget;IP-SO
+KY_0;med kystlinje;KY-SO
+KY_a;kystnær;KY-SO
+KY_b;innland;KY-SO
+MS_a;Nordsjøen og Skagerrak;MS-SO
+MS_b;Norskehavet sør;MS-SO
+MS_c;Norskehavet midt;MS-SO
+MS_d;Norskehavet nord og Barentshavet sør;MS-SO
+MS_e;Grønlandshavet øst, Barentshavet nord og Polhavet;MS-SO
+SE_a;sterkt oseanisk seksjon;SE-SO
+SE_b;klart oseanisk seksjon;SE-SO
+SE_c;svakt oseanisk seksjon;SE-SO
+SE_d;overgangsseksjon;SE-SO
+SE_e;svakt kontinental seksjon;SE-SO
+SE_f;klart kontinental seksjon;SE-SO
+SO_a;boreonemoral sone;SO-SO
+SO_b;sørboreal sone;SO-SO
+SO_c;mellomboreal sone;SO-SO
+SO_d;nordboreal sone;SO-SO
+SO_e;lavalpin sone;SO-SO
+SO_f;mellomalpin/mellomarktisk sone;SO-SO
+SO_g;nordalpin/nordarktisk sone;SO-SO
+VP_0;uten våtmarkspreg;VP-SO
+VP_a;moderat våtmarkspreg;VP-SO
+VP_b;sterkt våtmarkspreg;VP-SO
+YK_0;svært skjermet indre kyst;YK-SO
+YK_a;skjermet indre kyst;YK-SO
+YK_b;middels eksponert kyst;YK-SO
+YK_c;eksponert ytre kyst;YK-SO
+YK_d;svært eksponert ytre kyst;YK-SO
+nan_nan;;nan-nan
+BK_0;ikke-avvikende;BK-SI
+BK_A;ultramafisk;BK-SI
+BK_B;jern-rik;BK-SI
+BK_C;kobber-rik;BK-SI
+BK_D;lava;BK-SI
+DK_0;jord eller blandet sediment;DK-SI
+DK_A;leire;DK-SI
+DK_B;silt;DK-SI
+DK_C;sand;DK-SI
+DK_D;grus;DK-SI
+DK_E;stein;DK-SI
+DK_F;blokk;DK-SI
+DK_G;stor blokk;DK-SI
+DK_H;kjempeblokk og fast fjell;DK-SI
+FK_0;ikke-avvikende;FK-SI
+FK_A;gammelt havvann;FK-SI
+FK_B;saltholdig kildevann;FK-SI
+FK_C;jernholdig vann;FK-SI
+FK_D;kalkrikt vann;FK-SI
+FK_E;humusrikt vann;FK-SI
+FK_F;svovelrikt vann;FK-SI
+HV_A;kystvann;HV-SI
+HV_B;atlantisk vann;HV-SI
+HV_C;intermediært vann;HV-SI
+HV_D;dyphavsvann;HV-SI
+HV_E;arktisk vann;HV-SI
+HY_A;mono- og dimiktiske vannmasser;HY-SI
+HY_B;polymiktiske vannmasser;HY-SI
+IS_A;havis-overside;IS-SI
+IS_B;havis-underside;IS-SI
+IT_0;uten isbunn;IT-SI
+IT_A;med isbunn;IT-SI
+KT_A;vann- og gassførende kald havkilde;KT-SI
+KT_B;mudderførende kald havkilde;KT-SI
+LT_0;løsmasser uten spesifisert opphav;LT-SI
+LT_A;stedegent forvitringsmateriale;LT-SI
+LT_B;gamle breavsetninger;LT-SI
+LT_C;løsmasser formet av strandprosesser;LT-SI
+LT_D;resente breavsetninger;LT-SI
+LT_E;konsoliderte marine bresedimenter;LT-SI
+LT_F;massetransportert materiale;LT-SI
+LT_G;flomskredmateriale;LT-SI
+OV_0;ikke langvarig oversvømmelse;OV-SI
+OV_A;langvarig oversvømmelse, eventuelt også innfrysing i is;OV-SI
+PF_0;uten permafrost;PF-SI
+PF_A;permafrost med tynt aktivt lag;PF-SI
+SN_A;varig snø;SN-SI
+SN_B;jevn breoverflate;SN-SI
+SN_C;kryokonitt-preget breoverflate;SN-SI
+SN_D;polar havis-overside;SN-SI
+SO_0;uspesifiserte løsmasser;SO-SI
+SO_A;marine leirsedimenter;SO-SI
+SO_B;breslam-sedimenter;SO-SI
+ST_0;overveiende uorganisk substrat;ST-SI
+ST_A;skjellsand;ST-SI
+ST_B;ruglbunn;ST-SI
+ST_C;svampspikelbunn;ST-SI
+ST_D;korallgrus;ST-SI
+ST_E;myrtorv;ST-SI
+ST_F;dy og gyttje;ST-SI
+ST_G;grovt organisk materiale;ST-SI
+ST_H;konsolidert leire;ST-SI
+ST_I;fast bunn og bergsubstrat;ST-SI
+ST_J;driftmateriale;ST-SI
+VT_0;jordvann;VT-SI
+VT_A;innsjøvann;VT-SI
+VT_B;elvevann;VT-SI
+VT_C;kildevann;VT-SI
+VT_D;havvann;VT-SI
+VT_E;nedbørvann;VT-SI
+nan_nan;;nan-nan
+ED_K0;permanent vannførende;ED-SI
+ED_K1;semi-permanent vannførende;ED-SI
+ED_K2;oftest vannførende;ED-SI
+ED_K3;ofte vannførende, oftest med kulper;ED-SI
+ED_K4;periodisk vannførende;ED-SI
+ED_K5;periodisk vannførende, med kulper;ED-SI
+ED_K6;tidvis vannførende;ED-SI
+ED_K7;episodisk vannførende, med kulper;ED-SI
+ED_K8;episodisk vannførende;ED-SI
+ED_KY;tørrlagt;ED-SI
+EF_K1;ujevn, uregelmessig lengdeprofil;EF-SI
+EF_K2;lengdeprofil med repeterende strukturer;EF-SI
+EF_K3;jevn lengdeprofil;EF-SI
+EL_K1;kaskade;EL-SI
+EL_K2;trappetrinn;EL-SI
+EL_K3;jevn sedimentbunn;EL-SI
+EL_K4;kulp-stryk med tverrbanker;EL-SI
+EL_K5;kulp-stryk med alternerende sidebanker;EL-SI
+EL_K6;fin bunn med eller uten temporære mikroformer;EL-SI
+EL_KU;uten tydelig sedimentsortering og karakteristisk lengdeprofil;EL-SI
+EP_K1;enkel, rett eller bølgende;EP-SI
+EP_K2;enkel, meandrerende;EP-SI
+EP_K3;forgreinet, vandrende;EP-SI
+EP_K4;forgreinet meandrerende;EP-SI
+EP_K5;forgreinet, ustabilt;EP-SI
+EP_K6;forgreinet, stabilt;EP-SI
+EP_K7;vifteformet;EP-SI
+ES_K0;fast fjell;ES-SI
+ES_K1;karstberg;ES-SI
+ES_K2;myrtorv;ES-SI
+ES_K3;rasmateriale;ES-SI
+ES_K4;morenemateriale;ES-SI
+ES_K5;breelvavsetninger;ES-SI
+ES_K6;bresjøavsetninger;ES-SI
+ES_K7;elveavsetninger;ES-SI
+ES_K8;havavsetninger;ES-SI
+ES_KU;andre eller uspesifiserte substrater;ES-SI
+ET_K0;fast fjell;ET-SI
+ET_K1;karstberg;ET-SI
+ET_K2;myrtorv;ET-SI
+ET_K3;rasmateriale;ET-SI
+ET_K4;morenemateriale;ET-SI
+ET_K5;breelvavsetninger;ET-SI
+ET_K6;bresjøavsetninger;ET-SI
+ET_K7;elveavsetninger;ET-SI
+ET_K8;havavsetninger;ET-SI
+ET_KU;andre eller uspesifiserte substrater;ET-SI
+nan_nan;;nan-nan
+AN_0;ingen;AN-SO
+AN_a;moderat næringstilførselsreduksjon;AN-SO
+AN_b;sterk næringstilførselsreduksjon;AN-SO
+BU_0;glatt;BU-SO
+BU_a;ru;BU-SO
+BU_b;svært ru;BU-SO
+BU_c;små hulrom;BU-SO
+BU_y;store hulrom;BU-SO
+DA_0;øvre profundal;DA-SO
+DA_a;midtre profundal;DA-SO
+DA_y;nedre profundal;DA-SO
+DL_0;øvre sjøkantbelte / øvre strandkantbelte;DL-SO
+DL_a;nedre sjøkantbelte / nedre strandkantbelte;DL-SO
+DL_b;sjøkantnær sublittoral / øvre karplantebelte;DL-SO
+DL_c;øvre sublittoral / nedre karplantebelte;DL-SO
+DL_d;midtre sublittoral / øvre mosebelte;DL-SO
+DL_e;nedre sublittoral / rødalgebelte / nedre mosebelte;DL-SO
+DL_y;afotisk belte;DL-SO
+FI_0;uten finmateriale;FI-SO
+FI_a;finmaterialfattig;FI-SO
+FI_b;litt finmaterialrik;FI-SO
+FI_c;temmelig finmaterialrik;FI-SO
+FI_d;finmaterialrik;FI-SO
+FI_y;finmaterialdominert;FI-SO
+FT_0;uten fastmarkstorvlag;FT-SO
+FT_a;tynt fastmarkstorvlag;FT-SO
+FT_b;tjukt fastmarkstorvlag;FT-SO
+FU_0;ikke flomskredutsatt;FU-SO
+FU_a;litt flomskredutsatt;FU-SO
+FU_b;temmelig flomskredutsatt;FU-SO
+FU_c;sterkt flomskredutsatt;FU-SO
+FU_d;svært sterkt flomskredutsatt;FU-SO
+FU_y;disruptivt flomskredutsatt;FU-SO
+GS_0;åpent og eksponert;GS-SO
+GS_a;overheng;GS-SO
+GS_b;grotteinngang;GS-SO
+GS_c;midtre deler av dyp grotte;GS-SO
+GS_d;indre deler av dyp grotte;GS-SO
+GS_y;innerste deler av dyp grotte;GS-SO
+HF_0;flatt;HF-SO
+HF_a;svakt skrånende;HF-SO
+HF_b;sterkt skrånende;HF-SO
+HF_c;bratt;HF-SO
+HF_d;svært bratt;HF-SO
+HF_z;loddrett;HF-SO
+HU_0;klar;HU-SO
+HU_a;temmelig klar;HU-SO
+HU_b;litt humøs;HU-SO
+HU_c;humøs;HU-SO
+HU_y;svært humøs;HU-SO
+IB_0;stabilisert breis/isfonn;IB-SO
+IB_a;breis i bevegelse;IB-SO
+IF_0;uten isforstyrrelsespreg;IF-SO
+IF_a;litt isforstyrrelsespreget;IF-SO
+IF_b;klart isforstyrrelsespreget;IF-SO
+IF_y;disruptiv isforstyrrelse;IF-SO
+JF_0;stabil jord;JF-SO
+JF_a;klart jordflytpreget;JF-SO
+JF_b;flytjord;JF-SO
+JV_0;uten jordvarmeinnflytelse;JV-SO
+JV_a;litt jordvarmeinfluert;JV-SO
+JV_b;klart jordvarmeinfluert;JV-SO
+JV_c;temmelig sterkt jordvarmeinfluert;JV-SO
+JV_d;sterkt jordvarmeinfluert;JV-SO
+JV_e;svært sterkt jordvarmeinfluert;JV-SO
+JV_y;disruptiv jordvarmeinnflytelse;JV-SO
+KA_a;svært kalkfattig;KA-SO
+KA_b;temmelig kalkfattig;KA-SO
+KA_c;litt kalkfattig;KA-SO
+KA_d;svakt intermediær;KA-SO
+KA_e;sterkt intermediær;KA-SO
+KA_f;litt kalkrik;KA-SO
+KA_g;temmelig kalkrik;KA-SO
+KA_h;svært kalkrik;KA-SO
+KA_i;ekstremt kalkrik;KA-SO
+KA_j;saltanriket;KA-SO
+KI_0;ikke kildevannspåvirket;KI-SO
+KI_a;litt kildevannspåvirket;KI-SO
+KI_b;klart kildevannspåvirket;KI-SO
+KI_c;svært klart kildevannspåvirket;KI-SO
+KI_d;svak kilde;KI-SO
+KI_e;ustabil kilde;KI-SO
+KI_y;stabil kilde;KI-SO
+MF_a;sterkt myrkantpreg;MF-SO
+MF_b;svakt myrkantpreg;MF-SO
+MF_c;svakt myrflatepreg;MF-SO
+MF_d;sterkt myrflatepreg;MF-SO
+NB_0;uten preg av ville dyrs beiting;NB-SO
+NB_a;litt preg av ville dyrs beiting;NB-SO
+NB_b;klart preg av ville dyrs beiting;NB-SO
+NB_c;sterkt preg av ville dyrs beiting;NB-SO
+NE_0;uten naturlig eutrofiering;NE-SO
+NE_a;naturlig eutrofiert;NE-SO
+NG_0;uten preg av naturlig gjødsling;NG-SO
+NG_a;litt naturlig gjødslingspreget;NG-SO
+NG_b;klart naturlig gjødslingspreget;NG-SO
+NG_c;sterkt naturlig gjødslingspreget;NG-SO
+NG_d;svært sterkt naturlig gjødslingspreget;NG-SO
+NG_y;disruptivt naturlig overgjødslet;NG-SO
+NT_0;uten preg av næringstilførselstillegg;NT-SO
+NT_a;litt preget av næringstilførselstillegg;NT-SO
+NT_b;klart preget av næringstilførselstillegg;NT-SO
+NT_c;sterkt preget av næringstilførselstillegg;NT-SO
+OF_0;stabil jord;OF-SO
+OF_a;litt oppfrysingspreget;OF-SO
+OF_b;klart oppfrysingspreget;OF-SO
+OF_c;sterkt oppfrysingspreget;OF-SO
+OF_d;svært sterkt oppfrysingspreget;OF-SO
+OF_y;disruptivt oppfrysingspreget;OF-SO
+OM_0;oksisk;OM-SO
+OM_a;periodisk oksygenmangel;OM-SO
+OM_b;periodisk oksygenfritt;OM-SO
+OM_y;oksygenfritt;OM-SO
+OR_0;ikke overrislet;OR-SO
+OR_a;tidvis overrislet;OR-SO
+OR_b;ofte overrislet;OR-SO
+OR_c;oftest overrislet;OR-SO
+OR_y;ferskvannsbunn;OR-SO
+RU_0;ikke rasutsatt;RU-SO
+RU_a;litt rasutsatt;RU-SO
+RU_b;temmelig rasutsatt;RU-SO
+RU_c;sterkt rasutsatt;RU-SO
+RU_d;svært sterkt rasutsatt;RU-SO
+RU_y;disruptivt rasutsatt;RU-SO
+SA_0;fersk;SA-SO
+SA_a;saltpåvirket ferskvann;SA-SO
+SA_b;ultrabrakt;SA-SO
+SA_c;svært brakt;SA-SO
+SA_d;klart brakt;SA-SO
+SA_e;brakt;SA-SO
+SA_f;temmelig salt;SA-SO
+SA_g;nesten normalsalt;SA-SO
+SA_h;normalsalt;SA-SO
+SA_z;saltanriket;SA-SO
+SE_0;uten sedimentasjonsforstyrrelsespreg;SE-SO
+SE_a;temmelig sedimentasjonsforstyrrelsespreget;SE-SO
+SE_b;sterkt sedimentasjonsforstyrrelsespreget;SE-SO
+SE_y;disruptivt sedimentasjonsforstyrrelsespreget;SE-SO
+SF_0;normalsalt;SF-SO
+SF_a;litt saltanriket;SF-SO
+SF_b;sterkt saltanriket;SF-SO
+SF_y;disruptivt saltanriket;SF-SO
+SM_0;hav;SM-SO
+SM_a;fjord;SM-SO
+SM_b;stor sjø;SM-SO
+SM_c;middels stor sjø;SM-SO
+SM_d;liten sjø;SM-SO
+SM_e;stort tjern;SM-SO
+SM_f;lite tjern;SM-SO
+SM_g;dam;SM-SO
+SM_h;stor pytt;SM-SO
+SM_i;liten pytt;SM-SO
+SM_z;temporær vannforekomst;SM-SO
+SS_0;sanddominert bunn;SS-SO
+SS_a;naken flyvesand;SS-SO
+SS_b;embryonaldyne;SS-SO
+SS_c;primærdyne;SS-SO
+SS_d;hvit og ustabil dyne;SS-SO
+SS_e;grå og svakt stabilisert dyne;SS-SO
+SS_f;grå og stabilisert dyne;SS-SO
+SS_g;brun og temmelig etablert dyne;SS-SO
+SS_h;brun og etablert dyne;SS-SO
+SS_i;dynehei;SS-SO
+SS_j;tresatt dyne;SS-SO
+SS_k;tresatt semistabilisert sand;SS-SO
+SS_y;sanddominert stabil fastmark;SS-SO
+SU_0;ikke skredutsatt;SU-SO
+SU_a;litt skredutsatt;SU-SO
+SU_b;klart skredutsatt;SU-SO
+SU_c;sterkt skredutsatt;SU-SO
+SU_d;svært sterkt skredutsatt;SU-SO
+SU_y;disruptivt skredutsatt;SU-SO
+SV_0;uten snødekkebetinget vekstsesongreduksjon;SV-SO
+SV_a;tidlig moderat snøleie;SV-SO
+SV_b;moderat snøleie;SV-SO
+SV_c;seint snøleie;SV-SO
+SV_d;svært seint snøleie;SV-SO
+SV_e;ekstremt snøleie;SV-SO
+SV_f;svært ekstremt snøleie;SV-SO
+SV_g;vegetasjonsfritt snøleie;SV-SO
+SV_y;permanent snø- og isdekt mark;SV-SO
+TF_0;permanent vanndekket;TF-SO
+TF_a;periodevis tørrlagt;TF-SO
+TF_b;ofte tørrlagt;TF-SO
+TF_y;oftest eller alltid tørrlagt (ikke vannforekomst);TF-SO
+TH_0;åpent hav;TH-SO
+TH_a;dyp terskel;TH-SO
+TH_b;terskel under sprangsjiktet;TH-SO
+TH_c;terskel over sprangsjiktet;TH-SO
+TH_d;terskel i fjærebeltet;TH-SO
+TH_y;terskel over flomålet;TH-SO
+TO_0;jevn overflate;TO-SO
+TO_a;svakt tuet overflate;TO-SO
+TO_b;sterkt tuet overflate;TO-SO
+TU_0;klar;TU-SO
+TU_a;litt turbid;TU-SO
+TU_b;klart turbid;TU-SO
+TU_c;turbid;TU-SO
+TU_y;svært turbid;TU-SO
+TV_0;sublittoral;TV-SO
+TV_a;nedre hydrolittoral;TV-SO
+TV_b;øvre hydrolittoral;TV-SO
+TV_c;nederste geolittoral / nederste landstrandbelte / nedre mykmatte;TV-SO
+TV_d;nedre geolittoral / nedre landstrandbelte / øvre mykmatte;TV-SO
+TV_e;nederste midtre geolittoral / nederste midtre landstrandbelte / nederste fastmatte;TV-SO
+TV_f;øverste midtre geolittoral / øverste midtre landstrandbelte / nedre fastmatte;TV-SO
+TV_g;øvre geolittoral / øvre landstrandbelte / øvre fastmatte;TV-SO
+TV_h;øverste geolittoral / øverste landstrandbelte / øverste fastmatte;TV-SO
+TV_i;nedre supralittoral / nedre bølgeslagsbelte / nedre tuenivå;TV-SO
+TV_j;midtre supralittoral / øvre bølgeslagsbelte / midtre tuenivå;TV-SO
+TV_k;øvre supralittoral / bølgesprutbeltet /  øvre tuenivå;TV-SO
+TV_l;epilittoralbeltet;TV-SO
+TV_y;varig tørrlagt;TV-SO
+UE_0;ikke uttørkingseksponert;UE-SO
+UE_a;minimalt uttørkingseksponert;UE-SO
+UE_b;svært lite uttørkingseksponert;UE-SO
+UE_c;temmelig lite uttørkingseksponert;UE-SO
+UE_d;intermediært uttørkingseksponert;UE-SO
+UE_e;temmelig uttørkingseksponert;UE-SO
+UE_f;klart uttørkingseksponert;UE-SO
+UE_g;svært uttørkingseksponert;UE-SO
+UF_a;frisk;UF-SO
+UF_b;temmelig frisk;UF-SO
+UF_c;litt frisk;UF-SO
+UF_d;intermediær;UF-SO
+UF_e;litt tørkeutsatt;UF-SO
+UF_f;temmelig tørkeutsatt;UF-SO
+UF_g;svært tørkeutsatt;UF-SO
+UF_h;ekstremt tørkeutsatt;UF-SO
+VF_0;mimimal vannforstyrrelsesintensitet / stille vann;VF-SO
+VF_a;svært beskyttet / svært svak energi;VF-SO
+VF_b;temmelig beskyttet / temmelig svak energi;VF-SO
+VF_c;litt beskyttet / litt svak energi;VF-SO
+VF_d;svakt eksponert / moderat energi;VF-SO
+VF_e;litt eksponert / litt sterk energi;VF-SO
+VF_f;temmelig eksponert / temmelig sterk energi;VF-SO
+VF_g;svært eksponert / svært sterk energi;VF-SO
+VF_h;ekstremt eksponert / ekstremt sterk energi;VF-SO
+VF_y;disruptivt eksponert / disruptiv energi;VF-SO
+VI_0;uten vindpreg;VI-SO
+VI_a;temmelig sterkt vindpreget;VI-SO
+VI_b;sterkt vindpreget;VI-SO
+VI_c;svært sterkt vindpreget;VI-SO
+VI_y;disruptiv vindutsatthet;VI-SO
+VM_0;veldrenert;VM-SO
+VM_a;vekselfuktig;VM-SO
+VM_b;temmelig fuktig;VM-SO
+VM_c;fuktig;VM-SO
+VM_z;våt;VM-SO
+VS_0;uten vannsprutpåvirkning;VS-SO
+VS_a;fosserøykpreg;VS-SO
+VS_b;fossestøvpreg;VS-SO
+VS_c;fossetåkepreg;VS-SO
+VS_d;fosseyrpreg;VS-SO
+VS_e;fosseregnpreg;VS-SO
+VS_y;ferskvannssystem;VS-SO
+nan_nan;;nan-nan
+EB_0;enkelt løp uten banker;EB-SO
+EB_1;stedvis forgreinet løp med spredte banker;EB-SO
+EB_2;dobbelt løp med banker;EB-SO
+EB_3;forgreinet løp med banker;EB-SO
+EB_4;sterkt forgreinet løp med banker;EB-SO
+EC_0;uten sidevegs begrensning;EC-SO
+EC_1;delvis sidevegs begrenset;EC-SO
+EC_2;betydelig sidevegs begrenset;EC-SO
+EC_y;fullstendig sidevegs begrenset;EC-SO
+EI_0;enkelt løp uten øyer;EI-SO
+EI_1;stedvis forgreinet løp med spredte øyer;EI-SO
+EI_2;dobbelt løp med øyer;EI-SO
+EI_3;forgreinet løp med øyer;EI-SO
+EI_4;sterkt forgreinet løp med øyer;EI-SO
+EU_0;hele elveløpet i dagen;EU-SO
+EU_1;delvis underjordisk elveløp;EU-SO
+EU_2;hovedsakelig underjordisk elveløp;EU-SO
+EU_y;underjordisk elveløp;EU-SO
+FV_1;svært liten flomvannføring;FV-SO
+FV_2;liten flomvannføring;FV-SO
+FV_3;temmelig liten flomvannføring;FV-SO
+FV_4;stor flomvannføring;FV-SO
+FV_5;svært stor flomvannføring;FV-SO
+HE_0;flatt;HE-SO
+HE_01;tilnærmet flatt;HE-SO
+HE_02;ekstremt slakt;HE-SO
+HE_03;svært slakt;HE-SO
+HE_04;utpreget slakt;HE-SO
+HE_05;temmelig slakt;HE-SO
+HE_06;litt slakt;HE-SO
+HE_07;moderat skrånende;HE-SO
+HE_08;noe bratt;HE-SO
+HE_09;litt bratt;HE-SO
+HE_10;temmelig bratt;HE-SO
+HE_11;utpreget bratt;HE-SO
+HE_12;svært bratt;HE-SO
+HE_13;ekstremt bratt;HE-SO
+HE_14;nær loddrett;HE-SO
+HE_15;loddrett;HE-SO
+SI_0;rett;SI-SO
+SI_1;svakt sinuøs;SI-SO
+SI_2;sinuøs;SI-SO
+SI_3;meandrerende;SI-SO
+SI_4;sterkt meandrerende;SI-SO
+VA_1;svært liten bekk;VA-SO
+VA_2;liten bekk;VA-SO
+VA_3;stor bekk;VA-SO
+VA_4;liten elv;VA-SO
+VA_5;mellomstor elv;VA-SO
+VA_6;temmelig stor elv;VA-SO
+VA_7;stor elv;VA-SO
+DW_0;usortert materiale;DW-SO
+DW_01;fin leire;DW-SO
+DW_02;middels grov leire;DW-SO
+DW_03;grov leire;DW-SO
+DW_04;svært fin silt;DW-SO
+DW_05;fin silt;DW-SO
+DW_06;middels grov silt;DW-SO
+DW_07;grov silt;DW-SO
+DW_08;svært grov silt;DW-SO
+DW_09;svært fin sand;DW-SO
+DW_10;fin sand;DW-SO
+DW_11;middels grov sand;DW-SO
+DW_12;grov sand;DW-SO
+DW_13;svært grov sand;DW-SO
+DW_14;svært fin grus;DW-SO
+DW_15;fin grus;DW-SO
+DW_16;middels grov grus;DW-SO
+DW_17;grov grus;DW-SO
+DW_18;svært grov grus;DW-SO
+DW_19;små stein;DW-SO
+DW_20;store stein;DW-SO
+DW_21;små blokker;DW-SO
+DW_22;middels store blokker;DW-SO
+DW_23;store blokker;DW-SO
+DW_24;svært store blokker;DW-SO
+DW_25;kjempeblokker;DW-SO
+DW_26;fast fjell;DW-SO
+DT_0;epilimnion;DT-SO
+DT_1;øvre metalimnion;DT-SO
+DT_2;nedre metalimnion;DT-SO
+DT_y;hypolimnion;DT-SO
+nan_nan;;nan-nan
+NF_K0;ingen observerbar forstyrrelse;NF-SI
+NF_KA;forstyrrelse betinget av dyrs aktivitet;NF-SI
+NF_KB;insektangrep;NF-SI
+NF_KC;soppangrep;NF-SI
+NF_KD;lyng-, lav- og skogbrann;NF-SI
+NF_KE;vindrelatert forstyrrelse;NF-SI
+NF_KF;tørkebetinget forstyrrelse;NF-SI
+NF_KG;flom- og annen fuktighetsrelatert forstyrrelse;NF-SI
+NF_KH;frostbetinget forstyrrelse;NF-SI
+NF_KU;annen naturgitt forstryrrelse;NF-SI
+BA_K0;ingen bestandsavgang;BA-SI
+BA_KA;beverfelling;BA-SI
+BA_KB;hjorteviltbeiting;BA-SI
+BA_KC;insektangrep;BA-SI
+BA_KD;skogbrann;BA-SI
+BA_KE;snøskred;BA-SI
+BA_KF;soppangrep;BA-SI
+BA_KG;vindfelling;BA-SI
+BA_KH;vær-relatert ødeleggelse;BA-SI
+BA_KU;annen årsak til bestandsavgang;BA-SI
+nan_nan;;nan-nan
+TP_A;grop;TP-SI
+TP_B;søkk;TP-SI
+TP_C;dalbunn;TP-SI
+TP_D;skråningsfot;TP-SI
+TP_E;konkav skråning;TP-SI
+TP_F;slett skråning;TP-SI
+TP_G;konveks skråning;TP-SI
+TP_H;framspring;TP-SI
+TP_I;skulder;TP-SI
+TP_J;rygg;TP-SI
+TP_K;topp;TP-SI
+TP_L;flate;TP-SI
+RA_a;svakt dalformet;RA-SO
+RA_b;slakt til småkupert;RA-SO
+RA_c;middels kupert;RA-SO
+RA_d;markert kupert;RA-SO
+RA_e;tindepreget;RA-SO
+RD_a;åpent;RD-SO
+RD_b;relativt åpent;RD-SO
+RD_c;nedskåret;RD-SO
+RD_d;dypt nedskåret;RD-SO
+RK_a;slakt;RK-SO
+RK_b;middels kupert;RK-SO
+RK_c;bratte åser, restfjell, klipper og stup;RK-SO
+nan_nan;;nan-nan
+EO_1;elvestrekning av første orden;EO-SO
+EO_2;elvestrekning av andre orden;EO-SO
+EO_3;elvestrekning av tredje orden;EO-SO
+EO_4;elvestrekning av fjerde orden;EO-SO
+EO_5;elvestrekning av femte orden;EO-SO
+EO_6;elvestrekning av sjette orden;EO-SO
+EO_7;elvestrekning av sjuende orden;EO-SO
+EO_8;elvestrekning av åttende orden;EO-SO
+US_1;mikroskala;US-SO
+US_2;fin lokal skala;US-SO
+US_3;middels lokal skala;US-SO
+US_4;grov lokal skala;US-SO
+US_5;fin regional skala;US-SO
+US_6;middels regional skala;US-SO
+US_7;grov regional skala;US-SO
+US_8;kontinental eller global skala;US-SO
+nan_nan;;nan-nan
+BD_0;kald bre;BD-SO
+BD_1;bre med kalde og tempererte deler;BD-SO
+BD_y;temperert bre;BD-SO
+FR_K1;regnflomregime;FR-SO
+FR_K2;smelteflomregime;FR-SO
+FR_K3;kombinasjonsflom- eller årsflomregime;FR-SO
+FR_K4;brefelt-flomregime;FR-SO
+MB_1;klart erosjonsdominert;MB-SO
+MB_2;erosjonsdominert;MB-SO
+MB_3;balansert erosjon-sedimentasjonsdynamikk;MB-SO
+MB_4;sedimentasjonsdominert;MB-SO
+MB_5;klart sedimentasjonsdominert;MB-SO
+SR_0;stille;SR-SO
+SR_1;svært roligflytende;SR-SO
+SR_2;roligflytende;SR-SO
+SR_3;svakt strømmende;SR-SO
+SR_4;hurtigstrømmende;SR-SO
+SR_5;skummende;SR-SO
+SR_6;fossende;SR-SO
+SR_7;frittfallende;SR-SO
+LH_0;ved dagens kystlinje;LH-SO
+LH_1;mellom dagens kystlinje og øvre marine grense;LH-SO
+LH_y;ved øvre marine grense;LH-SO
+nan_nan;;nan-nan
+nan_nan;;nan-nan
+AI_0;minimal arealbruk;AI-SO
+AI_a;lite arealbruk;AI-SO
+AI_b;bebygde områder;AI-SO
+AI_c;tettbebyggelse;AI-SO
+AI_d;by;AI-SO
+AI_e;stor by;AI-SO
+JP_0;uten jordbrukspreg;JP-SO
+JP_a;klart jordbrukspreg;JP-SO
+JP_b;jordbruksdominert;JP-SO
+nan_nan;;nan-nan
+BM_A;introduksjon av fiskeart;BM-SI
+BM_B;bortfall av fiskeart;BM-SI
+BM_C;introduksjon av andre dyregrupper enn fisk;BM-SI
+BM_D;bortfall av andre dyregrupper enn fisk;BM-SI
+BM_E;introduksjon av planteart;BM-SI
+HR_A;beiting;HR-SI
+HR_B;beiting og slått;HR-SI
+HR_C;slått;HR-SI
+HR_D;lyngbrenningsregime;HR-SI
+MK_A;tungmetaller og andre uorganiske miljøgifter;MK-SI
+MK_B;organiske miljøgifter;MK-SI
+MK_C;saltbelastning;MK-SI
+MK_D;organisk belastning;MK-SI
+MK_E;næringsstoffoverbelastning;MK-SI
+MK_F;forsuring;MK-SI
+MK_G;temperaturregimeendringer;MK-SI
+MK_H;gassovermetning;MK-SI
+MS_A;grøftet fastmark;MS-SI
+MS_B;markforstyrrelse;MS-SI
+MS_C;kjemisk forstyrrelse;MS-SI
+MS_D;gjentatt hogstpåvirket;MS-SI
+MS_E;treslagsskifte til fremmed treslag;MS-SI
+MS_F;treslagsskifte fra lauvskog til barskog;MS-SI
+MS_G;treslagsskifte fra barskog til lauvskog;MS-SI
+MS_H;treslagsskifte innen lauvskog eller barskog;MS-SI
+MS_I;mellomsuksesjonsstadium fra fastmark som ikke er skogsmark;MS-SI
+MS_J;mellomsuksesjonsstadium fra klart (eller lite) endret skogsmark;MS-SI
+MT_A;hard sterkt endret fastmark på lite modifisert substrat;MT-SI
+MT_B;hard sterkt endret fastmark på sterkt modifisert eller syntetisk substrat;MT-SI
+MT_C;hard fastmark på tørrlagt innsjøbunn;MT-SI
+MT_D;hard fastmark på tørrlagt elvebunn;MT-SI
+MT_E;løst, lite modifisert substrat;MT-SI
+MT_F;løst, lite modifisert substrat preget av kjemisk påvirkning;MT-SI
+MT_G;grovt organisk avfall;MT-SI
+MT_H;fint organisk avfall;MT-SI
+MT_I;konsolidert løst, sterkt modifisert eller syntetisk substrat;MT-SI
+MT_J;ikke-konsolidert løst, sterkt modifisert eller syntetisk substrat;MT-SI
+MT_K;løs fastmark på tørrlagt innsjøbunn;MT-SI
+MT_L;fastmark på tørrlagt elvebunn;MT-SI
+MT_M;fastmark på jordvannsmyrtorv;MT-SI
+MT_N;fastmark på nedbørsmyrtorv;MT-SI
+MV_A;grøftet torvmark;MV-SI
+MV_B;torvtak;MV-SI
+MV_C;ny våtmark med opphav i innsjøbunn;MV-SI
+MV_D;ny våtmark med opphav i elvebunn;MV-SI
+MV_E;ny våtmark med opphav i fastmark;MV-SI
+MV_F;sterkt endret, ikke-torvproduserende grunn våtmark;MV-SI
+MV_G;tilplanting av, eller treslagsskifte i våtmark;MV-SI
+MY_A;ny fast bunn;MY-SI
+MY_B;nytt fast sterkt modifisert eller syntetisk substrat;MY-SI
+MY_C;ny løs sedimentbunn;MY-SI
+MY_D;ny innsjøbunn med opphav i elvebunn;MY-SI
+MY_E;ny innsjøbunn med opphav i ikke-torvproduserende våtmark;MY-SI
+MY_F;ny innsjøbunn med opphav i torvproduserende våtmark;MY-SI
+MY_G;vannføringsendring;MY-SI
+nan_nan;;nan-nan
+KP_KA;opphør av tiltak som holder boreal hei og eng åpen;KP-SI
+KP_KB;opphør av bruk av kystlynghei;KP-SI
+KP_KC;opphør av bruk av semi-naturlig eng og strandeng;KP-SI
+KP_KD;opphør av bruk av sterkt endret jordbruksmark;KP-SI
+KP_KE;opphørt vedlikehold av løs sterkt endret fastmark;KP-SI
+KP_KF;opphørt vedlikehold av hard sterkt endret fastmark;KP-SI
+KP_KG;drenering av våtmark;KP-SI
+KP_KH;redusert vannføring i elv;KP-SI
+KP_KI;endret vannføringsregime i elv;KP-SI
+KP_KJ;senket vannstand i innsjø;KP-SI
+KP_KK;endret vannføringsregime i innsjø;KP-SI
+KP_KL;neddemming av fastmark eller våtmark;KP-SI
+KP_KM;gjennomgripende markforstyrrelse på lite endret fastmark;KP-SI
+KP_KN;gjennomgripende bunnforstyrrelse på lite endret saltvanns- eller ferskvannsbunn;KP-SI
+KP_KO;eutrofiering og annen forurensning;KP-SI
+KR_KA;gjenopptatt beiting eller slått, eventuelt også rydding, på semi-naturlig jordbruksmark i gjengroing;KR-SI
+KR_KB;gjenopptatt beiting eller slått, eventuelt også rydding, på sterkt endret jordbruksmark i gjengroing;KR-SI
+KR_KC;restaureringsforsøk på løs sterkt endret fastmark;KR-SI
+KR_KD;restaureringsforsøk på hard sterkt endret fastmark;KR-SI
+KR_KE;restaureringsforsøk på drenert våtmark;KR-SI
+KR_KF;restaureringsforsøk i torvtak;KR-SI
+KR_KG;restaureringsforsøk i elv med regulert vannføringsregime;KR-SI
+KR_KH;restaureringsforsøk i innsjø med regulert vannstandvekslingsregime;KR-SI
+KR_KI;restaureringsforøk på mark og bunn som er sterkt endret på grunn av eutrofiering og annen forurensning;KR-SI
+nan_nan;;nan-nan
+HA_0;ikke tilrettelagt tresjikt;HA-SO
+HA_a;litt åpnet tresjikt;HA-SO
+HA_b;åpent tresjikt;HA-SO
+HA_c;åpnet, skjøttet tresjikt;HA-SO
+HA_y;åpen mark;HA-SO
+HG_0;uten preg av gjødsling;HG-SO
+HG_a;lav gjødslingsintensitet;HG-SO
+HG_b;intermediær gjødslingsintensitet;HG-SO
+HG_c;sterk gjødslingsintensitet;HG-SO
+HG_y;overgjødslet mark;HG-SO
+HH_0;ingen høsting;HH-SO
+HH_a;lav utnyttingsgrad;HH-SO
+HH_b;ekstensiv utnytting;HH-SO
+HH_c;intensiv utnytting;HH-SO
+HH_y;svært intensiv utnytting;HH-SO
+HM_0;uryddet mark;HM-SO
+HM_a;mark ryddet for stein;HM-SO
+HM_b;ryddet mark med utjevnet overflate;HM-SO
+HM_c;tidligere pløyd mark;HM-SO
+HM_d;sporadisk pløyd mark;HM-SO
+HM_y;regelmessig pløyd mark;HM-SO
+HT_0;minimal tråkkpåvirkning;HT-SO
+HT_a;svak tråkkpåvirkning;HT-SO
+HT_b;moderat tråkkpåvirkning;HT-SO
+HT_c;sterk tråkkpåvirkning;HT-SO
+HT_y;disruptiv tråkkpåvirkning;HT-SO
+nan_nan;;nan-nan
+FY_K0;minimal fysikalsk påvirkning av vann-natur;FY-SI
+FY_KA;temperaturregimeendringer;FY-SI
+FY_KB;gassovermetning;FY-SI
+FY_KU;annen fysikalsk påvirkning;FY-SI
+MG_K0;biocider;MG-SI
+MG_KA;organiske miljøgifter;MG-SI
+MG_KB;olje og andre petroleumsprodukter;MG-SI
+MG_KC;radioaktiv forurensning;MG-SI
+MG_KD;organisk belastning;MG-SI
+MG_KE;næringsstoffoverbelastning;MG-SI
+MG_KF;tungmetaller og andre uorganiske miljøgifter;MG-SI
+MG_KG;saltbelastning;MG-SI
+MG_KH;forsuring;MG-SI
+MG_KU;annen forurensning;MG-SI
+AJ_K0;minimalt preg av jordbruksaktivitet;AJ-SI
+AJ_KA;vanning;AJ-SI
+AJ_KB;brenning;AJ-SI
+AJ_KC;såing eller utplanting;AJ-SI
+AJ_KD;pløying;AJ-SI
+AJ_KE;sprøyting;AJ-SI
+AJ_KF;beiting;AJ-SI
+AJ_KG;slått;AJ-SI
+AJ_KH;gjødsling;AJ-SI
+AS_K0;minimalt preg av skogbruksaktivitet;AS-SI
+AS_KA;sprøyting;AS-SI
+AS_KB;kalking;AS-SI
+AS_KC;gjødsling;AS-SI
+HG_K0;uten tydelige spor etter lukket gradvis foryngelseshogst;HG-SI
+HG_KA;gruppehogst;HG-SI
+HG_KB;kanthogst;HG-SI
+HG_KC;skjermstillingshogst;HG-SI
+HG_KU;uspesifisert lukket gradvis foryngelseshogst;HG-SI
+HI_K0;uten tydelige spor etter intermediær hogst;HI-SI
+HI_KA;forhåndsrydding;HI-SI
+HI_KB;fri tynning;HI-SI
+HI_KC;høgtynning;HI-SI
+HI_KD;manuell avstandsregulering;HI-SI
+HI_KE;gjentatt rydningshogst;HI-SI
+HI_KU;uspesifisert intermediær hogst;HI-SI
+HS_K0;uten tydelige spor etter lukket selektiv hogst;HS-SI
+HS_KA;bledningshogst;HS-SI
+HS_KB;dimensjonshogst;HS-SI
+HS_KC;plukkhogst;HS-SI
+HS_KU;uspesifisert lukket selektiv hogst;HS-SI
+HY_K0;uten tydelige spor etter åpen foryngelseshogst;HY-SI
+HY_KA;frøtrestillingshogst;HY-SI
+HY_KB;snauhogst;HY-SI
+HY_KC;gjentatt snauhogst;HY-SI
+HY_KU;uspesifisert åpen foryngelseshogst;HY-SI
+SF_K0;uten spor etter skogforyngelsestiltak;SF-SI
+SF_KA;markberedning;SF-SI
+SF_KB;planting/såing;SF-SI
+UM_K0;intet uttak;UM-SI
+UM_KA;uttak av hogstavfall;UM-SI
+UM_KB;uttak av hogstavfall og stubber;UM-SI
+UM_KC;uttak bare av tømmer;UM-SI
+UM_KD;uttak med hauglegging av hogstavfall;UM-SI
+KP_KA;endring av jordbrukspraksis;KP-SI
+KP_KB;mindre drenering av våtmark;KP-SI
+KP_KC;mindre endring av vannføring i elv;KP-SI
+KP_KD;mindre endring av vannstandsvekslinger i innsjø;KP-SI
+KP_KE;mindre påvirkning fra miljøgifter, eutrofiering og annen forurensning;KP-SI
+KR_KA;gjenopptakelse av tidligere jordbrukspraksis;KR-SI
+KR_KB;restaureringsforsøk på drenert våtmark;KR-SI
+KR_KC;restaureringsforsøk i elv med mindre regulert vannføringsregime;KR-SI
+KR_KD;restaureringsforsøk i innsjø med mindre regulert vannstandvekslingsregime;KR-SI
+KR_KE;restaureringsforøk på mark og bunn som er påvirket av miljøgifter, eutrofiering og annen forurensning;KR-SI
+nan_nan;;nan-nan
+OB_0;uten sikre tegn på overbeskatning;OB-SO
+OB_1;tydelig overbeskatning;OB-SO
+OB_2;klart preg av overbeskatning;OB-SO
+OB_y;sterk overbeskatning;OB-SO
+AG_0;uten spor etter gjødsling;AG-SO
+AG_1;svært lett gjødsling;AG-SO
+AG_2;lett gjødsling;AG-SO
+AG_3;middels intensiv gjødsling;AG-SO
+AG_4;intensiv gjødsling;AG-SO
+AG_y;overgjødsling;AG-SO
+AH_0;uten preg av høsting;AH-SO
+AH_1;lav utnyttingsgrad;AH-SO
+AH_2;ekstensiv utnytting;AH-SO
+AH_3;intensiv høsting;AH-SO
+AH_y;svært intensiv høsting;AH-SO
+AY_0;uten spor etter sprøyting;AY-SO
+AY_1;sporadisk sprøyting;AY-SO
+AY_2;regelmessig sprøyting med moderat intensitet;AY-SO
+AY_y;intensiv sprøyting;AY-SO
+BT_0;minimalt spor etter beite;BT-SO
+BT_1;lavt beitetrykk;BT-SO
+BT_2;moderat beitetrykk;BT-SO
+BT_3;temmelig høyt beitetrykk;BT-SO
+BT_4;høyt beitetrykk;BT-SO
+BT_y;overbeitet;BT-SO
+DA_0;ingen død ved;DA-SO
+DA_1;ubetydelig andel død ved;DA-SO
+DA_2;svært liten andel død ved, mye mindre enn forventet i skog med naturlig dynamikk;DA-SO
+DA_3;liten andel død ved, mindre enn forventet i skog med naturlig dynamikk;DA-SO
+DA_4;middels andel død ved, noe mindre enn forventet i skog med naturlig dynamikk;DA-SO
+DA_5;stor andel død ved, omtrent som forventet (1/3) i skog med naturlig dynamikk;DA-SO
+DA_6;svært stor andel død ved, forventet kun i nylig naturlig forstyrret skog;DA-SO
+DV_0;tilnærmet uten død ved og dødvedvariasjon;DV-SO
+DV_1;liten dødvedvariasjon;DV-SO
+DV_2;middels dødvedvariasjon;DV-SO
+DV_y;stor dødvedvariasjon, som forventet i uforstyrret skog;DV-SO
+nan_nan;;nan-nan
+FS_0;naturlig fisketom vannforekomst;FS-SI
+FS_A;enkelt fiskesamfunn;FS-SI
+FS_B;moderat komplekst fiskesamfunn;FS-SI
+FS_C;komplekst fiskesamfunn i små og mellomstore sjøer;FS-SI
+FS_D;komplekst fiskesamfunn i store sjøer;FS-SI
+AD_0;skogsmark uten tresjikt;AD-SI
+AD_B2;bartrær er relative dominanter: ingen med-dominerende treslagsgrupper;AD-SI
+AD_B2E;bartrær er relative dominanter: edellauvtrær er med-dominerende treslagsgruppe;AD-SI
+AD_B2L;bartrær er relative dominanter: boreale lauvtrær er med-dominerende treslagsgruppe;AD-SI
+AD_B2V;bartrær er relative dominanter: pil og vier er med-dominerende treslagsgruppe;AD-SI
+AD_BE;bartrær og edellauvtrær er relative samdominanter;AD-SI
+AD_BL;bartrær og boreale lauvtrær er relative samdominanter;AD-SI
+AD_BV;bartrær og pil og vier er relative samdominanter;AD-SI
+AD_B;bartrær er eneste treslagsgruppe som tilfredsstiller definisjonen av relativ samdominant;AD-SI
+AD_E2;edellauvtrær er relative dominanter: ingen med-dominerende treslagsgrupper;AD-SI
+AD_E2B;edellauvtrær er relative dominanter: bartrær er med-dominerende treslagsgruppe;AD-SI
+AD_E2L;edellauvtrær er relative dominanter: boreale lauvtrær er med-dominerende treslagsgruppe;AD-SI
+AD_E2V;edellauvtrær er relative dominanter: pil og vier er med-dominerende treslagsgruppe;AD-SI
+AD_EL;edellauvtrær og boreale lauvtrær er relative samdominanter;AD-SI
+AD_EV;edellauvtrær og pil og vier er relative samdominanter;AD-SI
+AD_E;edellauvtrær er eneste treslagsgruppe som tilfredsstiller definisjonen av relativ samdominant;AD-SI
+AD_L2;boreale lauvtrær er relative dominanter: ingen med-dominerende treslagsgrupper;AD-SI
+AD_L2B;boreale lauvtrær er relative dominanter: bartrær er med-dominerende treslagsgruppe;AD-SI
+AD_L2E;boreale lauvtrær er relative dominanter: edellauvtrær er med-dominerende treslagsgruppe;AD-SI
+AD_L2V;boreale lauvtrær er relative dominanter: pil og vier er med-dominerende treslagsgruppe;AD-SI
+AD_LV;boreale lauvtrær og pil og vier er relative samdominanter;AD-SI
+AD_L;boreale lauvtrær er eneste treslagsgruppe som tilfredsstiller definisjonen av relativ samdominant;AD-SI
+AD_V2;pil og vier er relative dominanter: ingen med-dominerende treslagsgrupper;AD-SI
+AD_V2B;pil og vier er relative dominanter: bartrær er med-dominerende treslagsgruppe;AD-SI
+AD_V2E;pil og vier er relative dominanter: edellauvtrær er med-dominerende treslagsgruppe;AD-SI
+AD_V2L;pil og vier er relative dominanter: boreale lauvtrær er med-dominerende treslagsgruppe;AD-SI
+AD_V;pil og vier er eneste treslagsgruppe som tilfredsstiller definisjonen av relativ samdominant;AD-SI
+VE_a;skog eller potensiell skog;VE-SO
+VE_b;åpen hei og eng under skoggrensa;VE-SO
+VE_c;hei og eng over skoggrensa;VE-SO
+VE_d;bart fjell og nakne løsmasser over skoggrensa;VE-SO
+nan_nan;;nan-nan
+nan_nan;;nan-nan
+nan_nan;;nan-nan
+UT_0;balanse mellom trofiske nivåer;UT-SI
+UT_A;alternativ stabil artssammensetning;UT-SI
+VD_0;uten differensiert vegetasjon;VD-SI
+VD_A;stabilisert kortskuddsvegetasjon;VD-SI
+ØD_0;udifferensiert mark;ØD-SI
+ØD_A;økologisk differensiert mark med rabbepreg;ØD-SI
+ØD_B;økologisk differensiert mark med fjellhei-, leside- eller grasmarkspreg;ØD-SI
+ØD_C;økologisk differensiert mark med snøleiepreg;ØD-SI
+ØD_D;økologisk differensiert mark med skogsmarkspreg;ØD-SI
+ØD_E;økologisk differensiert mark med kildepreg;ØD-SI
+TP_0;minimal torvproduksjon;TP-SI
+TP_a;middels torvproduserede evne;TP-SI
+TP_b;stor torvproduserende evne;TP-SI
+nan_nan;;nan-nan
+nan_nan;;nan-nan
+nan_nan;;nan-nan
+IE_0;aktiv påvirkning;IE-SO
+IE_a;brakkleggings- eller svært tidlig gjenvekstsuksesjonsstadium;IE-SO
+IE_b;tidlig gjenvekstsuksesjonsstadium;IE-SO
+IE_c;temmelig tidlig gjenvekstsuksesjonsstadium;IE-SO
+IE_d;temmelig seint gjenvekstsuksesjonsstadium;IE-SO
+IE_e;seint gjenvekstsuksesjonsstadium;IE-SO
+IE_f;nær ettersuksesjonsstadium;IE-SO
+IE_y;ettersuksesjonsstadium;IE-SO
+KU_a;pionérfase;KU-SO
+KU_b;byggefase;KU-SO
+KU_c;moden fase;KU-SO
+KU_d;degenereringsfase;KU-SO
+ST_0;tre- og buskløs fase;ST-SO
+ST_a;foryngelsesskog;ST-SO
+ST_b;ungskog;ST-SO
+ST_c;yngre skog;ST-SO
+ST_d;eldre skog;ST-SO
+ST_e;gammel skog;ST-SO
+ST_f;fleraldret skog med kohortdynamikk;ST-SO
+ST_y;skog med småskaladynamikk;ST-SO
+TE_0;ingen endringsgjeld;TE-SO
+TE_a;ubetydelig endringsgjeld;TE-SO
+TE_b;observerbar endringsgjeld;TE-SO
+TE_c;betydelig endringsgjeld;TE-SO
+TE_d;vesentlig endringsgjeld;TE-SO
+TE_e;temmelig stor endringsgjeld;TE-SO
+TE_f;full artsutskifting;TE-SO
+TE_g;mer enn full artsutskifting;TE-SO
+TE_y;mye mer enn full artsutskifting;TE-SO
+nan_nan;;nan-nan
+SS_1;ensjiktet;SS-SO
+SS_2;tosjiktet;SS-SO
+SS_3;flersjiktet;SS-SO
+nan_nan;;nan-nan
+0;0;D0
+1;1;D0
+2;2;D0
+3;3–4;D0
+4;5–8;D0
+5;9–16;D0
+6;17–32;D0
+7;33–64;D0
+8;65–128;D0
+9;129–256;D0
+10;<256;D0
+0;0;D1a
+1;1;D1a
+2;2;D1a
+3;3–4;D1a
+4;5–8;D1a
+5;9–16;D1a
+6;17–32;D1a
+7;33–64;D1a
+8;65–128;D1a
+9;129–256;D1a
+10;<256;D1a
+0;0;D1b
+1;1;D1b
+2;2-4;D1b
+3;5-16;D1b
+4;17-64;D1b
+5;65-256;D1b
+6;<256;D1b
+0;0;T0
+1;0–1/32;T0
+2;1/32–1/16;T0
+3;1/16–1/8;T0
+4;1/8–1/4;T0
+5;1/4–1/2;T0
+6;1/2–1;T0
+7;>1–2;T0
+8;>2–4;T0
+9;>4–8;T0
+10;>8–16;T0
+11;>16–32;T0
+12;>32–64;T0
+13;>64–128;T0
+14;>128–256;T0
+15;>256;T0
+0;0;T1a
+1;>0–1;T1a
+2;>1–2;T1a
+3;>2–4;T1a
+4;>4–8;T1a
+5;>8–16;T1a
+6;>16–32;T1a
+7;>32–64;T1a
+8;>64–128;T1a
+9;>128–256;T1a
+10;>256;T1a
+0;0;T1b
+1;>0–1;T1b
+2;>1–4;T1b
+3;>4–16;T1b
+4;>16–64;T1b
+5;>64–256;T1b
+6;>256;T1b
+0;0;T1c
+1;0–1/32;T1c
+2;1/32–1/16;T1c
+3;1/16–1/8;T1c
+4;1/8–1/4;T1c
+5;1/4–1/2;T1c
+6;1/2–1;T1c
+7;>1–2;T1c
+8;>2–4;T1c
+9;>4–8;T1c
+10;>8–16;T1c
+11;>16–32;T1c
+12;>32–64;T1c
+13;>64–128;T1c
+14;>128–256;T1c
+15;>256;T1c
+0;0;P4
+1;0-25;P4
+2;25-50;P4
+3;50-100;P4
+0;0;P5
+1;0-12,5;P5
+2;12,5-25;P5
+3;25-50;P5
+4;50-100;P5
+0;0;P6a
+1;0-6,25;P6a
+2;6,25-12,5;P6a
+3;12,5-25;P6a
+4;25-50;P6a
+5;50-100;P6a
+0;0;P6b
+1;0-12,5;P6b
+2;12,5-25;P6b
+3;25-50;P6b
+4;50-75;P6b
+5;75-100;P6b
+0;0;P7
+1;0-6,25;P7
+2;6,25-12,5;P7
+3;12,5-25;P7
+4;25-50;P7
+5;50-75;P7
+6;75-100;P7
+0;0;P8
+1;0-3,125;P8
+2;3,125-6,25;P8
+3;6,25-12,5;P8
+4;12,5-25;P8
+5;25-50;P8
+6;50-75;P8
+7;75-100;P8
+0;0;P9a
+1;0–3,125;P9a
+2;3.125–6,25;P9a
+3;6,25–12,5;P9a
+4;12,5–25;P9a
+5;25–50;P9a
+6;50–75;P9a
+7;75–90;P9a
+8;90–100;P9a
+0;0;P6c
+1;0–3,125;P6c
+2;3,125–12,5;P6c
+3;12,5–37,5;P6c
+4;37,5–80;P6c
+5;80–100;P6c
+0;Fravær;B
+1;Forekomst;B
+*;*;K

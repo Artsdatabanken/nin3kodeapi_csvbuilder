@@ -1,0 +1,1 @@
+select * from Grunntype where Kode = 'TE05-01'
