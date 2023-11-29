@@ -1,4 +1,4 @@
-# nin3kodeapi_jupyter
+# nin3kodeapi_csvbuilder
 Prepping of data for "nin3 kodeapi" (excel --> csv) using Jupyter notebooks
 
 Technology:
