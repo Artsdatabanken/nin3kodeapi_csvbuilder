@@ -335,3 +335,4 @@ ut_data/
 Database/inn_data/nin3kodeapi.db
 3_0_excel/db/nin3kodeapi.db
 Database/rapporter/
+nin3webapi.session.sql

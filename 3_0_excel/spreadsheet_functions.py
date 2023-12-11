@@ -51,6 +51,9 @@ def createExcel():
     df_vn_ms = variabelnavn_maaleskala()
     df_ht_vt = hovedtype_Variabeltrinn()
     df_gt_vt = grunntype_Variabeltrinn()
+    df_htg_konvertering = htg_konvertering()
+    df_ht_konvertering = ht_konvertering()
+    df_gt_konvertering = gt_konvertering()
     excelfile = f"ut/nin3_0_{timestamp()}.xlsx"
     with pd.ExcelWriter(excelfile) as writer:
         df_db_info.to_excel(writer, sheet_name="db_info", index=False)
@@ -75,6 +78,9 @@ def createExcel():
         df_vn_ms.to_excel(writer, sheet_name="Variabelnavn_Måleskala", index=False)
         df_ht_vt.to_excel(writer, sheet_name="Hovedtype_Variabeltrinn", index=False)
         df_gt_vt.to_excel(writer, sheet_name="Grunntype_Variabeltrinn", index=False)
+        df_htg_konvertering.to_excel(writer, sheet_name="HTG_Konvertering", index=False)
+        df_ht_konvertering.to_excel(writer, sheet_name="HT_Konvertering", index=False)
+        df_gt_konvertering.to_excel(writer, sheet_name="GT_Konvertering", index=False)
     print(f"Excel data skrevet til {excelfile}")
     closeConn()
 
@@ -435,3 +441,49 @@ def grunntype_Variabeltrinn(makecsv=False):
         df_gt_vt.to_csv(f"ut/grunntype_variabeltrinn_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
         print(f"written to 'ut/grunntype_variabeltrinn_fane_{timestamp()}.csv'")
     return df_gt_vt
+
+def htg_konvertering(makecsv=False):
+    conn = getConn()
+    htg_konverteringQ = """with t as (
+    SELECT Ordinal
+    FROM Enumoppslag
+    WHERE Enumtype = 'KlasseEnum' and Beskrivelse = 'Hovedtypegruppe')
+    Select htg.Langkode, k.Kode, k.ForrigeKode, k.FoelsomhetsPresisjon as FP, k.Spesifiseringsevne as SP, k.Url
+    FROM Konvertering k
+    LEFT JOIN Hovedtypegruppe htg on k.Kode = htg.Kode
+    JOIN t ON t.Ordinal = k.Klasse"""
+    df_htg_konvertering = pd.read_sql_query(htg_konverteringQ, conn)
+    if makecsv:
+        df_htg_konvertering.to_csv(f"ut/htg_konvertering_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
+        print(f"written to 'ut/htg_konvertering_fane_{timestamp()}.csv'")
+    return df_htg_konvertering
+
+def ht_konvertering(makecsv=False):
+    conn = getConn()
+    ht_konverteringQ = """with t as (SELECT Ordinal
+        FROM Enumoppslag
+        WHERE Enumtype = 'KlasseEnum' and Beskrivelse = 'Hovedtype')
+        Select ht.Langkode, k.Kode, k.ForrigeKode, k.FoelsomhetsPresisjon as FP, k.Spesifiseringsevne as SP, k.Url
+        FROM Konvertering k
+        LEFT JOIN Hovedtype ht on k.Kode = ht.Kode
+        JOIN t ON t.Ordinal = k.Klasse"""
+    df_ht_konvertering = pd.read_sql_query(ht_konverteringQ, conn)
+    if makecsv:
+        df_ht_konvertering.to_csv(f"ut/ht_konvertering_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
+        print(f"written to 'ut/ht_konvertering_fane_{timestamp()}.csv'")
+    return df_ht_konvertering
+
+def gt_konvertering(makecsv=False):
+    conn = getConn()
+    gt_konverteringQ = """with t as (SELECT Ordinal
+        FROM Enumoppslag
+        WHERE Enumtype = 'KlasseEnum' and Beskrivelse = 'Grunntype')
+        Select gt.Langkode, k.Kode, k.ForrigeKode, k.FoelsomhetsPresisjon as FP, k.Spesifiseringsevne as SP, k.Url
+        FROM Konvertering k
+        LEFT JOIN Grunntype gt on k.Kode = gt.Kode
+        JOIN t ON t.Ordinal = k.Klasse"""
+    df_gt_konvertering = pd.read_sql_query(gt_konverteringQ, conn)
+    if makecsv:
+        df_gt_konvertering.to_csv(f"ut/gt_konvertering_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
+        print(f"written to 'ut/gt_konvertering_fane_{timestamp()}.csv'")
+    return df_gt_konvertering
