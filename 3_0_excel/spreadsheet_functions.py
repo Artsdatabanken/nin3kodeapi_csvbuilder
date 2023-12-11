@@ -14,6 +14,11 @@ def fetchDB(branch:str):
         f.write(response.content)
         print("db-file downloaded to path 'db/nin3kodeapi.db'")
 
+def fetchDBfromLocal(path):
+    global conn
+    conn = sqlite3.connect(path)
+    print(f"db-file connected from local path '{path}'")
+
 def getConn():
     global conn
     if conn is None:
@@ -54,6 +59,7 @@ def createExcel():
     df_htg_konvertering = htg_konvertering()
     df_ht_konvertering = ht_konvertering()
     df_gt_konvertering = gt_konvertering()
+    df_enums = enums()
     excelfile = f"ut/nin3_0_{timestamp()}.xlsx"
     with pd.ExcelWriter(excelfile) as writer:
         df_db_info.to_excel(writer, sheet_name="db_info", index=False)
@@ -81,6 +87,7 @@ def createExcel():
         df_htg_konvertering.to_excel(writer, sheet_name="HTG_Konvertering", index=False)
         df_ht_konvertering.to_excel(writer, sheet_name="HT_Konvertering", index=False)
         df_gt_konvertering.to_excel(writer, sheet_name="GT_Konvertering", index=False)
+        df_enums.to_excel(writer, sheet_name="Enums", index=False)
     print(f"Excel data skrevet til {excelfile}")
     closeConn()
 
@@ -487,3 +494,13 @@ def gt_konvertering(makecsv=False):
         df_gt_konvertering.to_csv(f"ut/gt_konvertering_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
         print(f"written to 'ut/gt_konvertering_fane_{timestamp()}.csv'")
     return df_gt_konvertering
+
+def enums(makecsv=False):
+    conn = getConn()
+    enumsQ = """select Enumtype, Verdi, Beskrivelse 
+                from enumoppslag order by Enumtype, Ordinal"""
+    df_enums = pd.read_sql_query(enumsQ, conn)
+    if makecsv:
+        df_enums.to_csv(f"ut/enums_{timestamp()}.csv", index=False, encoding="utf-8-sig")
+        print(f"written to 'ut/enums_{timestamp()}.csv'")
+    return df_enums
