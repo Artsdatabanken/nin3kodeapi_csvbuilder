@@ -312,7 +312,8 @@ def htg_hoek(makecsv=False):
     htg_hoekQ = """with hs AS (Select Ordinal, Verdi from Enumoppslag where Enumtype like 'HovedoekosystemEnum')
     select Kode, hs.Verdi from Hovedtypegruppe htg
     JOIN Hovedtypegruppe_Hovedoekosystem htg_ho ON htg.Id = htg_ho.HovedtypegruppeId
-    JOIN hs ON hs.Ordinal = htg_ho.HovedoekosystemEnum"""
+    JOIN hs ON hs.Ordinal = htg_ho.HovedoekosystemEnum
+    Order by Kode"""
     df_htg_hoek = pd.read_sql_query(htg_hoekQ, conn)
     if makecsv:
         df_htg_hoek.to_csv(f"ut/htg_hoek_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
@@ -421,7 +422,7 @@ def variabelnavn_maaleskala(makecsv=False):
 
 def hovedtype_Variabeltrinn(makecsv=False):
     conn = getConn()
-    ht_vtQ = """Select ht.Kode as GrunntypeKode, vn.Kode as VariabelnavnKode, ms.MaaleskalaNavn, t.Verdi as TrinnVerdi
+    ht_vtQ = """Select ht.Kode as HovedtypeKode, vn.Kode as VariabelnavnKode, ms.MaaleskalaNavn, t.Verdi as TrinnVerdi
     from HovedtypeVariabeltrinn hvt
     LEFT JOIN Variabelnavn vn ON hvt.VariabelnavnId = vn.Id
     LEFT JOIN Hovedtype ht ON hvt.HovedtypeId = ht.Id
