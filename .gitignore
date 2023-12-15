@@ -336,3 +336,4 @@ Database/inn_data/nin3kodeapi.db
 3_0_excel/db/nin3kodeapi.db
 Database/rapporter/
 nin3webapi.session.sql
+CSV_produksjon/inn_data/variabelnavnkode_varkode2.csv
