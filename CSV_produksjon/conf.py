@@ -1,0 +1,1 @@
+regnearkfil = 'inn_data/NiN3.0_Tot_e15_20231123_import_kodebase_NKfix.xlsx'

@@ -195,7 +195,7 @@ def grunntype_fane(makecsv=False):
 def kle_m005(makecsv=False):
     conn = getConn()
     m005Q = """WITH ms AS ( Select Ordinal, Verdi from Enumoppslag where Enumtype like 'MaalestokkEnum' and verdi = 'M005')
-    select ke.Langkode, ke.kode, ke.navn, ms.Verdi as Måleskala from Kartleggingsenhet ke
+    select ke.Langkode, ke.kode, ke.navn, ms.Verdi as Målestokk from Kartleggingsenhet ke
     LEFT JOIN ms ON ms.Ordinal = ke.Maalestokk
     Where ke.Maalestokk = 0
     Order by kode"""
@@ -208,7 +208,7 @@ def kle_m005(makecsv=False):
 def kle_m020(makecsv=False):
     conn = getConn()
     m020Q = """WITH ms AS ( Select Ordinal, Verdi from Enumoppslag where Enumtype like 'MaalestokkEnum' and verdi = 'M020')
-    select ke.Langkode, ke.kode, ke.navn, ms.Verdi as Måleskala from Kartleggingsenhet ke
+    select ke.Langkode, ke.kode, ke.navn, ms.Verdi as Målestokk from Kartleggingsenhet ke
     LEFT JOIN ms ON ms.Ordinal = ke.Maalestokk
     Where ke.Maalestokk = 2
     Order by kode"""
@@ -221,7 +221,7 @@ def kle_m020(makecsv=False):
 def kle_m050(makecsv=False):
     conn = getConn()
     m050Q = """WITH ms AS ( Select Ordinal, Verdi from Enumoppslag where Enumtype like 'MaalestokkEnum' and verdi = 'M050')
-    select ke.Langkode, ke.kode, ke.navn, ms.Verdi as Måleskala from Kartleggingsenhet ke
+    select ke.Langkode, ke.kode, ke.navn, ms.Verdi as Målestokk from Kartleggingsenhet ke
     LEFT JOIN ms ON ms.Ordinal = ke.Maalestokk
     Where ke.Maalestokk = 3
     Order by kode"""
@@ -272,11 +272,15 @@ def ht_kle_m050(makecsv=False):
 
 def gt_kle_m005(makecsv=False):
     conn = getConn()
-    gt_kle005Q = """With m005 AS (Select Kode, KartleggingsenhetId, GrunntypeId
+    gt_kle005Q = """With m005 AS 
+                (Select Kode, KartleggingsenhetId, GrunntypeId
                 from Kartleggingsenhet ke, Kartleggingsenhet_Grunntype gt_kle
                 where ke.Maalestokk=0 and ke.Id = gt_kle.KartleggingsenhetId)
-                select m005.Kode as M005_kode, gt.Kode as Grunntype_kode from Grunntype gt
-                JOIN m005 ON gt.Id = m005.GrunntypeId order by gt.Kode, M005_kode"""
+
+                select m005.Kode as M005_kode, gt.Kode as Grunntype_kode 
+                from Grunntype gt
+                JOIN m005 ON gt.Id = m005.GrunntypeId 
+                order by gt.Kode, M005_kode"""
     df_gt_kle005 = pd.read_sql_query(gt_kle005Q, conn)
     if makecsv:
         df_gt_kle005.to_csv(f"ut/grunntypeKLE_M005_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
@@ -522,3 +526,64 @@ def enums(makecsv=False):
         df_enums.to_csv(f"ut/enums_{timestamp()}.csv", index=False, encoding="utf-8-sig")
         print(f"written to 'ut/enums_{timestamp()}.csv'")
     return df_enums
+
+# grunntype_maalestokk_rapport.xlsx
+def createGrunntypeMaalestokkVariabelOversikt():
+    conn = getConn()
+    df_db_info = db_info_fane()
+    df_gt_m005 = grunntype_m005()
+    df_gt_m020 = grunntype_m020()
+    variabel_fane = variabelnavn_fane()
+    excelfile = f"ut/nin3_0_GT_Maalestokk_VN_{timestamp()}.xlsx"
+    with pd.ExcelWriter(excelfile) as writer:
+        df_db_info.to_excel(writer, sheet_name="db_info", index=False)
+        df_gt_m005.to_excel(writer, sheet_name="Grunntype_M005_VN", index=False)
+        df_gt_m020.to_excel(writer, sheet_name="Grunntype_M020_VN", index=False)
+        variabel_fane.to_excel(writer, sheet_name="Variabelnavn", index=False)
+    print(f"Excel data skrevet til {excelfile}")
+    closeConn()
+    
+def grunntype_m005(makecsv=False):
+    conn = getConn()
+    gt_m005Q = """WITH m005 AS (
+                SELECT ke.Kode, ke.Navn as M005_Navn, KartleggingsenhetId, GrunntypeId
+                FROM Kartleggingsenhet ke, Kartleggingsenhet_Grunntype gt_kle
+                WHERE ke.Maalestokk = 0 
+                AND ke.Id = gt_kle.KartleggingsenhetId
+            ),
+            gtvt_vn AS (
+                SELECT GrunntypeId, vn.Kode
+                FROM grunntypeVariabeltrinn gtv, Variabelnavn vn
+                WHERE gtv.VariabelnavnId = vn.Id
+            )
+
+            SELECT gt.Kode AS Grunntype_kode, gt.Navn AS Grunntypenavn, m005.Kode AS M005_kode, m005.M005_Navn, gtvt_vn.Kode AS Variabelnavn_kode
+            FROM Grunntype gt
+            JOIN m005 ON gt.Id = m005.GrunntypeId
+            LEFT JOIN gtvt_vn ON gt.Id = gtvt_vn.GrunntypeId 
+            ORDER BY gt.Kode, M005_kode"""
+    df_gt_m005 = pd.read_sql_query(gt_m005Q, conn)
+    return df_gt_m005
+
+def grunntype_m020(makecsv=False):
+    conn = getConn()
+    gt_m020Q = """WITH m020 AS (
+            SELECT ke.Kode, ke.Navn as M020_Navn, KartleggingsenhetId, GrunntypeId
+            FROM Kartleggingsenhet ke, Kartleggingsenhet_Grunntype gt_kle
+            WHERE ke.Maalestokk = 2 
+            AND ke.Id = gt_kle.KartleggingsenhetId
+        ),
+        gtvt_vn AS (
+            SELECT GrunntypeId, vn.Kode
+            FROM grunntypeVariabeltrinn gtv, Variabelnavn vn
+            WHERE gtv.VariabelnavnId = vn.Id
+        )
+
+        SELECT gt.Kode AS Grunntype_kode, gt.Navn AS Grunntypenavn, m020.Kode AS M020_kode, m020.M020_Navn, gtvt_vn.Kode AS Variabelnavn_kode
+        FROM Grunntype gt
+        JOIN m020 ON gt.Id = m020.GrunntypeId
+        LEFT JOIN gtvt_vn ON gt.Id = gtvt_vn.GrunntypeId 
+        ORDER BY gt.Kode, M020_kode"""
+    df_gt_m020 = pd.read_sql_query(gt_m020Q, conn)
+    return df_gt_m020
+
