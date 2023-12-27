@@ -108,14 +108,14 @@ def load_nin3_typer_sheet():
     nin3_typer = pd.read_excel(regnearkfil, 
                                sheet_name='Typer', 
                                #sheet_name='HT_trinntest',
-                               na_filter=False)
-    
-    # Convert all columns to string data type
-    nin3_typer = nin3_typer.astype(str)
-    
+                               na_filter=False,
+                               dtype={'9 HT': str,'11 GT': str}  # Specify the data type of column [11 GT] as string
+                               )
     # Remove leading and trailing whitespaces from string columns
     nin3_typer = nin3_typer.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    nin3_typer.to_csv('tmp/nin3_typer.csv', index=False, sep=";")
     return nin3_typer
+
 # CSV creation:
 def backup_and_remove_previous_csv_files():
     import os
@@ -213,12 +213,15 @@ def grunntyper_csv(nin3_typer):
     #grunntyper
     grunntyper.rename(columns = {'11 GT':'Grunntype'}, inplace = True)
     # Filtrer vekk 
+    grunntyper.to_csv('tmp/grunntyper1.csv', index=False, sep=";") # NaN blir blank string i csv
     grunntyper_vasket2 = pd.DataFrame(grunntyper[(grunntyper['Grunntype'] != '0') 
                         & (grunntyper['Grunntype'] != ' ') 
                         & (grunntyper['Grunntype'] != '-')
                         & (grunntyper['Grunntypenavn'] != '-')
                         & (grunntyper['Grunntypenavn'] != '')])
+    grunntyper_vasket2.to_csv('tmp/grunntyper2.csv', index=False, sep=";") # NaN blir blank string i csv
     grunntyper_vasket2['Kode'] = grunntyper_vasket2['Hovedtypegruppe'].map(str)+'-'+grunntyper_vasket2['Prosedyrekategori'].map(str)+'-'+grunntyper_vasket2['Hovedtype'].map(str)+'-'+grunntyper_vasket2['Grunntype'].map(str)
+    grunntyper_vasket2.to_csv('tmp/grunntyper3.csv', index=False, sep=";") # NaN blir blank string i csv
     #display(grunntyper_vasket2)
     #display(grunntyper_vasket)
     grunntyper_vasket2 = grunntyper_vasket2.sort_values(by=['Kode'])
@@ -342,11 +345,13 @@ def m020_grunntype_mapping_csv(nin3_typer):
     n3t_m020.to_csv('ut_data/m020_grunntype_mapping.csv', index=False, sep=";") 
 
 def m020_hovedtype_mapping_csv(nin3_typer):
+    import numpy as np
     m020_HT = nin3_typer[['M020-kode', 'HTKode', 'HTGKode']]
     m020_HT['HTKode'] = m020_HT['HTGKode'].str[0]+m020_HT['HTKode'].str.replace('_', '-')
+    m020_HT = m020_HT[m020_HT['M020-kode'].str.strip().replace('', np.nan).notna()]
+    m020_HT = m020_HT.drop_duplicates(subset=['M020-kode', 'HTKode'])
     m020_HT = m020_HT[m020_HT['M020-kode'].str.startswith('NiN-3.0')]#remove rows with empty or incorrect m020 values
     m020_HT = m020_HT[['M020-kode', 'HTKode']]#remove HTGKode
-    m020_HT = m020_HT.drop_duplicates(subset=['M020-kode', 'HTKode'])
     m020_HT.to_csv('ut_data/m020_hovedtype_mapping.csv', index=False, sep=";")
     
 def m050_csv(nin3_typer, regnearkfil):
@@ -408,7 +413,7 @@ def grunntype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
     gt_vt_1 = gt_vt[(gt_vt['Grunntypenavn'] != '-')
                         & (gt_vt['Grunntypenavn'] != '')]
 
-    gt_vt_1.to_csv('ut_data/sample_gt_vt_1.csv', index=False, sep=";")
+    #gt_vt_1.to_csv('ut_data/sample_gt_vt_1.csv', index=False, sep=";")
 
     gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('[\[\]]', '')
 
@@ -468,7 +473,7 @@ def grunntype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
     new_gt_vt_done.drop(['Varkode2_kopi'], axis=1, inplace=True)
     new_gt_vt_done.rename(columns={'Kortkode': 'Variabelnavn_kortkode'}, inplace=True)
 
-    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', '11 GT', 'Definisjonsgrunnlag', 'oLkM', '11 GT', 'Grunntypenavn']]
+    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', '11 GT', 'Definisjonsgrunnlag', 'oLkM', '11 GT', 'Grunntypenavn', 'GTKode']]
     gt_vt.rename(columns={'11 GT': 'Grunntype'}, inplace=True)
 
     gt_vt_1 = gt_vt[(gt_vt['Grunntypenavn'] != '-')
@@ -478,7 +483,7 @@ def grunntype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
 
     gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('[\[\]]', '')
 
-    gt_vt_1['GTKode'] = gt_vt_1[['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype']].apply(lambda x: '-'.join(x.astype(str)), axis=1)
+    #gt_vt_1['GTKode'] = gt_vt_1[['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype']].apply(lambda x: '-'.join(x.astype(str)), axis=1)
     gt_vt_1 = gt_vt_1.dropna(subset=['Definisjonsgrunnlag'])
 
     new_gt_vt_rows = []
@@ -682,11 +687,13 @@ def htg_conv_csv(nin3_typer,nin3_typer_orig, koder23):
     #display(htg0)
     # remove heading and tailing spaces from all columns
     htg0 = htg0.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    print(htg0.dtypes)
     htg0_1 = htg0[
         (htg0['5 kat2'] != 'LA') & # holdes midlertidig utenfor
         (htg0['4 kat1'] != 'LI') & # holdes midlertidig utenfor
         (htg0['9 HT'] == '0') & 
-        (htg0['11 GT']=='0')][['3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
+        (htg0['11 GT'] == '0')
+        ][['3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
     #htg1 = htg0[(htg0['NiN 2 kode'] != '-') & (htg0['NiN 2 kode']!='')]
     htg1 = htg0_1[htg0_1['NiN 2 kode'] != '-']
     htg1 = htg1[htg1['NiN 2 kode'] != '']
@@ -695,7 +702,6 @@ def htg_conv_csv(nin3_typer,nin3_typer_orig, koder23):
     htg2 = htg2.rename(columns={'NiN 2 kode': 'forrigekode'})
     htg2['Klasse'] = 'HTG'
     htg2.to_csv('tmp/htg_konv.csv', sep=';', index=False)
-
 
     # Open the file as dictreader
     htg_rows = []
@@ -1068,6 +1074,17 @@ def variabelnavn_konvertering_csv(nin3_variabler, koder23):
         writer.writerows(gt_rows)
         print(f"\n\nFile written to {csvfile.name}")   
 
+def adjust_nin3_typer_col_names(nin3_typer):
+        nin3_typer.rename(columns={
+            '3 AbC': 'Ecosystnivå',
+            '4 kat1': 'Typekategori',
+            '5 kat2': 'Typekategori2',
+            '6 kat3': 'Typekategori3',
+            '7 HTG': 'Hovedtypegruppe',
+            '8 Pk': 'Prosedyrekategori',
+            '9 HT': 'Hovedtype'
+            }, inplace=True)
+        return nin3_typer
 
 # MAIN
 def create_csv_files():
@@ -1079,16 +1096,7 @@ def create_csv_files():
     print(f"*** Fetching data from Excel file: {regnearkfil}")
     nin3_typer = load_nin3_typer_sheet()
     nin3_typer_orig = nin3_typer.copy(deep=True)
-    nin3_typer.rename(columns={
-            '3 AbC': 'Ecosystnivå',
-            '4 kat1': 'Typekategori',
-            '5 kat2': 'Typekategori2',
-            '6 kat3': 'Typekategori3',
-            '7 HTG': 'Hovedtypegruppe',
-            '8 Pk': 'Prosedyrekategori',
-            '9 HT': 'Hovedtype'
-            }, inplace=True)
-    
+    nin3_typer = adjust_nin3_typer_col_names(nin3_typer)
     nin3_variabler = load_nin3_variabler_sheet()
 
     print(f"*** Creating typer.csv")
