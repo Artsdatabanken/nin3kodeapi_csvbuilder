@@ -339,3 +339,5 @@ nin3webapi.session.sql
 CSV_produksjon/inn_data/variabelnavnkode_varkode2.csv
 CSV_produksjon/inn_data/~$NiN3.0_Tot_e15_20231123_import_kodebase_NKfix.xlsx
 *.zip
+API/logs/
+API/nin3kodeapi.db
