@@ -1,4 +1,6 @@
-
+--select * FROM variabelnavn where kode = 'LM-KA'
+--select * from Maaleskala where MaaleskalaNavn = 'KA-SO'
+select * from trinn where Verdi = 'KA_a'
 
 
 

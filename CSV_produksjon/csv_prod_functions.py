@@ -1,7 +1,5 @@
 import pandas as pd
 
-
-
 def find_rows_with_semicolon(df, key_column):
     df_sk = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
     rows_with_semicolon = pd.DataFrame(columns=[key_column, 'columnname'])
@@ -294,6 +292,7 @@ def m005_grunntype_mapping_csv(nin3_typer):
     n3t['grunntype_kode'] = n3t['Hovedtypegruppe'].map(str)+'-'+n3t['Prosedyrekategori'].map(str)+'-'+n3t['Hovedtype'].map(str)+'-'+n3t['Grunntype'].map(str)
     n3t_position  = n3t[['M005-kode', 'grunntype_kode', 'M005-navn', 'Grunntypenavn']]
     n3t_m005 = n3t_position[n3t_position['M005-kode'].str.strip().replace('', np.nan).notna()]
+    n3t_m005 = n3t_m005.drop_duplicates()
     n3t_m005.to_csv('ut_data/m005_grunntype_mapping.csv', index=False, sep=";")
 
 def m005_hovedtype_mapping_csv(nin3_typer):
@@ -309,28 +308,20 @@ def m005_hovedtype_mapping_csv(nin3_typer):
     m005_HT.to_csv('ut_data/m005_hovedtype_mapping.csv', index=False, sep=";")
 
 def m020_csv(nin3_typer, regnearkfil):
-    nin3_m020 = pd.read_excel(regnearkfil, 
-                           sheet_name='M020', 
-                           na_filter = False, 
-                           converters={'11 GT': str})#Denne kolonnen må leses inn som str for å ikke miste ledende nuller
-    nin3_m020 = nin3_m020.astype(str)
-    nin3_m020 = nin3_m020.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-    #display(nin3_m020)
-    #how to get the unique values of a column that are not unique in pandas
-    #https://stackoverflow.com/questions/47136436/how-to-get-the-unique-values-of-a-column-that-are-not-unique-in-pandas
-    # Henter m020 delkode og m020 kode
-
-    #m020_delkode_kode = nin3_typer[['M020', 'M020-kode']]
-    #display(nin3_m020)
-    m020_kode_navn = nin3_m020[['M020_kode', 'M020-navn', 'M020_kortkode']]
-    m020_kode_navn.rename(columns = {'M020_kode':'M020-kode', 'M020_kortkode':'M020-kortkode'}, inplace = True)
-    #display(m020_kode_navn.head()) # sikre at listen er unik
-    m020_unik = m020_kode_navn.groupby(['M020-kode', 'M020-navn', 'M020-kortkode']).count().reset_index()
-    m020_unik # fjern index og skriv til csv
+# Remove leading and trailing whitespaces from string columns
+    nin3_m020 = nin3_typer[['M020-kode', 'M020-navn']]
+    nin3_m020.to_csv('tmp/m020raw.csv',index=False, sep=";")
+    #n3t_m020 = nin3_m020.drop_duplicates(subset=['M020-kode']) # Drop duplicate rows in 'M020-kode' column
+    nin3_m020['M020-kortkode'] = nin3_m020['M020-kode'].str.extract(r'([A-Z]{2}\d+-M020-\d+)')
+    nin3_m020_filtered = nin3_m020[nin3_m020['M020-navn'].str.len() > 1]
     #order by M020-kode
-    m020_unik_sorted = m020_unik.sort_values('M020-kode') 
-    #display(m020_unik_sorted.head())
-    m020_unik_sorted.to_csv('ut_data/m020.csv', index=False, sep=";")
+    m020_sorted = nin3_m020_filtered.astype({'M020-kode': str}).sort_values('M020-kode') 
+    m020_sorted.to_csv('ut_data/m020.csv', index=False, sep=";")
+    #sjekk_unikhet(n3t_m020, 'M020-kode')
+    sjekk_unikhet(m020_sorted, 'M020-kode')
+    m020_sorted.info()
+    
+
 
 def m020_grunntype_mapping_csv(nin3_typer):
     import numpy as np
@@ -687,7 +678,7 @@ def htg_conv_csv(nin3_typer,nin3_typer_orig, koder23):
     #display(htg0)
     # remove heading and tailing spaces from all columns
     htg0 = htg0.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-    print(htg0.dtypes)
+    #print(htg0.dtypes)
     htg0_1 = htg0[
         (htg0['5 kat2'] != 'LA') & # holdes midlertidig utenfor
         (htg0['4 kat1'] != 'LI') & # holdes midlertidig utenfor
@@ -873,7 +864,7 @@ def variabel_csv(nin3_variabler):
     # above line but also drop nan values
     variabler = nin3_variabler[['3 ABC', '4 NM']].drop_duplicates().dropna().sort_values(by=['3 ABC', '4 NM'])
     variabler['Variabel_kode'] = variabler[['3 ABC', '4 NM']].apply(lambda x: '-'.join(x), axis=1)
-
+    variabler = variabler[variabler['Variabel_kode'] != 'nan-nan']    
     variabler.to_csv('ut_data/variabel.csv', index=False, sep=";")
 
 def variabelnavn_variabel_mapping_csv(nin3_variabler):
@@ -882,6 +873,13 @@ def variabelnavn_variabel_mapping_csv(nin3_variabler):
                             '6 FG/EK': 'Variabeltype', '7 Varkode1': 'Variabelgruppe', '8 VarKode2': 'Variabelnavn_kode', 'VarNavn': 'Variabelnavn_navn'})
     vvm['Variabel_kode'] = vvm[['3 ABC', '4 NM']].apply(lambda x: '-'.join(x), axis=1)
     #dupl = vvm['Variabelnavn_kode'].duplicated().any()
+    
+    def variabel_csv(nin3_variabler):
+        # hent unike kombinasjoner av kolonnene '3 ABC' og '4 NM'
+        variabler = nin3_variabler[['3 ABC', '4 NM']].drop_duplicates().dropna().sort_values(by=['3 ABC', '4 NM'])
+        variabler['Variabel_kode'] = variabler[['3 ABC', '4 NM']].apply(lambda x: '-'.join(x), axis=1)
+
+        variabler.to_csv('ut_data/variabel.csv', index=False, sep=";")
     vvm.to_csv('ut_data/variabelnavn_variabel_mapping.csv', index=False, sep=";")
 
 def maaleskala_enhet_csv(nin3_variabler):
