@@ -146,22 +146,30 @@ def typer_csv(nin3_typer):
     #typer2.to_json('ut_data/type.json', orient="table", index=False) # NaN blir null i json, orient: tablestruktur istedenfor seriesstuktur
 
 def hovedtypegruppe_csv(nin3_typer):
-    hovedtypegrupper = nin3_typer[['Typekategori2','Hovedtypegruppe', 'Hovedtypegruppenavn', 'Typekategori3']]
+    hovedtypegrupper = nin3_typer[['Langkode','Typekategori','Typekategori2','Hovedtypegruppe', 'Hovedtypegruppenavn', 'Typekategori3']]
     hovedtypegrupper = hovedtypegrupper.applymap(lambda x: x.strip() if isinstance(x, str) else x) #Setter alle kolonner til string
-    hovedtypegrupper['Kode'] = hovedtypegrupper['Typekategori2'].map(str)+'-'+hovedtypegrupper['Hovedtypegruppe'].map(str)
+    #hovedtypegrupper['Kode'] = hovedtypegrupper['Typekategori2'].map(str)+'-'+hovedtypegrupper['Hovedtypegruppe'].map(str)
     hovedtypegrupper['Typekategori3'] = hovedtypegrupper['Typekategori3'].replace('', '0').fillna('0') # BYTTER UT tomme verdier med 0 på Typekategori3
 
     # Convert all columns to string type for consistency
     hovedtypegrupper = hovedtypegrupper.astype(str)
+    hovedtypegrupper['Kode'] = hovedtypegrupper.apply(lambda row: kodeForHTG(row['Langkode'], 
+                                                                             row['Typekategori'], 
+                                                                             row['Typekategori2'], 
+                                                                             row['Hovedtypegruppe']), 
+                                                                             axis=1)
 
     # Replace NaN values with a consistent value
     hovedtypegrupper = hovedtypegrupper.fillna('0')
     hovedtypegrupper = hovedtypegrupper[hovedtypegrupper['Hovedtypegruppenavn'] != '0']
-    hovedtypegrupper2 = hovedtypegrupper.drop_duplicates()
+    hovedtypegrupper2 = hovedtypegrupper.loc[:, ['Typekategori2', 'Hovedtypegruppe', 'Hovedtypegruppenavn', 'Typekategori3', 'Kode']]
+    hovedtypegrupper2 = hovedtypegrupper2.drop_duplicates()
+    #hovedtypegrupper2.to_csv('tmp/tmp_hovedtypegrupper.csv', index=False, sep=";")
     hovedtypegrupper2.to_csv('ut_data/hovedtypegrupper.csv', index=False, sep=";")
     # Controlling uniqueness of Kode column
     #--------------------------------------
     sjekk_unikhet(hovedtypegrupper2, 'Kode')
+
 
 def type_htg_csv(nin3_typer):
     # fetch all kodecolumns for Type and HTG
@@ -1084,6 +1092,24 @@ def adjust_nin3_typer_col_names(nin3_typer):
             }, inplace=True)
         return nin3_typer
 
+# STØTTEMETODER -Kortkoder
+def kodeForHTG(langkode:str, kat1_4:str, kat2_5:str, htg_7:str): # Creates kortkode for hovedtypegruppe
+    ledd_arr = langkode.split('-')
+    if ledd_arr[4]=="MV":
+        kode = kat1_4+"-"+htg_7
+        return kode    
+    if ledd_arr[4]=="LI":
+        kode = kat1_4+"-"+htg_7
+        return kode    
+    else:
+        kode = kat2_5+"-"+htg_7
+        return kode
+
+def kodeForHT():
+    return "impl"
+
+def kodeForGT():
+    return "impl"
 # MAIN
 def create_csv_files():
     import conf
