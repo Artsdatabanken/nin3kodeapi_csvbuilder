@@ -97,7 +97,7 @@ def excel_autoadjust_col(path, target_excel, padding):
     wb.save(target_file)
     print("Completed adjustments for {}".format(target_excel))
 
-
+# Main method
 def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
     from conf import localdbpath
     import shutil
