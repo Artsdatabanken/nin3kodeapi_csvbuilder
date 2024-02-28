@@ -129,7 +129,7 @@ def backup_and_remove_previous_csv_files():
             if file_name.endswith('.csv'):
                 file_path = os.path.join(folder_path, file_name)
                 zipf.write(file_path, file_name)
-    print(f"CSV files zipped successfully. Zip file name: {zip_filename}")
+    print(f"\tCSV files zipped successfully. Zip file name: {zip_filename}")
 
     # Removing previous csv files
     for file_name in os.listdir(folder_path):
@@ -146,18 +146,14 @@ def typer_csv(nin3_typer):
     #typer2.to_json('ut_data/type.json', orient="table", index=False) # NaN blir null i json, orient: tablestruktur istedenfor seriesstuktur
 
 def hovedtypegruppe_csv(nin3_typer):
-    hovedtypegrupper = nin3_typer[['Langkode','Typekategori','Typekategori2','Hovedtypegruppe', 'Hovedtypegruppenavn', 'Typekategori3']]
+    hovedtypegrupper = nin3_typer[['HTGKode','Typekategori','Typekategori2','Hovedtypegruppe', 'Hovedtypegruppenavn', 'Typekategori3']]
     hovedtypegrupper = hovedtypegrupper.applymap(lambda x: x.strip() if isinstance(x, str) else x) #Setter alle kolonner til string
     #hovedtypegrupper['Kode'] = hovedtypegrupper['Typekategori2'].map(str)+'-'+hovedtypegrupper['Hovedtypegruppe'].map(str)
     hovedtypegrupper['Typekategori3'] = hovedtypegrupper['Typekategori3'].replace('', '0').fillna('0') # BYTTER UT tomme verdier med 0 på Typekategori3
 
     # Convert all columns to string type for consistency
     hovedtypegrupper = hovedtypegrupper.astype(str)
-    hovedtypegrupper['Kode'] = hovedtypegrupper.apply(lambda row: kodeForHTG(row['Langkode'], 
-                                                                             row['Typekategori'], 
-                                                                             row['Typekategori2'], 
-                                                                             row['Hovedtypegruppe']), 
-                                                                             axis=1)
+    hovedtypegrupper.rename(columns={'HTGKode': 'Kode'}, inplace=True)
 
     # Replace NaN values with a consistent value
     hovedtypegrupper = hovedtypegrupper.fillna('0')
@@ -171,225 +167,138 @@ def hovedtypegruppe_csv(nin3_typer):
     sjekk_unikhet(hovedtypegrupper2, 'Kode')
 
 
-def type_htg_csv(nin3_typer):
+def type_htg_mapping_csv(nin3_typer):
     # fetch all kodecolumns for Type and HTG
-    typer_htg_0 = nin3_typer[['Ecosystnivå', 'Typekategori', 'Typekategori2', 'Hovedtypegruppe']] 
+    typer_htg_0 = nin3_typer[['HTGKode','Ecosystnivå', 'Typekategori', 'Typekategori2', 'Hovedtypegruppe']] 
     typer_htg_0 = typer_htg_0.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    typer_htg_0.rename(columns={'HTGKode': 'htgkode'}, inplace=True)
     typer_htg_0["typekode"] = typer_htg_0['Ecosystnivå'].map(str)+'-'+typer_htg_0['Typekategori'].map(str)+'-'+typer_htg_0['Typekategori2'].map(str)
-    typer_htg_0["thgkode"] = typer_htg_0['Typekategori2'].map(str)+'-'+typer_htg_0['Hovedtypegruppe'].map(str)
-    typer_htg = typer_htg_0.iloc[:, -2:] # select last two columns (typekode, thgkode)
-    typer_htg = typer_htg.groupby(['typekode', 'thgkode']).count().reset_index()
+    #typer_htg = typer_htg_0.iloc[:, -2:] # select last two columns (typekode, thgkode)
+    typer_htg = typer_htg_0[['typekode', 'htgkode']]
+    typer_htg = typer_htg.groupby(['typekode', 'htgkode']).count().reset_index()
     #typer_htg
     typer_htg.to_csv('ut_data/type_htg_mapping.csv', index=False, sep=";")
 
-def hovedtype_and_ht_htg_mapping_csv(nin3_typer):
-    ht0 = nin3_typer[['Hovedtype', 'Prosedyrekategori', 'Hovedtypegruppe', 'Hovedtypenavn', 'HTGKode']]
-    ht0 = ht0.applymap(lambda x: x.strip() if isinstance(x, str) else x)# Removing whitespace
-    ht0 = ht0.astype(str)# setting all to type string
-    ht1 = ht0
-    #ht1 = ht0.dropna(subset=['Hovedtypenavn'])
-    #ht1 = ht0.drop(ht1[(ht1['Hovedtypenavn'] == '')].index)
-    #ht1 = ht1[['Hovedtype', 'Prosedyrekategori', 'Hovedtypegruppe', 'Hovedtypenavn']]
-    #ht1['Kode'] = ht1['Hovedtypegruppe'].map(str)+'-'+ht1['Prosedyrekategori'].map(str)+'-'+ht1['Hovedtype'].map(str)+ ht1['HTGKode'].str[0]
-    ht1['Kode'] = ht1['HTGKode'].str[0]+ht1['Hovedtypegruppe'].map(str)+'-'+ht1['Prosedyrekategori'].map(str)+'-'+ht1['Hovedtype'].map(str)
-    ht1.drop_duplicates(subset=['Kode','Hovedtypenavn'], inplace=True)
-    ht1.drop(ht1[pd.isna(ht1['Hovedtypenavn'])].index, inplace=True)#Fjerne rader uten Hovedtypenavn for str type
-    ht0 = nin3_typer[['Hovedtype', 'Prosedyrekategori', 'Hovedtypegruppe', 'Hovedtypenavn', 'HTGKode']]
-    ht0 = ht0.applymap(lambda x: x.strip() if isinstance(x, str) else x)  # Removing whitespace
-    ht0 = ht0.astype(str)  # setting all to type string
-    ht1 = ht0
-    ht1['Kode'] = ht1['HTGKode'].str[0] + ht1['Hovedtypegruppe'].map(str) + '-' + ht1['Prosedyrekategori'].map(str) + '-' + ht1['Hovedtype'].map(str)
-    ht1.drop_duplicates(subset=['Kode', 'Hovedtypenavn'], inplace=True)
+def hovedtype_csv_first(nin3_typer):
+    ht_df = nin3_typer[['HTKode', 'Hovedtypenavn', 'Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'HTGKode']]
+    ht1 = ht_df[ht_df['Hovedtype'] != '-'] # dropping rows where Hovedtype is '-'
+    #Filter away fake hovedtype
+    ht1.drop_duplicates(subset=['HTKode', 'Hovedtypenavn'], inplace=True)
+    
     ht1 = ht1[ht1['Hovedtypenavn'].str.len() > 0]  # Drop rows where string length of Hovedtypenavn-value is 0
-    ht1_sorted = ht1.sort_values(by=['Kode', 'HTGKode'], ascending=True)
+    # Create hovedtype.csv
+    ht1 = ht1.reindex(columns=['HTKode', 'Hovedtypenavn', 'Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'HTGKode'])
+    return ht1
 
+def hovedtype_csv(nin3_typer):
+    ht1_sorted = hovedtype_csv_first(nin3_typer)
     ht1_sorted.to_csv('ut_data/hovedtype.csv', index=False, sep=";")
-    #Getting mapping file HTG<>HT
-    htg_ht = ht1_sorted[['Kode', 'HTGKode']].rename(columns={'Kode':'HTKode'})
+    sjekk_unikhet(ht1_sorted, 'HTKode')
+
+def hovedtype_hovedtypegruppe_mapping_csv(nin3_typer):
+    ht1_sorted = hovedtype_csv_first(nin3_typer)
+    htg_ht = ht1_sorted[['HTKode', 'HTGKode']]
     htg_ht.to_csv('ut_data/hovedtypegruppe_hovedtype_mapping.csv', index=False, sep=";")
-    ht1_sorted = ht1_sorted.reindex(columns=['Kode', 'Hovedtypenavn', 'Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'HTGKode'])
-    ht1_sorted.to_csv('ut_data/hovedtype.csv', index=False, sep=";")
-    sjekk_unikhet(ht1_sorted, 'Kode')
+
+    sjekk_unikhet(ht1_sorted, 'HTKode')
 
 def grunntyper_csv(nin3_typer):
-    grunntyper = nin3_typer[['Langkode','Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', '11 GT', 'Grunntypenavn']]
-    # TODO: Forsøk å hente fra nin3HTFIX dataframe
-    #display(grunntyper.columns)
-    #grunntyper2 = grunntyper[grunntyper['11 GT' != '0']] #feiler
-    #grunntyper
+    grunntyper = nin3_typer[['Langkode','Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype', 'Grunntypenavn', 'GTKode']]
     grunntyper.rename(columns = {'11 GT':'Grunntype'}, inplace = True)
-    # Filtrer vekk 
-    grunntyper.to_csv('tmp/grunntyper1.csv', index=False, sep=";") # NaN blir blank string i csv
-    grunntyper_vasket2 = pd.DataFrame(grunntyper[(grunntyper['Grunntype'] != '0') 
-                        & (grunntyper['Grunntype'] != ' ') 
-                        & (grunntyper['Grunntype'] != '-')
-                        & (grunntyper['Grunntypenavn'] != '-')
-                        & (grunntyper['Grunntypenavn'] != '')])
-    grunntyper_vasket2.to_csv('tmp/grunntyper2.csv', index=False, sep=";") # NaN blir blank string i csv
-    grunntyper_vasket2['Kode'] = grunntyper_vasket2['Hovedtypegruppe'].map(str)+'-'+grunntyper_vasket2['Prosedyrekategori'].map(str)+'-'+grunntyper_vasket2['Hovedtype'].map(str)+'-'+grunntyper_vasket2['Grunntype'].map(str)
-    grunntyper_vasket2.to_csv('tmp/grunntyper3.csv', index=False, sep=";") # NaN blir blank string i csv
-    #display(grunntyper_vasket2)
-    #display(grunntyper_vasket)
-    grunntyper_vasket2 = grunntyper_vasket2.sort_values(by=['Kode'])
+    grunntyper_vasket2 = grunntyper[grunntyper['Grunntypenavn'].str.len() > 1]#Filter: GT with name only
+    grunntyper_vasket2 = grunntyper_vasket2.sort_values(by=['GTKode'])
     grunntyper_vasket2.to_csv('ut_data/grunntyper.csv', index=False, sep=";") # NaN blir blank string i csv
-
-
-    # Sjekker om det mangler grunntypenavn i csv
-    grunntyper_vasket2 = pd.read_csv('ut_data/grunntyper.csv', sep=';')
-    grunntypenavn_diff = grunntyper_vasket2[~grunntyper_vasket2['Grunntypenavn'].isin(nin3_typer['Grunntypenavn'])]['Grunntypenavn']
-    print("*** Sjekk: GTNavn som ikke finnes i grunntype.csv ***")
-    print(grunntypenavn_diff)
-
-    """
-    # Controlling uniqueness of Kode column
-    #--------------------------------------"""
-    sjekk_unikhet(grunntyper_vasket2,'Kode')
+    sjekk_unikhet(grunntyper_vasket2,'GTKode')
 
 def hovedtype_grunntype_mapping_csv(nin3_typer):
-    htg_ht_gt_mapping_tmp = nin3_typer[['Typekategori2', 'Hovedtypegruppe', 'Hovedtype', 'Prosedyrekategori', '11 GT']]
-    htg_ht_gt_mapping_tmp.rename(columns = {'11 GT':'Grunntype'}, inplace = True)
+    ht_gt_mapping= nin3_typer[['HTKode', 'GTKode', 'Grunntypenavn']]
+    ht_gt_mapping = ht_gt_mapping[ht_gt_mapping['Grunntypenavn'].str.len() > 1]#Filter: GT with name only   
+    ht_gt_mapping = ht_gt_mapping.drop(['Grunntypenavn'], axis=1).sort_values(by=['GTKode'])
+    ht_gt_mapping.to_csv('ut_data/hovedtype_grunntype_mapping.csv', index=False, sep=";")
 
-    htg_ht_gt_mapping =  htg_ht_gt_mapping_tmp
-    #= pd.DataFrame(htg_ht_gt_mapping_tmp[(htg_ht_gt_mapping_tmp['Grunntype'] != '0') 
-    ##                     & (htg_ht_gt_mapping_tmp['Grunntype'] != ' ') 
-    #                    & (htg_ht_gt_mapping_tmp['Grunntype'] != '-')])
-    #display(htg_ht_gt_mapping)
-    htg_mm = htg_ht_gt_mapping.groupby(['Typekategori2', 'Hovedtypegruppe', 'Hovedtype', 'Prosedyrekategori', 'Grunntype']).count().reset_index()
-    htg_ht_gt_mapping['hovedtypegruppe_kode'] = htg_mm['Typekategori2'].map(str)+'-'+htg_mm['Hovedtypegruppe'].map(str)
-    htg_ht_gt_mapping['hovedtype_kode'] = htg_ht_gt_mapping['hovedtypegruppe_kode'].str[0]+htg_mm['Hovedtypegruppe'].map(str)+'-'+htg_mm['Prosedyrekategori'].map(str)+'-'+htg_mm['Hovedtype'].map(str)
-    htg_ht_gt_mapping['grunntype_kode'] = htg_mm['Hovedtypegruppe'].map(str)+'-'+htg_mm['Prosedyrekategori'].map(str)+'-'+htg_mm['Hovedtype'].map(str)+'-'+htg_mm['Grunntype'].map(str)
-    htg_ht_gt_mapping2 = htg_ht_gt_mapping.drop(['Typekategori2', 'Hovedtypegruppe','Hovedtype', 'Prosedyrekategori', 'Grunntype'], axis=1)#.drop()
-    #htg_ht_gt_mapping2.info()
 
-    htg_ht_gt_mapping_non_null = htg_ht_gt_mapping2.drop(['hovedtypegruppe_kode'], axis=1)# dropping column 'hovedtypegruppe_kode', only used to create hovedtype_kode
-    #htg_ht_gt_mapping_non_null
-    htg_ht_gt_mapping_non_null.to_csv('ut_data/hovedtype_grunntype_mapping.csv', index=False, sep=";")
-
-def m005_csv(nin3_typer, regnearkfil):
-    nin3_m005 = pd.read_excel(regnearkfil, 
-                           sheet_name='M005', 
-                           na_filter = False, 
-                           converters={'11 GT': str})#Denne kolonnen må leses inn som str for å ikke miste ledende nuller
-    #display(nin3_m005)
-
-    # Henter m005 delkode, m005 kode(lang), m005 kortkode
-    #m005_delkode_kode = nin3_typer[['M005', 'M005-kode']]
-    #display(nin3_m005.columns)
-    m005_kode_navn = nin3_m005[['M005-langkode', 'M005-navn', 'M005-kortkode']]
-    m005_kode_navn.rename(columns = {'M005-langkode':'M005-kode'}, inplace = True)
-    #display(m005_kode_navn.head())
-    #display(f"before unique: {m005_kode_navn.shape[0]}")
-
-    m005_unik = m005_kode_navn.groupby(['M005-kode', 'M005-navn', 'M005-kortkode']).count().reset_index()
-    m005_unik.sort_values('M005-kode')
-    #display(f"after unique: {m005_unik.shape[0]}")
-    #display(f"after unique-attempt(groupby): {m005_unik.shape[0]}")
-    #display(f"Er m005-koder unik?: {m005_unik['M005-kode'].is_unique}")
-    m005_unik.to_csv('ut_data/M005.csv', index=False, sep=";")
-
-    #display(m005_unik)
-
-    ###################### CHECK ##############################
-    ## Get the values in column 'M005-kode' that are not unique
-    sjekk_unikhet(m005_unik,'M005-kode')
+def m005_csv(nin3_typer):
+    nin3_m005 = nin3_typer[['M005-kode', 'M005-navn']]
+    nin3_m005.rename(columns={'M005-kode': 'M005-langkode'}, inplace=True)  # rename column to 'M005-langkode'
+    nin3_m005 = nin3_m005[nin3_m005['M005-langkode'].str.contains('-M005-')]  # filter: only valid M005-langkode
+    nin3_m005['M005-kortkode'] = nin3_m005['M005-langkode'].str.extract(r'([A-Z]{2}\d+-M005-\d+)') # extract M005-kortkode
+    nin3_m005 = nin3_m005[nin3_m005['M005-navn'].str.len() >= 2]  # remove rows where M005-navn str length is shorter than 2
+    nin3_m005.drop_duplicates(subset=['M005-langkode', 'M005-navn'], inplace=True)
+    nin3_m005 = nin3_m005.sort_values(by='M005-langkode')
+    sjekk_unikhet(nin3_m005, 'M005-langkode')
+    nin3_m005.to_csv('ut_data/M005.csv', index=False, sep=";")
 
 def m005_grunntype_mapping_csv(nin3_typer):
-    import numpy as np
-    n3t = nin3_typer[['Hovedtypegruppe', 'Prosedyrekategori','Hovedtype','11 GT', 'Grunntypenavn','M005-kode', 'M005-navn']]
-    n3t.rename(columns = {'11 GT':'Grunntype'}, inplace = True)
-    n3t['grunntype_kode'] = n3t['Hovedtypegruppe'].map(str)+'-'+n3t['Prosedyrekategori'].map(str)+'-'+n3t['Hovedtype'].map(str)+'-'+n3t['Grunntype'].map(str)
-    n3t_position  = n3t[['M005-kode', 'grunntype_kode', 'M005-navn', 'Grunntypenavn']]
-    n3t_m005 = n3t_position[n3t_position['M005-kode'].str.strip().replace('', np.nan).notna()]
-    n3t_m005 = n3t_m005.drop_duplicates()
-    n3t_m005.to_csv('ut_data/m005_grunntype_mapping.csv', index=False, sep=";")
+    m005_gt = nin3_typer[['M005-kode','GTKode']] # select columns
+    m005_gt.rename(columns = {'M005-kode':'M005-langkode','GTKode':'grunntype_kode'}, inplace = True) #rename columns
+    m005_gt = m005_gt[m005_gt['M005-langkode'].str.contains('-M005-')] # Removing rows where langkode does not contain '-M005-'
+    m005_gt.drop_duplicates(subset=['M005-langkode', 'grunntype_kode']) # Removing duplicates
+    m005_gt = m005_gt.sort_values(by='M005-langkode') # Sorting by M005-langkode
+    m005_gt.to_csv('ut_data/m005_grunntype_mapping.csv', index=False, sep=";")
+    
 
 def m005_hovedtype_mapping_csv(nin3_typer):
-    # fetch 'M005-kode'
-    nin3_typer = nin3_typer.astype(str) # setting all columns to string
-    nin3_typer = nin3_typer.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-    m005_HT = nin3_typer[['M005-kode', 'HTKode', 'Typekategori2']]
-    m005_HT['HTKode'] = m005_HT['Typekategori2'].str[0]+m005_HT['HTKode'].str.replace('_', '-')
-    m005_HT = m005_HT[m005_HT['M005-kode'].str.startswith('NiN-3.0')]
-    m005_HT = m005_HT[['M005-kode', 'HTKode']]
-    m005_HT = m005_HT.drop_duplicates(subset=['M005-kode', 'HTKode'])
-    #m005_HT
+    m005_HT = nin3_typer[['M005-kode', 'HTKode']] # select columns
+    m005_HT.rename(columns = {'M005-kode':'M005-langkode'}, inplace = True) #rename columns
+    m005_HT = m005_HT[m005_HT['M005-langkode'].str.contains('-M005-')] # Removing rows where langkode does not contain '-M005-'
+    m005_HT = m005_HT.drop_duplicates(subset=['M005-langkode', 'HTKode']) # Removing duplicates
+    m005_HT = m005_HT.sort_values(by='M005-langkode') # Sorting by M005-langkode
     m005_HT.to_csv('ut_data/m005_hovedtype_mapping.csv', index=False, sep=";")
 
 def m020_csv(nin3_typer, regnearkfil):
-# Remove leading and trailing whitespaces from string columns
     nin3_m020 = nin3_typer[['M020-kode', 'M020-navn']]
+    nin3_m020.rename(columns={'M020-kode': 'M020-langkode'}, inplace=True)  # rename column to 'M020-langkode'
     nin3_m020.to_csv('tmp/m020raw.csv',index=False, sep=";")
-    #n3t_m020 = nin3_m020.drop_duplicates(subset=['M020-kode']) # Drop duplicate rows in 'M020-kode' column
-    nin3_m020['M020-kortkode'] = nin3_m020['M020-kode'].str.extract(r'([A-Z]{2}\d+-M020-\d+)')
-    nin3_m020_filtered = nin3_m020[nin3_m020['M020-navn'].str.len() > 1]
-    #order by M020-kode
-    m020_sorted = nin3_m020_filtered.astype({'M020-kode': str}).sort_values('M020-kode') 
+    nin3_m020['M020-kortkode'] = nin3_m020['M020-langkode'].str.extract(r'([A-Z]{2}\d+-M020-\d+)')
+    nin3_m020_filtered = nin3_m020[nin3_m020['M020-navn'].str.len() > 2] # remove rows where M020-navn str length is shorter than 2
+    nin3_m020_filtered.drop_duplicates(subset=['M020-langkode', 'M020-navn'], inplace=True)#remove duplicates
+    m020_sorted = nin3_m020_filtered.sort_values('M020-langkode') #order by M020-langkode
     m020_sorted.to_csv('ut_data/m020.csv', index=False, sep=";")
-    #sjekk_unikhet(n3t_m020, 'M020-kode')
-    sjekk_unikhet(m020_sorted, 'M020-kode')
-    m020_sorted.info()
-    
-
+    sjekk_unikhet(m020_sorted, 'M020-langkode')
 
 def m020_grunntype_mapping_csv(nin3_typer):
-    import numpy as np
-    n3t = nin3_typer[['Hovedtypegruppe', 'Prosedyrekategori','Hovedtype','11 GT', 'Grunntypenavn','M020-kode', 'M020-navn']]
-
-    n3t.rename(columns = {'11 GT':'Grunntype'}, inplace = True)
-    n3t['grunntype_kode'] = n3t['Hovedtypegruppe'].map(str)+'-'+n3t['Prosedyrekategori'].map(str)+'-'+n3t['Hovedtype'].map(str)+'-'+n3t['Grunntype'].map(str)
-    n3t_position  = n3t[['M020-kode', 'grunntype_kode', 'M020-navn', 'Grunntypenavn']]
-    n3t_m020 = n3t_position[n3t_position['M020-kode'].str.strip().replace('', np.nan).notna()]
-    n3t_m020.drop_duplicates(subset=['M020-kode', 'grunntype_kode'])
-    n3t_m020 = n3t_m020[n3t_m020['M020-kode'].str.startswith('NiN-3.0')] # Fjerner rader som ikke starter med 'NiN-3.0' i [M020-kode]
-    n3t_m020.to_csv('ut_data/m020_grunntype_mapping.csv', index=False, sep=";") 
+    m020_gt = nin3_typer[['M020-kode','GTKode']]
+    m020_gt.rename(columns = {'M020-kode':'M020-langkode','GTKode':'grunntype_kode'}, inplace = True)#rename columns
+    m020_gt = m020_gt[m020_gt['M020-langkode'].str.contains('-M020-')] # Removing rows where langkode does not contain '-M020-'
+    m020_gt.drop_duplicates(subset=['M020-langkode', 'grunntype_kode']) # Removing duplicates
+    m020_gt = m020_gt.sort_values(by='M020-langkode') # Sorting by M020-langkode
+    m020_gt.to_csv('ut_data/m020_grunntype_mapping.csv', index=False, sep=";")
 
 def m020_hovedtype_mapping_csv(nin3_typer):
-    import numpy as np
-    m020_HT = nin3_typer[['M020-kode', 'HTKode', 'HTGKode']]
-    m020_HT['HTKode'] = m020_HT['HTGKode'].str[0]+m020_HT['HTKode'].str.replace('_', '-')
-    m020_HT = m020_HT[m020_HT['M020-kode'].str.strip().replace('', np.nan).notna()]
-    m020_HT = m020_HT.drop_duplicates(subset=['M020-kode', 'HTKode'])
-    m020_HT = m020_HT[m020_HT['M020-kode'].str.startswith('NiN-3.0')]#remove rows with empty or incorrect m020 values
-    m020_HT = m020_HT[['M020-kode', 'HTKode']]#remove HTGKode
-    m020_HT.to_csv('ut_data/m020_hovedtype_mapping.csv', index=False, sep=";")
-    
-def m050_csv(nin3_typer, regnearkfil):
-    nin3_m050 = pd.read_excel(regnearkfil, 
-                           sheet_name='M050', 
-                           na_filter = False, 
-                           converters={'11 GT': str})#Denne kolonnen må leses inn som str for å ikke miste ledende nuller
-    #m050_delkode_kode = nin3_typer[['M050', 'M050-kode']]
-    m050_kode_navn = nin3_m050[['M050_kode', 'M050-navn', 'M050_kortkode']]
-    #display(m050_kode_navn.head())
-    m050_kode_navn.rename(columns = {'M050_kode':'M050-kode', 'M050_kortkode':'M050-kortkode'}, inplace = True)
-    #display(m050_kode_navn.head()) # sikre at listen er unik
-    m050_unik = m050_kode_navn.groupby(['M050-kode', 'M050-navn', 'M050-kortkode']).count().reset_index()
-    m050_unik # fjern index og skriv til csv
-    #order by M020-kode
-    m050_unik_sorted = m050_unik.sort_values('M050-kode') 
-    m050_unik_sorted.to_csv('ut_data/m050.csv', index=False, sep=";")
+    m020_HT = nin3_typer[['M020-kode', 'HTKode']] # select columns
+    m020_HT.rename(columns = {'M020-kode':'M020-langkode'}, inplace = True) #rename columns
+    m020_HT = m020_HT[m020_HT['M020-langkode'].str.contains('-M020-')] # Removing rows where langkode does not contain '-M020-'
+    m020_HT = m020_HT.drop_duplicates(subset=['M020-langkode', 'HTKode']) # Removing duplicates
+    m020_HT = m020_HT.sort_values(by='M020-langkode') # Sorting by M020-langkode
+    m020_HT.to_csv('ut_data/m020_hovedtype_mapping.csv', index=False, sep=";")# create csv
+
+def m050_csv(nin3_typer):
+    m050 = nin3_typer[['M050-kode', 'M050-navn']] # select columns
+    m050.rename(columns = {'M050-kode':'M050-langkode'}, inplace = True) #rename columns
+    m050 = m050[m050['M050-langkode'].str.contains('-M050-')] # Removing rows where langkode does not contain '-M050-'
+    m050 = m050[m050['M050-navn'].str.len() > 2] # remove rows where M050-navn str length is shorter than 2
+    m050['M050-kortkode'] = m050['M050-langkode'].str.extract(r'([A-Z]{2}\d+-M050-\d+)') # create kortkode
+    m050 = m050.drop_duplicates(subset=['M050-langkode', 'M050-navn']) # Removing duplicates
+    m050 = m050.sort_values(by='M050-langkode') # Sorting by M050-langkode
+    m050.to_csv('ut_data/m050.csv', index=False, sep=";") # create csv
 
 def m050_grunntype_mapping_csv(nin3_typer):
-    import numpy as np
-    n3t = nin3_typer[['Hovedtypegruppe', 'Prosedyrekategori','Hovedtype','11 GT', 'Grunntypenavn','M050-kode', 'M050-navn']]
-
-    n3t.rename(columns = {'11 GT':'Grunntype'}, inplace = True)
-    n3t['grunntype_kode'] = n3t['Hovedtypegruppe'].map(str)+'-'+n3t['Prosedyrekategori'].map(str)+'-'+n3t['Hovedtype'].map(str)+'-'+n3t['Grunntype'].map(str)
-    n3t_position  = n3t[['M050-kode', 'grunntype_kode', 'M050-navn', 'Grunntypenavn']]
-    n3t_m050 = n3t_position[n3t_position['M050-kode'].str.strip().replace('', np.nan).notna()]
-    n3t_m050 = n3t_m050[n3t_m050['M050-kode'].str.startswith('NiN-3.0')] # Fjerner rader som ikke starter med 'NiN-3.0' i [M020-kode]
-    #n3t_m005
-    n3t_m050.to_csv('ut_data/m050_grunntype_mapping.csv', index=False, sep=";") 
+    m050_gt = nin3_typer[['M050-kode','GTKode']]
+    m050_gt.rename(columns = {'M050-kode':'M050-langkode','GTKode':'grunntype_kode'}, inplace = True) #rename columns
+    m050_gt = m050_gt[m050_gt['M050-langkode'].str.contains('-M050-')] # Removing rows where langkode does not contain '-M050-'
+    m050_gt.drop_duplicates(subset=['M050-langkode', 'grunntype_kode']) # Removing duplicates
+    m050_gt = m050_gt.sort_values(by='M050-langkode') # Sorting by M050-langkode
+    m050_gt.to_csv('ut_data/m050_grunntype_mapping.csv', index=False, sep=";")# create csv
 
 def m050_hovedtype_mapping_csv(nin3_typer):
-    nin3_typer = nin3_typer.astype(str) # setting all columns to string
-    nin3_typer = nin3_typer.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-    m050_HT = nin3_typer[['M050-kode', 'HTKode','HTGKode']]
-    m050_HT['HTKode'] = m050_HT['HTGKode'].str[0]+m050_HT['HTKode'].str.replace('_', '-') #Ny HTkode (Kat2 in front)
-    m050_HT = m050_HT[m050_HT['M050-kode'].str.startswith('NiN-3.0')]
-    m050_HT = m050_HT.drop_duplicates(subset=['M050-kode', 'HTKode'])
-    m050_HT.to_csv('ut_data/m050_hovedtype_mapping.csv', index=False, sep=";")
+    m050_HT = nin3_typer[['M050-kode', 'HTKode']] # select columns
+    m050_HT.rename(columns = {'M050-kode':'M050-langkode'}, inplace = True) #rename columns
+    m050_HT = m050_HT[m050_HT['M050-langkode'].str.contains('-M050-')] # Removing rows where langkode does not contain '-M050-'
+    m050_HT = m050_HT.drop_duplicates(subset=['M050-langkode', 'HTKode']) # Removing duplicates
+    m050_HT = m050_HT.sort_values(by='M050-langkode') # Sorting by M050-langkode
+    m050_HT.to_csv('ut_data/m050_hovedtype_mapping.csv', index=False, sep=";")# create csv
 
+""" #todo: assuming no longer in use
 # depends on typer_csv() being run first
 def typeklasser_langkode_mapping_csv(nin3_typer):
     typer = nin3_typer[['Ecosystnivå', 'Typekategori', 'Typekategori2']]#.unique()
@@ -403,11 +312,11 @@ def typeklasser_langkode_mapping_csv(nin3_typer):
     typer_lk['Hovedtype_kode'] = typer_lk['Hovedtypegruppe'].map(str)+'-'+typer_lk['Prosedyrekategori'].map(str)+'-'+typer_lk['Hovedtype'].map(str)
     typeklasser_langkode = typer_lk[['Type_kode', 'Hovedtypegruppe_kode', 'Hovedtype_kode', 'Langkode']]
     typeklasser_langkode.to_csv('ut_data/typeklasser_langkode_mapping.csv', index=False, sep=";") # NaN blir blank string i csv
-
+"""
 def grunntype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
     import numpy as np
-    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', '11 GT', 'Definisjonsgrunnlag', 'oLkM', '11 GT', 'Grunntypenavn']]
-    gt_vt.rename(columns={'11 GT': 'Grunntype'}, inplace=True)
+    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype', 'Definisjonsgrunnlag', 'oLkM', 'Grunntype', 'Grunntypenavn', 'GTKode']]
+    #gt_vt.rename(columns={'11 GT': 'Grunntype'}, inplace=True)
 
     gt_vt_1 = gt_vt[(gt_vt['Grunntypenavn'] != '-')
                         & (gt_vt['Grunntypenavn'] != '')]
@@ -417,7 +326,7 @@ def grunntype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
     gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('[\[\]]', '')
 
     #gt_vt_1['GTKode'] = gt_vt_1['Hovedtypegruppe'].apply(str) + '-' + gt_vt_1['Prosedyrekategori'].apply(str) + '-' + gt_vt_1['Hovedtype'].apply(str) + '-' + gt_vt_1['Grunntype'].apply(str)
-    gt_vt_1['GTKode'] = gt_vt_1[['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype']].apply(lambda x: '-'.join(x.astype(str)), axis=1)
+    #gt_vt_1['GTKode'] = gt_vt_1[['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype']].apply(lambda x: '-'.join(x.astype(str)), axis=1)
     gt_vt_1 = gt_vt_1.dropna(subset=['Definisjonsgrunnlag'])
 
     new_gt_vt_rows = []
@@ -472,8 +381,8 @@ def grunntype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
     new_gt_vt_done.drop(['Varkode2_kopi'], axis=1, inplace=True)
     new_gt_vt_done.rename(columns={'Kortkode': 'Variabelnavn_kortkode'}, inplace=True)
 
-    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', '11 GT', 'Definisjonsgrunnlag', 'oLkM', '11 GT', 'Grunntypenavn', 'GTKode']]
-    gt_vt.rename(columns={'11 GT': 'Grunntype'}, inplace=True)
+    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype', 'Definisjonsgrunnlag', 'oLkM', 'Grunntypenavn', 'GTKode']]
+    #gt_vt.rename(columns={'11 GT': 'Grunntype'}, inplace=True)
 
     gt_vt_1 = gt_vt[(gt_vt['Grunntypenavn'] != '-')
                         & (gt_vt['Grunntypenavn'] != '')]
@@ -544,8 +453,6 @@ def grunntype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
 
     # Apply the regex operation to the 'Definisjonsgrunnlag' column
     new_gt_vt_done['Definisjonsgrunnlag'] = new_gt_vt_done['Definisjonsgrunnlag'].apply(lambda x: re.sub(pattern, r'\1', x))
-    #new_gt_vt_done.dropna(subset=['Varkode2', 'Trinn', 'Definisjonsgrunnlag', 'Variabelnavn_kortkode'], how='all', inplace=True)#removing rows where Varkode2, Trinn, Definisjonsgrunnlag or Variabelnavn_kortkode is null
-    #new_gt_vt_done.dropna(subset=['Varkode2', 'Trinn', 'Definisjonsgrunnlag', 'Variabelnavn_kortkode'], how='all', inplace=True, na_values=['', ' '])
     new_gt_vt_done.replace(' ', '', inplace=True)
     new_gt_vt_done.replace('-', '', inplace=True)
     new_gt_vt_done.replace('', np.nan, inplace=True)
@@ -585,8 +492,6 @@ def hovedtype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
                 trinnlist.append(vt)
         return trinnlist
 
-    #def find_
-    #def 
     variabeltrinnList = []
     # prepare a class with all output fields
 
@@ -594,9 +499,9 @@ def hovedtype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
     variabelnavnkode_varkode2 = pd.read_csv('inn_data/variabelnavnkode_varkode2.csv', sep=";")
 
     # Fetch the columns + definfisjonsgrunnlag
-    ht_variabeltrinn = nin3_typer_orig[(nin3_typer_orig['9 HT'] != '0') & (nin3_typer_orig['11 GT']=='0')][['7 HTG', '8 Pk','9 HT', 'Definisjonsgrunnlag', '5 kat2']]
+    ht_variabeltrinn = nin3_typer_orig[(nin3_typer_orig['9 HT'] != '0') & (nin3_typer_orig['11 GT']=='0')][['7 HTG', '8 Pk','9 HT', 'Definisjonsgrunnlag', '5 kat2', 'HTKode']]
     ## Create a valid Hovedtypekode from the row values
-    ht_variabeltrinn['HTKode'] = ht_variabeltrinn['5 kat2'].str[0]+ht_variabeltrinn['7 HTG'].map(str)+'-'+ht_variabeltrinn['8 Pk'].map(str)+'-'+ht_variabeltrinn['9 HT'].map(str)
+    #ht_variabeltrinn['HTKode'] = ht_variabeltrinn['5 kat2'].str[0]+ht_variabeltrinn['7 HTG'].map(str)+'-'+ht_variabeltrinn['8 Pk'].map(str)+'-'+ht_variabeltrinn['9 HT'].map(str)
     ht_variabeltrinn_filtered = ht_variabeltrinn[(ht_variabeltrinn['Definisjonsgrunnlag'] != '') & (ht_variabeltrinn['Definisjonsgrunnlag'] != '-')]
     # dataframe for storing trinn-results
     ht_trinn_df = pd.DataFrame({
@@ -682,7 +587,7 @@ def prepare_konvertering_3_to_23():
 def htg_conv_csv(nin3_typer,nin3_typer_orig, koder23):
     import urllib.parse
     import csv
-    htg0 = nin3_typer_orig[['3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
+    htg0 = nin3_typer_orig[['HTGKode','3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
     #display(htg0)
     # remove heading and tailing spaces from all columns
     htg0 = htg0.applymap(lambda x: x.strip() if isinstance(x, str) else x)
@@ -692,12 +597,14 @@ def htg_conv_csv(nin3_typer,nin3_typer_orig, koder23):
         (htg0['4 kat1'] != 'LI') & # holdes midlertidig utenfor
         (htg0['9 HT'] == '0') & 
         (htg0['11 GT'] == '0')
-        ][['3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
-    #htg1 = htg0[(htg0['NiN 2 kode'] != '-') & (htg0['NiN 2 kode']!='')]
-    htg1 = htg0_1[htg0_1['NiN 2 kode'] != '-']
+        ][['HTGKode','3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
+   
+   
+    # cleaning up the dataframe for non-HTG rows
+    htg1 = htg0_1[htg0_1['NiN 2 kode'] != '-'] 
     htg1 = htg1[htg1['NiN 2 kode'] != '']
-    htg1['HTGkode'] = htg1['5 kat2'].map(str)+'-'+htg1['7 HTG'].map(str)
-    htg2 = htg1[['HTGkode', 'NiN 2 kode', 'FP', 'SP']]
+
+    htg2 = htg1[['HTGKode', 'NiN 2 kode', 'FP', 'SP']]
     htg2 = htg2.rename(columns={'NiN 2 kode': 'forrigekode'})
     htg2['Klasse'] = 'HTG'
     htg2.to_csv('tmp/htg_konv.csv', sep=';', index=False)
@@ -709,7 +616,7 @@ def htg_conv_csv(nin3_typer,nin3_typer_orig, koder23):
         reader = csv.DictReader(csvfile, delimiter=';')
         for row in reader:
             new = {} # new dict to store the new row
-            new['HTGkode']=row['HTGkode']
+            new['HTGKode']=row['HTGKode']
             new['FP']=row['FP']
             new['SP']=row['SP']
             new['Klasse']=row['Klasse']
@@ -728,7 +635,7 @@ def htg_conv_csv(nin3_typer,nin3_typer_orig, koder23):
 
     # Creating konvertering csv for HTG
     with open('ut_data/konvertering_htg_v30.csv', 'w', newline='') as csvfile:
-        fieldnames = ['HTGkode','forrigekode','FP','SP','Klasse', 'url']
+        fieldnames = ['HTGKode','forrigekode','FP','SP','Klasse', 'url']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';')
         writer.writeheader()
         writer.writerows(htg_rows)
@@ -743,15 +650,15 @@ def ht_conv_csv(nin3_typer,nin3_typer_orig, koder23):
         (ht0['4 kat1'] != 'LI') & # holdes midlertidig utenfor
         (ht0['NiN 2 kode'] != 'ny') &
         (ht0['9 HT'] != '0') & 
-        (ht0['11 GT']=='0')][['3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
+        (ht0['11 GT']=='0')][['HTKode','3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
     # remove heading and tailing spaces from all columns
 
     ht0_0 = ht0_0[ht0_0['NiN 2 kode'] != '-']
     ht0_0 = ht0_0[ht0_0['NiN 2 kode'] != '']
     ht1 = ht0_0
-    ht1['HTkode'] = ht1['5 kat2'].str[0]+ht1['7 HTG'].map(str)+'-'+ht1['8 Pk'].map(str)+'-'+ht1['9 HT'].map(str)
+    #ht1['HTkode'] = ht1['5 kat2'].str[0]+ht1['7 HTG'].map(str)+'-'+ht1['8 Pk'].map(str)+'-'+ht1['9 HT'].map(str)
 
-    ht2 = ht1[['HTkode', 'NiN 2 kode', 'FP', 'SP']]
+    ht2 = ht1[['HTKode', 'NiN 2 kode', 'FP', 'SP']]
     ht2 = ht2.rename(columns={'NiN 2 kode': 'forrigekode'})
     ht2['Klasse'] = 'HT'
     ht2.to_csv('tmp/ht_konv.csv', sep=';', index=False)
@@ -774,7 +681,7 @@ def ht_conv_csv(nin3_typer,nin3_typer_orig, koder23):
         #loop over rows
         for row in all_rows:
             new = {} # new dict to store the new row
-            new['HTkode']=row['HTkode']
+            new['HTKode']=row['HTKode']
             new['FP']=row['FP']
             new['SP']=row['SP']
             new['Klasse']=row['Klasse']
@@ -795,7 +702,7 @@ def ht_conv_csv(nin3_typer,nin3_typer_orig, koder23):
 
     # Creating konvertering csv for HT
     with open('ut_data/konvertering_ht_v30.csv', 'w', newline='') as csvfile:
-        fieldnames = ['HTkode','forrigekode','FP','SP','Klasse', 'url']
+        fieldnames = ['HTKode','forrigekode','FP','SP','Klasse', 'url']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';')
         writer.writeheader()
         writer.writerows(ht_rows)
@@ -811,9 +718,9 @@ def gt_conv_csv(nin3_typer,nin3_typer_orig, koder23):
         (gt0['NiN 2 kode'] != 'ny') &
         (gt0['NiN 2 kode'] != '-') &
         (gt0['NiN 2 kode'] != '') &
-        (gt0['11 GT']!='0')][['3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
+        (gt0['11 GT']!='0')][['GTKode','3 AbC', '4 kat1', '5 kat2', '6 kat3','7 HTG', '8 Pk','9 HT', '11 GT', 'NiN 2 kode', 'FP', 'SP']]
 
-    gt0_0['GTKode'] = gt0_0['7 HTG'].map(str)+'-'+gt0_0['8 Pk'].map(str)+'-'+gt0_0['9 HT'].map(str)+'-'+gt0_0['11 GT'].map(str)
+    #gt0_0['GTKode'] = gt0_0['7 HTG'].map(str)+'-'+gt0_0['8 Pk'].map(str)+'-'+gt0_0['9 HT'].map(str)+'-'+gt0_0['11 GT'].map(str)
     gt1 = gt0_0[['GTKode', 'NiN 2 kode', 'FP', 'SP']]
     gt1 = gt1.rename(columns={'NiN 2 kode': 'forrigekode'})
     gt1["FP"]=gt1["FP"].replace('?', '')
@@ -1088,12 +995,16 @@ def adjust_nin3_typer_col_names(nin3_typer):
             '6 kat3': 'Typekategori3',
             '7 HTG': 'Hovedtypegruppe',
             '8 Pk': 'Prosedyrekategori',
-            '9 HT': 'Hovedtype'
+            '9 HT': 'Hovedtype',
+            '11 GT': 'Grunntype',
             }, inplace=True)
         return nin3_typer
 
 # STØTTEMETODER -Kortkoder
-def kodeForHTG(langkode:str, kat1_4:str, kat2_5:str, htg_7:str): # Creates kortkode for hovedtypegruppe
+def kodeForHTG(langkode:str, kat1_4:str, kat2_5:str, htg_7:str):
+    if not isinstance(langkode, str):
+        print(f"langkode must be a string, langkode-value was:'{langkode}'")
+        return ""
     ledd_arr = langkode.split('-')
     if ledd_arr[4]=="MV":
         kode = kat1_4+"-"+htg_7
@@ -1104,39 +1015,129 @@ def kodeForHTG(langkode:str, kat1_4:str, kat2_5:str, htg_7:str): # Creates kortk
     else:
         kode = kat2_5+"-"+htg_7
         return kode
+    
+def kodeForHT(langkode:str, kat1_4:str, kat2_5:str, htg_7:str, pk_8:str, ht_9:str):
+    if not isinstance(langkode, str):
+        print(f"langkode must be a string, langkode-value was:'{langkode}'")
+        return ""
+    ledd_arr = langkode.split('-')
+    if ledd_arr[4]=="MV":
+        kode =  kat1_4+"-"+htg_7+ht_9
+        return kode
+    if ledd_arr[4]=="LI":
+        kode =  kat1_4+"-"+htg_7+ht_9
+        return kode
+    if ledd_arr[4]=="LV":
+        kode =  kat2_5+"-"+htg_7+ht_9
+        return kode
+    if ledd_arr[5]=="NA":
+        kode =  kat2_5+"-"+htg_7+pk_8+ht_9    
+        return kode
+    if ledd_arr[5]=="LA":
+        kode =  kat2_5+"-"+htg_7+ht_9
+        return kode
+    if ledd_arr[5]=="NK":
+        kode =  kat2_5+"-"+htg_7+ht_9
+        return kode
+    else: 
+        return ""
+    
 
-def kodeForHT():
-    return "impl"
+def kodeForGT(langkode:str, htg_7:str, pk_8:str, ht_9:str, gt_11:str):
+    if not isinstance(langkode, str):
+        print(f"langkode must be a string, langkode-value was:'{langkode}'")
+        return ""
+    ledd_arr = langkode.split('-')
+    if ledd_arr[4]=="LI":
+        kode = htg_7+ht_9+"-"+gt_11
+        return kode
+    if ledd_arr[5]=="NA":
+        kode = htg_7+pk_8+ht_9+"-"+gt_11
+        return kode
+    if ledd_arr[5]=="LA":
+        kode = htg_7+ht_9+"-"+gt_11
+        return kode
+    else:
+        return ""
+    
+def create_kortkoder_for_nin3_typer(nin3_typer):
+    nin3_typer["HTGKode"] = nin3_typer.apply(lambda x: kodeForHTG(
+        x['Langkode'], 
+        x['Typekategori'], 
+        x['Typekategori2'], 
+        x['Hovedtypegruppe']), axis=1)
+    nin3_typer["HTKode"] = nin3_typer.apply(lambda x: kodeForHT(
+        x['Langkode'],
+        x['Typekategori'],
+        x['Typekategori2'],
+        x['Hovedtypegruppe'],
+        x['Prosedyrekategori'],
+        x['Hovedtype']), axis=1)
+    nin3_typer["GTKode"] = nin3_typer.apply(lambda x: kodeForGT(
+        x['Langkode'],
+        x['Hovedtypegruppe'],
+        x['Prosedyrekategori'],
+        x['Hovedtype'],
+        x['Grunntype']), axis=1)
+    
+def create_kortkoder_for_nin3_typer_orig(nin3_typer_orig):
+    nin3_typer_orig["HTGKode"] = nin3_typer_orig.apply(lambda x: kodeForHTG(
+        x['Langkode'], 
+        x['4 kat1'], 
+        x['5 kat2'], 
+        x['7 HTG']), axis=1)
+    nin3_typer_orig["HTKode"] = nin3_typer_orig.apply(lambda x: kodeForHT(
+        x['Langkode'],
+        x['4 kat1'],
+        x['5 kat2'],
+        x['7 HTG'],
+        x['8 Pk'],
+        x['9 HT']), axis=1)
+    nin3_typer_orig["GTKode"] = nin3_typer_orig.apply(lambda x: kodeForGT(
+        x['Langkode'],
+        x['7 HTG'],
+        x['8 Pk'],
+        x['9 HT'],
+        x['11 GT']), axis=1)
 
-def kodeForGT():
-    return "impl"
+
 # MAIN
 def create_csv_files():
     import conf
     regnearkfil = conf.regnearkfil
     print(f"*** Backing up and removing previous csv files")
     backup_and_remove_previous_csv_files()
-
     print(f"*** Fetching data from Excel file: {regnearkfil}")
     nin3_typer = load_nin3_typer_sheet()
     nin3_typer_orig = nin3_typer.copy(deep=True)
+    # Handling all columns as strings
+    nin3_typer = nin3_typer.astype(str)
+    nin3_typer_orig = nin3_typer_orig.astype(str)
     nin3_typer = adjust_nin3_typer_col_names(nin3_typer)
-    nin3_variabler = load_nin3_variabler_sheet()
+    # Setting kortkode columns for type
+    create_kortkoder_for_nin3_typer(nin3_typer)
+    create_kortkoder_for_nin3_typer_orig(nin3_typer_orig)
 
+    
+    nin3_typer.to_excel('tmp/nin3_typer.xlsx', index=False)
+    print(f"*** Saving nin3_typer as tmp/nin3_typer.xlsx")
+    nin3_variabler = load_nin3_variabler_sheet()
     print(f"*** Creating typer.csv")
     typer_csv(nin3_typer)
     print(f"*** Creating hovedtypegrupper.csv")
     hovedtypegruppe_csv(nin3_typer)
     print(f"*** Creating type_htg_mapping.csv")
-    type_htg_csv(nin3_typer)
-    print(f"*** Creating hovedtype.csv and hovedtypegruppe_hovedtype_mapping.csv")
-    hovedtype_and_ht_htg_mapping_csv(nin3_typer)
+    type_htg_mapping_csv(nin3_typer)
+    print(f"*** Creating hovedtype.csv")
+    hovedtype_csv(nin3_typer)
+    print(f"*** Hovedtypegruppe_hovedtype_mapping.csv")
+    hovedtype_hovedtypegruppe_mapping_csv(nin3_typer)
     print(f"*** Creating grunntyper.csv")
     grunntyper_csv(nin3_typer)
     print(f"*** Creating hovedtype_grunntype_mapping.csv")
     hovedtype_grunntype_mapping_csv(nin3_typer)
     print(f"*** Creating M005.csv")
-    m005_csv(nin3_typer, regnearkfil)
+    m005_csv(nin3_typer)
     print(f"*** Creating m005_grunntype_mapping.csv")
     m005_grunntype_mapping_csv(nin3_typer)
     print(f"*** Creating m005_hovedtype_mapping.csv")
@@ -1148,13 +1149,13 @@ def create_csv_files():
     print(f"*** Creating m020_hovedtype_mapping.csv")
     m020_hovedtype_mapping_csv(nin3_typer)
     print(f"*** Creating m050.csv")
-    m050_csv(nin3_typer, regnearkfil)
+    m050_csv(nin3_typer)
     print(f"*** Creating m050_grunntype_mapping.csv")
     m050_grunntype_mapping_csv(nin3_typer)
     print(f"*** Creating m050_hovedtype_mapping.csv")
     m050_hovedtype_mapping_csv(nin3_typer)
-    print(f"*** Creating typeklasser_langkode_mapping.csv")
-    typeklasser_langkode_mapping_csv(nin3_typer)
+    #print(f"*** Creating typeklasser_langkode_mapping.csv") #todo: assuming no longer in use
+    #typeklasser_langkode_mapping_csv(nin3_typer) 
     print(f"*** Creating variabelnavnkode_varkode2.csv")
     variabelnavnkode_varkode2_csv(nin3_variabler)
     print(f"*** Creating grunntype_variabeltrinn_mapping.csv")

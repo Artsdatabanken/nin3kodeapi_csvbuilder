@@ -55,9 +55,50 @@ def create_so_si_trinn_unihet(dbfromlocal=True, branch='develop'):
     with pd.ExcelWriter(f"ut/trinn_so_si_{timestamp()}.xlsx") as writer:
         so_si_uniket.to_excel(writer, sheet_name="trinn_under_so_si", index=False)
     print(f"Excel data skrevet til 'ut/trinn_so_si.xlsx'")
-    
 
-def createExcel(dbfromlocal=False, branch='develop'):
+# Utils
+"""    
+def autoajustColwith(df, worksheet):
+    # adjust the column widths based on the content
+    for i, col in enumerate(df.columns):
+        if col in worksheet.column_dimensions:
+            width = max(df[col].apply(lambda x: len(str(x))).max(), len(col))
+            worksheet.column_dimensions[col].width = width
+"""
+
+
+def excel_autoadjust_col(path, target_excel, padding):
+    import os
+    import openpyxl
+    from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
+    from openpyxl.utils import get_column_letter
+
+    target_file = os.path.join(path, target_excel)
+    wb = openpyxl.load_workbook(target_file)
+    sheets = [sheet for sheet in wb.get_sheet_names()]
+
+    for sheet in sheets:
+        ws = wb[sheet]
+        dim_holder = DimensionHolder(worksheet=ws)
+
+        for col in range(ws.min_column, ws.max_column + 1):
+            width = 0
+            for row in range(ws.min_row, ws.max_row + 1):
+                cell_value = ws.cell(column=col, row=row).value
+                if cell_value:
+                    cell_len = len(str(cell_value))
+                    if cell_len > width:
+                        width = cell_len + padding
+
+            dim_holder[get_column_letter(col)] = ColumnDimension(ws, min=col, max=col, width=width)
+
+        ws.column_dimensions = dim_holder
+
+    wb.save(target_file)
+    print("Completed adjustments for {}".format(target_excel))
+
+# Main method
+def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
     from conf import localdbpath
     import shutil
     if dbfromlocal:
@@ -67,57 +108,58 @@ def createExcel(dbfromlocal=False, branch='develop'):
     conn = getConn()
     df_db_info = db_info_fane()
     df_type = type_fane()
-    df_type = extend_df_with_edit_logg_columns(df_type)
     df_htg = hovedtypegruppe_fane()
-    df_htg = extend_df_with_edit_logg_columns(df_htg)
     df_ht = hovedtype_fane()
-    df_ht = extend_df_with_edit_logg_columns(df_ht)
     df_gt = grunntype_fane()
-    df_gt = extend_df_with_edit_logg_columns(df_gt)
     df_m005 = kle_m005()
-    df_m005 = extend_df_with_edit_logg_columns(df_m005)
     df_m020 = kle_m020()
-    df_m020 = extend_df_with_edit_logg_columns(df_m020)
     df_m050 = kle_m050()
-    df_m050 = extend_df_with_edit_logg_columns(df_m050)
     df_ht_kle005 = ht_kle_m005()
-    df_ht_kle005 = extend_df_with_edit_logg_columns(df_ht_kle005)
     df_ht_kle020 = ht_kle_m020()
-    df_ht_kle020 = extend_df_with_edit_logg_columns(df_ht_kle020)
     df_ht_kle050 = ht_kle_m050()
-    df_ht_kle050 = extend_df_with_edit_logg_columns(df_ht_kle050)
     df_gt_kle005 = gt_kle_m005()
-    df_gt_kle005 = extend_df_with_edit_logg_columns(df_gt_kle005)
     df_gt_kle020 = gt_kle_m020()
-    df_gt_kle020 = extend_df_with_edit_logg_columns(df_gt_kle020)
     df_gt_kle050 = gt_kle_m050()
-    df_gt_kle050 = extend_df_with_edit_logg_columns(df_gt_kle050)
     df_htg_hoek = htg_hoek()
-    df_htg_hoek = extend_df_with_edit_logg_columns(df_htg_hoek)
     df_v = variabel_fane()
-    df_v = extend_df_with_edit_logg_columns(df_v)
     df_vn = variabelnavn_fane()
-    df_vn = extend_df_with_edit_logg_columns(df_vn)
     df_ms = maaleskala_fane()
-    df_ms = extend_df_with_edit_logg_columns(df_ms)
     df_t = trinn_fane()
-    df_t = extend_df_with_edit_logg_columns(df_t)
     df_vn_ms = variabelnavn_maaleskala()
-    df_vn_ms = extend_df_with_edit_logg_columns(df_vn_ms)
     df_ht_vt = hovedtype_Variabeltrinn()
-    df_ht_vt = extend_df_with_edit_logg_columns(df_ht_vt)
     df_gt_vt = grunntype_Variabeltrinn()
-    df_gt_vt = extend_df_with_edit_logg_columns(df_gt_vt)
     df_htg_konvertering = htg_konvertering()
-    df_htg_konvertering = extend_df_with_edit_logg_columns(df_htg_konvertering)
     df_ht_konvertering = ht_konvertering()
-    df_ht_konvertering = extend_df_with_edit_logg_columns(df_ht_konvertering)
     df_gt_konvertering = gt_konvertering()
-    df_gt_konvertering = extend_df_with_edit_logg_columns(df_gt_konvertering)
     df_vn_konvertering = vn_konvertering()
-    df_vn_konvertering = extend_df_with_edit_logg_columns(df_vn_konvertering)
     df_enums = enums()
-    df_enums = extend_df_with_edit_logg_columns(df_enums)
+    if forEdit:
+        df_type = extend_df_with_edit_logg_columns(df_type)
+        df_htg = extend_df_with_edit_logg_columns(df_htg)
+        df_ht = extend_df_with_edit_logg_columns(df_ht)
+        df_gt = extend_df_with_edit_logg_columns(df_gt)
+        df_m005 = extend_df_with_edit_logg_columns(df_m005)
+        df_m020 = extend_df_with_edit_logg_columns(df_m020)
+        df_m050 = extend_df_with_edit_logg_columns(df_m050)
+        df_ht_kle005 = extend_df_with_edit_logg_columns(df_ht_kle005)
+        df_ht_kle020 = extend_df_with_edit_logg_columns(df_ht_kle020)
+        df_ht_kle050 = extend_df_with_edit_logg_columns(df_ht_kle050)
+        df_gt_kle005 = extend_df_with_edit_logg_columns(df_gt_kle005)
+        df_gt_kle020 = extend_df_with_edit_logg_columns(df_gt_kle020)
+        df_gt_kle050 = extend_df_with_edit_logg_columns(df_gt_kle050)
+        df_htg_hoek = extend_df_with_edit_logg_columns(df_htg_hoek)
+        df_v = extend_df_with_edit_logg_columns(df_v)
+        df_vn = extend_df_with_edit_logg_columns(df_vn)
+        df_ms = extend_df_with_edit_logg_columns(df_ms)
+        df_t = extend_df_with_edit_logg_columns(df_t)
+        df_vn_ms = extend_df_with_edit_logg_columns(df_vn_ms)
+        df_ht_vt = extend_df_with_edit_logg_columns(df_ht_vt)
+        df_gt_vt = extend_df_with_edit_logg_columns(df_gt_vt)
+        df_htg_konvertering = extend_df_with_edit_logg_columns(df_htg_konvertering)
+        df_ht_konvertering = extend_df_with_edit_logg_columns(df_ht_konvertering)
+        df_gt_konvertering = extend_df_with_edit_logg_columns(df_gt_konvertering)
+        df_vn_konvertering = extend_df_with_edit_logg_columns(df_vn_konvertering)
+        df_enums = extend_df_with_edit_logg_columns(df_enums)
     excelfile = f"ut/nin3_0_{timestamp()}.xlsx"
     with pd.ExcelWriter(excelfile) as writer:
         df_db_info.to_excel(writer, sheet_name="db_info", index=False)
@@ -147,11 +189,21 @@ def createExcel(dbfromlocal=False, branch='develop'):
         df_gt_konvertering.to_excel(writer, sheet_name="GT_Konvertering", index=False)
         df_vn_konvertering.to_excel(writer, sheet_name="VN_Konvertering", index=False)
         df_enums.to_excel(writer, sheet_name="Enums", index=False)
-    print(f"Excel data skrevet til {excelfile}")
+    print(f"\n\nExcel data skrevet til {excelfile}")
     closeConn()
     # add excefile to "new"-folder
-    destination_file = "ut/new/nin3_0.xlsx"
-    shutil.copy(excelfile, destination_file)
+    if forEdit:
+        destination_file = "ut/new/nin3_0_redigering.xlsx" #file for editing
+        shutil.copy(excelfile, destination_file)
+        print(f"adjusting column width in: {destination_file}")
+        excel_autoadjust_col("ut/new", "nin3_0_redigering.xlsx", 2)
+    else:
+        destination_file = "ut/api/nin3_0.xlsx"
+        shutil.copy(excelfile, destination_file)
+        print(f"adjusting column width in: {destination_file}")
+        excel_autoadjust_col("ut/api", "nin3_0.xlsx", 2)
+
+    # adjust column width in resulting excels
 
 def timestamp():
     from datetime import datetime
@@ -189,7 +241,6 @@ def type_fane(makecsv=False):
         LEFT JOIN tkat ON type.Typekategori = tkat.Ordinal
         LEFT JOIN tkat2 ON type.Typekategori2 = tkat2.Ordinal"""  # Write your SQLite query
     df_type = pd.read_sql_query(TypefaneQ, conn)  # Execute the query and store the result in a DataFrame
-    df_type = extend_df_with_edit_logg_columns(df_type)
     if makecsv:
         df_type.to_csv(f"ut/type_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
         print(f"written to 'ut/type_fane_{timestamp()}.csv'")
