@@ -343,3 +343,4 @@ API/logs/
 API/nin3kodeapi.db
 CSV_produksjon/kortkodefix.ipynb
 nin3 console db.session.sql
+drupal_import/out/

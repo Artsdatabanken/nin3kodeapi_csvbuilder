@@ -788,13 +788,6 @@ def variabelnavn_variabel_mapping_csv(nin3_variabler):
                             '6 FG/EK': 'Variabeltype', '7 Varkode1': 'Variabelgruppe', '8 VarKode2': 'Variabelnavn_kode', 'VarNavn': 'Variabelnavn_navn'})
     vvm['Variabel_kode'] = vvm[['3 ABC', '4 NM']].apply(lambda x: '-'.join(x), axis=1)
     #dupl = vvm['Variabelnavn_kode'].duplicated().any()
-    
-    def variabel_csv(nin3_variabler):
-        # hent unike kombinasjoner av kolonnene '3 ABC' og '4 NM'
-        variabler = nin3_variabler[['3 ABC', '4 NM']].drop_duplicates().dropna().sort_values(by=['3 ABC', '4 NM'])
-        variabler['Variabel_kode'] = variabler[['3 ABC', '4 NM']].apply(lambda x: '-'.join(x), axis=1)
-
-        variabler.to_csv('ut_data/variabel.csv', index=False, sep=";")
     vvm.to_csv('ut_data/variabelnavn_variabel_mapping.csv', index=False, sep=";")
 
 def maaleskala_enhet_csv(nin3_variabler):
