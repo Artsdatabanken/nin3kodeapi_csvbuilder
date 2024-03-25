@@ -84,4 +84,20 @@ def maaleskala_numOfTrinn(display_rows=5):
     print(f"First {display_rows} rows:")
     print(df_mst.head(display_rows))
     filename = f"rapporter/maaleskala_numOfTrinn_{datetimestr()}.csv"
+    df_mst.to_csv(filename, index=False)
     conn.close()
+
+def showMaaleskalaForVariabelnavn(variabelnavnkode:str):
+    conn = makeConnection()
+    query = f"""SELECT variabelnavn.Kode, maaleskala.MaaleskalaNavn
+                FROM variabelnavn
+                LEFT JOIN variabelnavnMaaleskala ON variabelnavn.Id = variabelnavnMaaleskala.VariabelnavnId
+                LEFT JOIN maaleskala ON variabelnavnMaaleskala.MaaleskalaId = maaleskala.Id
+                WHERE variabelnavn.Kode = '{variabelnavnkode}';"""
+    df_vnms = pd.read_sql_query(query, conn)
+    conn.close()
+    print("Maaleskala(er) for variabelnavn:", variabelnavnkode)
+    print(df_vnms)
+    filename = f"rapporter/maaleskalaForVariabelnavn_{variabelnavnkode}_{datetimestr()}.csv"
+    df_vnms.to_csv(filename, index=False)
+    print(f"\nResultat er skrevet til: {filename}")
