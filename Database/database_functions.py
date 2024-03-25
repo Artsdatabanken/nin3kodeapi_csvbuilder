@@ -1,6 +1,7 @@
 import os
 import requests
 import pandas as pd
+from datetime import datetime
 
 def fetch_database(branch:str):
     url = f"https://raw.githubusercontent.com/Artsdatabanken/nin-kode-api/{branch}/NinKode.WebApi/databases/nin3kodeapi.db" # Henter nin3 database fra nin3 repo branch:develop
@@ -17,7 +18,6 @@ def makeConnection():
 
 def tableToCsv(tablename:str, filter_kolonne:str=None):
     conn = makeConnection()
-    from datetime import datetime
     # Skriv inn ønsket tabell
     tabell = "Enumoppslag" # 'Versjon', 'Hovedtypegruppe', 'Hovedtype', 'Grunntype', 'Kartleggingsenhet', 'Variabel', 'Variabelnavn', 
     filter_kolonne = None # Kolonnenavn i valgt tabell
@@ -47,3 +47,19 @@ def listTablesAndViews():
         count = pd.read_sql_query(f"SELECT COUNT(*) FROM {view}", conn)
         display(f"{view}: {count.iloc[0][0]} rows")
     conn.close()
+
+def variabelnavn_numOfTrinn():
+    conn = makeConnection()
+    query = """SELECT vn.Kode, vn.Navn AS Variabelnavn, COUNT(t.Id) AS NumberOfTrinn
+    FROM Variabelnavn vn
+    LEFT JOIN VariabelnavnMaaleskala vnm ON vn.Id = vnm.VariabelnavnId
+    LEFT JOIN Trinn t ON vnm.MaaleskalaId = t.MaaleskalaId
+    GROUP BY vn.Navn, vn.Kode
+    ORDER BY NumberOfTrinn ASC;"""
+    df_vnt = pd.read_sql_query(query, conn)
+    conn.close()
+    print("First 5 rows:")
+    print(df_vnt.head(5))
+    filename = f"rapporter/variabelnavn_numOfTrinn_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    df_vnt.to_csv(filename, index=False)
+    print(f"\nResultat er skrevet til: {filename}")
