@@ -16,6 +16,9 @@ def makeConnection():
     import sqlite3
     return sqlite3.connect("inn_data/nin3kodeapi.db")
 
+def datetimestr():
+    return datetime.now().strftime('%Y%m%d_%H%M%S')
+
 def tableToCsv(tablename:str, filter_kolonne:str=None):
     conn = makeConnection()
     # Skriv inn ønsket tabell
@@ -48,7 +51,7 @@ def listTablesAndViews():
         display(f"{view}: {count.iloc[0][0]} rows")
     conn.close()
 
-def variabelnavn_numOfTrinn():
+def variabelnavn_numOfTrinn(display_rows=5):
     conn = makeConnection()
     query = """SELECT vn.Kode, vn.Navn AS Variabelnavn, COUNT(t.Id) AS NumberOfTrinn
     FROM Variabelnavn vn
@@ -58,8 +61,27 @@ def variabelnavn_numOfTrinn():
     ORDER BY NumberOfTrinn ASC;"""
     df_vnt = pd.read_sql_query(query, conn)
     conn.close()
-    print("First 5 rows:")
-    print(df_vnt.head(5))
-    filename = f"rapporter/variabelnavn_numOfTrinn_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    print(f"First {display_rows} rows:")
+    print(df_vnt.head(display_rows))
+    filename = f"rapporter/variabelnavn_numOfTrinn_{datetimestr()}.csv"
     df_vnt.to_csv(filename, index=False)
     print(f"\nResultat er skrevet til: {filename}")
+
+def maaleskala_numOfTrinn(display_rows=5):
+    conn = makeConnection()
+    query = """SELECT 
+        Maaleskala.MaaleskalaNavn, 
+        COUNT(Trinn.Id) AS TrinnCount
+    FROM 
+        Maaleskala
+    LEFT JOIN 
+        Trinn ON Maaleskala.Id = Trinn.MaaleskalaId
+    GROUP BY 
+        Maaleskala.MaaleskalaNavn
+    ORDER BY 
+        TrinnCount ASC, Maaleskala.MaaleskalaNavn;"""
+    df_mst = pd.read_sql_query(query, conn)
+    print(f"First {display_rows} rows:")
+    print(df_mst.head(display_rows))
+    filename = f"rapporter/maaleskala_numOfTrinn_{datetimestr()}.csv"
+    conn.close()
