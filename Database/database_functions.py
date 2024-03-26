@@ -86,6 +86,7 @@ def maaleskala_numOfTrinn(display_rows=5):
     filename = f"rapporter/maaleskala_numOfTrinn_{datetimestr()}.csv"
     df_mst.to_csv(filename, index=False)
     conn.close()
+    print(f"\nResultat er skrevet til: {filename}")
 
 def showMaaleskalaForVariabelnavn(variabelnavnkode:str):
     conn = makeConnection()
