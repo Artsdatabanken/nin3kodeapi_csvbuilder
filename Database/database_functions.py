@@ -67,6 +67,58 @@ def variabelnavn_numOfTrinn(display_rows=5):
     df_vnt.to_csv(filename, index=False)
     print(f"\nResultat er skrevet til: {filename}")
 
+def variabelnavn_numOfMaaleskalaAndTrinn(display_rows=5):
+    conn = makeConnection()
+    query = """SELECT
+                Variabelnavn.Kode AS Kortkode, 
+                Variabelnavn.Navn AS Variabelnavn,
+                COUNT(DISTINCT Maaleskala.Id) AS MaaleskalaCount,
+                COUNT(DISTINCT Trinn.Id) AS TrinnCount
+            FROM 
+                Variabelnavn
+            LEFT JOIN 
+                VariabelnavnMaaleskala ON Variabelnavn.Id = VariabelnavnMaaleskala.VariabelnavnId
+            LEFT JOIN 
+                Maaleskala ON VariabelnavnMaaleskala.MaaleskalaId = Maaleskala.Id
+            LEFT JOIN 
+                Trinn ON Trinn.MaaleskalaId = Maaleskala.Id
+            GROUP BY 
+                Variabelnavn.Navn"""
+    df_vn_ms_tr = pd.read_sql_query(query, conn)
+    conn.close()
+    print(f"First {display_rows} rows:")
+    print(df_vn_ms_tr.head(display_rows))
+    filename = f"rapporter/variabelnavn_numOfMaaleskalaAndTrinn_{datetimestr()}.csv"
+    df_vn_ms_tr.to_csv(filename, index=False)
+    print(f"\nResultat er skrevet til: {filename}")
+
+def variabelnavn_maaleskala_trinn(display_rows=5):
+    conn = makeConnection()
+    query = """SELECT
+                Variabelnavn.Kode AS Kortkode, 
+                Variabelnavn.Navn AS Variabelnavn,
+                Maaleskala.MaaleskalaNavn,
+                Trinn.Verdi AS TrinnVerdi
+            FROM 
+                Variabelnavn
+            LEFT JOIN 
+                VariabelnavnMaaleskala ON Variabelnavn.Id = VariabelnavnMaaleskala.VariabelnavnId
+            LEFT JOIN 
+                Maaleskala ON VariabelnavnMaaleskala.MaaleskalaId = Maaleskala.Id
+            LEFT JOIN 
+                Trinn ON Trinn.MaaleskalaId = Maaleskala.Id
+            ORDER BY 
+                Variabelnavn.Kode, Maaleskala.MaaleskalaNavn"""
+    df_vn_ms_tr = pd.read_sql_query(query, conn)
+    conn.close()
+    print(f"First {display_rows} rows:")
+    print(df_vn_ms_tr.head(display_rows))
+    filename = f"rapporter/variabelnavn_maaleskala_trinn_{datetimestr()}.csv"
+    df_vn_ms_tr.to_csv(filename, index=False)
+    print(f"\nResultat er skrevet til: {filename}")
+
+    
+
 def maaleskala_numOfTrinn(display_rows=5):
     conn = makeConnection()
     query = """SELECT 

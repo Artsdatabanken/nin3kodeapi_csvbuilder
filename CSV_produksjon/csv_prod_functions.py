@@ -1066,8 +1066,6 @@ def create_csv_files():
     m050_grunntype_mapping_csv(nin3_typer)
     print(f"*** Creating m050_hovedtype_mapping.csv")
     m050_hovedtype_mapping_csv(nin3_typer)
-    #print(f"*** Creating typeklasser_langkode_mapping.csv") #todo: assuming no longer in use
-    #typeklasser_langkode_mapping_csv(nin3_typer) 
     print(f"*** Creating variabelnavnkode_varkode2.csv")
     variabelnavnkode_varkode2_csv(nin3_variabler)
     print(f"*** Creating grunntype_variabeltrinn_mapping.csv")
