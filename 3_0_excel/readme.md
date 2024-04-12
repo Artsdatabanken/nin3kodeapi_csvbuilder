@@ -7,19 +7,19 @@ Databasediagram: 2 deler Type og Variabel
 
 ## Apier
 
-[2.3 API](https://nin-kode-api.artsdatabanken.no/swagger/index.html)
+[2.3 API](https://nin-kode-api.artsdatabanken.no/swagger/index.html?urls.primaryName=V2.3)
 
 3.0 APiER :
 
-[Develop](https://nin3webapi20230627120155.azurewebsites.net/) 
+[Test](https://nin-kode-api.test.artsdatabanken.no/swagger/index.html) 
 
-[Test](https://nin3kodeapi.test.artsdatabanken.no)
+[Prod](https://nin-kode-api.artsdatabanken.no/swagger/index.html)
 
 ## Bruk:
 Trykk i ønsket kode-blokk og trykk run-knappen, følg så med på statusmelding under kodeboksen.
 
-![alt text](image.png)
+![alt text](readme_images/image.png)
 
 ### Hente resultatfiler: 
 Bruk filutforskeren til høyre og høyreklikk fil som ønskes nedlastet.
-![alt text](image-1.png)
+![alt text](readme_images/image-1.png)

@@ -724,6 +724,7 @@ def maaleskala_enhet_csv(nin3_variabler):
     me_1 = me_1.drop('8 VarKode2', axis=1)
     me_1 = me_1.drop_duplicates()
     #me_1.head(5) 
+
     # part 2/2
     with open('inn_data/maaleskala_trinn_enhet.md', 'r') as file:
         file_string = file.read()
@@ -789,12 +790,13 @@ def maaleskala_trinn_csv(nin3_variabler):
     mt = mt[mt['Trinn'] != '--']
     # Set first letter in trinnverdi to upper case
     mt.loc[mt['Trinnverdi'].str.len() > 0, 'Trinnverdi'] = mt.loc[mt['Trinnverdi'].str.len() > 0, 'Trinnverdi'].str.replace(';', ':')
-    mt['Trinnverdi'] = mt['Trinnverdi'].str.capitalize() # capitalize first letter
-    mt = mt[mt['Trinn'] != 'nan_nan']
-    mt.to_csv('ut_data/maaleskala_trinn.csv', index=False, sep=";")
-    #display(mt.head(3))
+    mt['Trinnverdi'] = mt['Trinnverdi'].str.capitalize() # capitalize letters
+    mt = mt[mt['Trinn'] != 'nan_nan'] # remove null-rows
+    mt = mt.drop_duplicates() #fix for task #66
+    print(mt.head(3))
     #mt.tail(10)
-
+    mt.to_csv('ut_data/maaleskala_trinn.csv', index=False, sep=";")
+    
 def variabelnavn_maaleskala_mapping_csv(nin3_variabler):
     vn_ms = nin3_variabler[nin3_variabler['11 Tr/Kl'] == 'W'][['Kortkode', '8 VarKode2', '10 Målesk']].drop_duplicates()
     #display(vn_ms)
