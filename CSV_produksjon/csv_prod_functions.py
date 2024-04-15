@@ -86,7 +86,8 @@ def load_nin3_variabler_sheet():
     pd.set_option('display.max_rows', 500)
     pd.set_option('display.max_columns', 500)
     pd.set_option('display.width', 1000)
-    nin3_variabler = pd.read_excel(regnearkfil, sheet_name='Variabler')
+    nin3_variabler = pd.read_excel(regnearkfil, sheet_name='Variabler',
+                                   dtype={'FP':str, 'SP':str})
     nin3_variabler = nin3_variabler.applymap(lambda x: x.strip() if isinstance(x, str) else x) # removing whitespace
     nin3_variabler = nin3_variabler.astype(str) # setting all columns to string
     return nin3_variabler
@@ -837,69 +838,47 @@ def variabelnavn_maaleskala_mapping_csv(nin3_variabler):
     vn_ms_new.to_csv('ut_data/variabelnavn_maaleskala_mapping.csv', index=False, sep=";")  
 
 def variabelnavn_konvertering_csv(nin3_variabler, koder23):
-    import csv
-    # hent alle nødvendige kolonner
-    # kjør string trim på alle kolonner
-    konv = nin3_variabler[['Kortkode', 'NiN 2 kode', 'FP', 'SP']].copy()
-    konv = konv.drop(konv[(konv['NiN 2 kode'] == '') | (konv['NiN 2 kode'] == '-')].index) # remove rows where 'NiN 2 kode' is empty
-    konv = konv.drop(konv[(konv['Kortkode'] == '') | (konv['Kortkode'] == '-') |(konv['Kortkode'] == 'nan')].index) # remove rows where 'Kortkode' is empty
-    konv = konv.dropna(subset=['Kortkode'])
-    konv = konv.drop(konv[(konv['NiN 2 kode'] == 'nan')].index)
-    konv['NiN 2 kode'] = konv['NiN 2 kode'].str.replace('&', ',') # '&' means ',' so change to ','
-    konv['NiN 2 kode'] = konv['NiN 2 kode'].str.replace(' ', '') # remove whitespace in 'NiN 2 kode'
-    konv = konv.drop(konv[(konv['Kortkode'] == '') | (konv['Kortkode'] == '-') |(konv['Kortkode'] == 'nan')].index)
-    konv['SP'] = konv['SP'].str.replace('.0', '').str.replace('nan', '')
-    konv['FP'] = konv['SP'].str.replace('.0', '').str.replace('nan', '')
-    konv['NiN 2 kode'] = konv['NiN 2 kode'].str.replace('·', '-')
-    konv = konv.rename(columns={'NiN 2 kode': 'forrigekode'})
-    konv['Klasse'] = 'VN'# setter alle rader i kolonnen 'Klasse' til 'VN'
-    konv.to_csv('tmp/variabelnavn_konv_tmp.csv', index=False, sep=";")
-    #konv.info() 
-    # store to temp csv file
+    vn_conv = nin3_variabler[nin3_variabler['11 Tr/Kl'] == 'W'][['Kortkode','NiN 2 kode', 'FP', 'SP']]
+    vn_conv = vn_conv[vn_conv['NiN 2 kode'] != '-']
+    vn_conv = vn_conv[vn_conv['NiN 2 kode'] != '']
+    vn_conv = vn_conv[vn_conv['NiN 2 kode'] != 'nan']
+    vn_conv = vn_conv[vn_conv['FP'] != 'ny']
 
-    # FROM GT<>KONV example
-    gt_rows = []
-    with open('tmp/variabelnavn_konv_tmp.csv', newline='') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=';')
-        all_rows = []
-        #check rows for multiple nin2koder
-        for r in reader:
-            if "," in r.get("forrigekode"):
-                n2list = make_list_nin2kode(r.get("forrigekode"))
-                for n2 in n2list:
-                    new_row = r.copy()
-                    new_row["forrigekode"] = n2.strip()
-                    all_rows.append(new_row)
-        
-        #loop over rows
-        for row in all_rows:
-            new = {} # new dict to store the new row
-            new['VNKode']=row['Kortkode']
-            new['FP']=row['FP']
-            new['SP']=row['SP']
-            new['Klasse']=row['Klasse']
-            result = create_v23_variabel_url(row['forrigekode'], koder23)
-            new['forrigekode']=result.get('kode23')
-            new['url']=result.get('url')
-            if not new.get('url'):# bytter siste "-" med "_" og prøver igjen
-                kode = row['forrigekode'].rsplit('-', 1)
-                kode = '_'.join(kode)
-                result = create_v23_variabel_url(kode, koder23)
-                new['forrigekode']=result.get('kode23', koder23)
-                new['url']=result.get('url')
-            # Sjekker om excel-kolonnen forrigekode (nin 2 koden) hadde match i koder23-dictonary 
-            if not new.get('url'):
-                new['forrigekode']=row['forrigekode'] 
-                print(f"\t\tFant ikke url for NiN2kode:{row['forrigekode']}")
-            gt_rows.append(new)
+    # replace 'nan' vaules on FP,SP with ''
+    vn_conv.loc[vn_conv['FP'] == 'nan', 'FP'] = ''
+    vn_conv.loc[vn_conv['SP'] == 'nan', 'SP'] = ''
 
-    # Creating konvertering csv for GT
-    with open('ut_data/konvertering_vn_v30.csv', 'w', newline='') as csvfile:
-        fieldnames = ['VNKode','forrigekode','FP','SP','Klasse', 'url']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';')
-        writer.writeheader()
-        writer.writerows(gt_rows)
-        print(f"\n\nFile written to {csvfile.name}")   
+    # split rows with multiple NiN 2 kode values
+    vn_conv['NiN 2 kode'] = vn_conv['NiN 2 kode'].str.split(',')
+    vn_conv = vn_conv.explode('NiN 2 kode')
+    vn_conv['NiN 2 kode'] = vn_conv['NiN 2 kode'].str.split(';')
+    vn_conv = vn_conv.explode('NiN 2 kode')
+
+    # remove whitespace
+    vn_conv['NiN 2 kode'] = vn_conv['NiN 2 kode'].str.strip()
+
+    # drop duplicates
+    vn_conv = vn_conv.drop_duplicates()
+    vn_conv = vn_conv.rename(columns={'NiN 2 kode': 'forrigekode'})
+    # add columns 'Klasse' and 'url'
+    vn_conv['Klasse'] = 'VN'
+    vn_conv['url'] = ''
+
+    #Iterates through each row in the `vn_conv` DataFrame and updates the 'url' column for that row based on the 'forrigekode' value and the `koder23` lookup data.
+
+    #For each row:
+    #1. Converts the 'forrigekode' value to lowercase and stores it in `forrigeKode_lookupkey`.
+    #2. Calls the `create_v23_variabel_url()` function, passing `forrigeKode_lookupkey` and `koder23` as arguments, and stores the returned URL in the `url` variable.
+    #3. Updates the 'url' column for the current row in the `vn_conv` DataFrame with the value from the `url` variable.
+
+    for index, row in vn_conv.iterrows():
+        # iterate through each row
+        forrigeKode_lookupkey = row['forrigekode'].lower()
+        result = create_v23_variabel_url(forrigeKode_lookupkey, koder23)
+        url = result.get('url')
+        vn_conv.at[index, 'url'] = url
+
+    vn_conv.to_csv('ut_data/konvertering_vn_v30.csv', index=False, sep=";")  
 
 def adjust_nin3_typer_col_names(nin3_typer):
         nin3_typer.rename(columns={

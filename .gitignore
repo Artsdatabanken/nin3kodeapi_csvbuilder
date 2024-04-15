@@ -344,3 +344,5 @@ API/nin3kodeapi.db
 CSV_produksjon/kortkodefix.ipynb
 nin3 console db.session.sql
 drupal_import/out/
+CSV_produksjon/nin2prod.db-shm
+CSV_produksjon/nin2prod.db-wal
