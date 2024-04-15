@@ -123,7 +123,7 @@ def backup_and_remove_previous_csv_files():
     folder_path = 'ut_data'
     # Taking backup of previous csv files
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    zip_filename = f'csv_files_{timestamp}.zip'
+    zip_filename = f'archive/csv_files_{timestamp}.zip'
     
     with zipfile.ZipFile(zip_filename, 'w') as zipf:
         for file_name in os.listdir(folder_path):
