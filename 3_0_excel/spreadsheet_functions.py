@@ -100,7 +100,7 @@ def excel_autoadjust_col(path, target_excel, padding):
 # Main method
 def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
     from conf import localdbpath
-    import shutil
+    import shutil, os
     if dbfromlocal:
         fetchDBfromLocal(localdbpath)
     else:
@@ -202,9 +202,11 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
         shutil.copy(excelfile, destination_file)
         print(f"adjusting column width in: {destination_file}")
         excel_autoadjust_col("ut/api", "nin3_0.xlsx", 2)
-
-    # adjust column width in resulting excels
-
+    os.remove(excelfile)#removing temporary file
+    print("Done!")
+    
+        
+    
 def timestamp():
     from datetime import datetime
     return datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -515,7 +517,7 @@ def maaleskala_fane(makecsv=False):
 def trinn_fane(makecsv=False):
     conn = getConn()
     t_Q = """
-    SELECT t.Verdi, t.Beskrivelse, ms.MaaleskalaNavn
+    SELECT t.Langkode, t.Verdi, t.Beskrivelse, ms.MaaleskalaNavn
     FROM Trinn t
     LEFT JOIN Maaleskala ms ON t.MaaleskalaId = ms.Id"""
     df_t = pd.read_sql_query(t_Q, conn)
