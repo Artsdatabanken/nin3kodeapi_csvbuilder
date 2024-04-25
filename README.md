@@ -12,7 +12,7 @@ Sub-projects by folders:
     * Creating drupal import format (update langkode in drupal based on langkode from nin3kodeapi)
 
 Technology:
-- Mainly jupyter notebook/lab, pandas and python3
+- Mainly jupyter notebook/lab, pandas and python3, requests, openpyxl, tabulate
 
 Prerequisites:
 - Python3 environment with jupyter package installed.

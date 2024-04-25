@@ -1,1 +1,1 @@
-localdbpath = "C:/temp/nin3kodeapi.db"
+localdbpath = "db/nin3kodeapi.db"

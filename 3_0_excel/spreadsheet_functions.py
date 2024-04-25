@@ -8,7 +8,8 @@ conn = None
 def fetchDB(branch:str):
     branch = 'develop' # usually 'develop','test' or 'master'
 
-    url = f"https://raw.githubusercontent.com/Artsdatabanken/nin3-kode-api/{branch}/NiN3.WebApi/nin3kodeapi.db" # Henter nin3 database fra nin3 repo branch:develop
+    #url = f"https://raw.githubusercontent.com/Artsdatabanken/nin-kode-api/{branch}/NiNKode.WebApi/databases/nin3kodeapi.db" # Henter nin3 database fra nin3 repo branch:develop
+    url = f"https://media.githubusercontent.com/media/Artsdatabanken/nin-kode-api/{branch}/NiNKode.WebApi/databases/nin3kodeapi.db"
     response = requests.get(url)
     with open("db/nin3kodeapi.db", "wb") as f:
         f.write(response.content)

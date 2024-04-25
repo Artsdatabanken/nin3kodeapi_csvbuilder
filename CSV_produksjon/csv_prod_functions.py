@@ -69,16 +69,6 @@ def make_list_nin2kode(nin2kode):
             reslist.append(n2)
     return reslist
 
-def variabelnavnkode_varkode2_csv(nin3_variabler):
-    vnkode_varkode2 = nin3_variabler[nin3_variabler['11 Tr/Kl'] == 'W'][['Kortkode', '8 VarKode2', '10 Målesk']]
-    #display(vnkode_varkode2)
-    vnkode_varkode2 = vnkode_varkode2.rename(columns={'8 VarKode2': 'Varkode2_kopi'})
-    #vnkode_varkode2 = vnkode_varkode2[vnkode_varkode2['10 Målesk'].isin(['SO', 'SI','SO,K'])]
-    vnkode_varkode2 = vnkode_varkode2[vnkode_varkode2['10 Målesk'].str.contains('SO|SI')]
-    vnkode_varkode2 = vnkode_varkode2.drop_duplicates()
-    vnkode_varkode2 = vnkode_varkode2.drop(['10 Målesk'], axis=1)
-    vnkode_varkode2.to_csv('inn_data/variabelnavnkode_varkode2.csv', index=False, sep=";")
-
 def load_nin3_variabler_sheet():
     import pandas as p
     import conf
@@ -299,89 +289,53 @@ def m050_hovedtype_mapping_csv(nin3_typer):
     m050_HT.to_csv('ut_data/m050_hovedtype_mapping.csv', index=False, sep=";")# create csv
 
 def grunntype_variabeltrinn_mapping_csv(nin3_typer):
-    import numpy as np
-    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype', 'Definisjonsgrunnlag', 'oLkM', 'Grunntypenavn', 'GTKode']]
+    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['GTKode', 'Definisjonsgrunnlag', 'Grunntypenavn']]
     gt_vt_1 = gt_vt[(gt_vt['Grunntypenavn'] != '-')
-                        & (gt_vt['Grunntypenavn'] != '')]
-
-    #gt_vt_1.to_csv('ut_data/sample_gt_vt_1.csv', index=False, sep=";")
-
+                        & (gt_vt['Grunntypenavn'] != '')]#Removing rows where grunntype has no name(assert their not a grunntype)
+    gt_vt_1 = gt_vt_1[['GTKode', 'Definisjonsgrunnlag']]#Removing column not needed anymore
     gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('[\[\]]', '')
-    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('-','_')#correcting notation for trinn(ref taskboard #64) 
-    gt_vt_1 = gt_vt_1.dropna(subset=['Definisjonsgrunnlag'])
+    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('[', '')#removing brackets 1/2
+    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace(']', '')#removing brackets 2/2
+    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('-','_')#correcting notation for trinn(ref taskboard #64)
+    #generate,duplicate rows based on ','-separator in Definisjonsgrunnlag
+    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.split(',')
+    gt_vt_1 = gt_vt_1.explode('Definisjonsgrunnlag')
 
-    new_gt_vt_rows = []
-    gt_vt_1[['Varkode2', 'Trinn']] = None
-    gt_vt_1 = gt_vt_1.loc[:, ['GTKode', 'Varkode2', 'Trinn', 'Definisjonsgrunnlag']].drop_duplicates()
+    gt_vt_1 = gt_vt_1[gt_vt_1['Definisjonsgrunnlag'] != "_"]#removing rows with no varkode2 or trinn
+    gt_vt_1 = gt_vt_1[gt_vt_1['Definisjonsgrunnlag'] != ""]#removing rows with no varkode2 or trinn
+    gt_vt_1['Varkode2'] = gt_vt_1['Definisjonsgrunnlag'].str.split('_').str[0] #create columns for varkode2
+    gt_vt_1['Trinn_end'] = gt_vt_1['Definisjonsgrunnlag'].str.split('_').str[1] #create row with collection of trinn characters
+    gt_vt_1['Trinn_end'] = gt_vt_1['Trinn_end'].fillna('')
+    gt_vt_w_trinn = gt_vt_1[gt_vt_1['Trinn_end'] != '']
+    gt_vt_no_trinn = gt_vt_1[gt_vt_1['Trinn_end'] == '']#in case there are rows with varkode2 but no trinn
 
-    for index, row in gt_vt_1.iterrows():
-        if ',' in row['Definisjonsgrunnlag']:
-            values = row['Definisjonsgrunnlag'].split(',')
-            for value in values:
-                new_row = row.copy()
-                value = value.replace('[', '').replace(']', '').strip()
-                vk2andTrinns = value.split('_')
-                if len(vk2andTrinns) > 1:
-                    vk2 = vk2andTrinns[0].upper()
-                    trinns = vk2andTrinns[1]
-                    for char in trinns:
-                        char_row = new_row.copy()
-                        char_row['Varkode2'] = vk2
-                        char_row['Trinn'] = vk2 + "-" + char.strip()
-                        new_gt_vt_rows.append(char_row)
-                else:
-                    char_row = new_row.copy()
-                    char_row['Varkode2'] = vk2
-                    char_row['Trinn'] = ''
-                    new_gt_vt_rows.append(char_row)
-        else:
-            new_row = row.copy()
-            row['Definisjonsgrunnlag'] = row['Definisjonsgrunnlag'].replace('[', '').replace(']', '').strip()
-            vk2andTrinns = row['Definisjonsgrunnlag'].split('_')
-            vk2 = vk2andTrinns[0].upper()
-            if len(vk2andTrinns) > 1:
-                trinns = vk2andTrinns[1]
-                for char in trinns:
-                    char_row = new_row.copy()
-                    char_row['Varkode2'] = vk2
-                    char_row['Trinn'] = vk2 + "-" + char.strip()
-                    new_gt_vt_rows.append(char_row)
-            else:
-                char_row = new_row.copy()
-                char_row['Varkode2'] = vk2
-                char_row['Trinn'] = ''
-                new_gt_vt_rows.append(char_row)
+    # Explode() into seperate rows per characters in Trinn_end
+    gt_vt_w_trinn['Trinn_end'] = gt_vt_w_trinn['Trinn_end'].str.split('')
+    gt_vt_w_trinn = gt_vt_w_trinn.explode('Trinn_end')
+    gt_vt_w_trinn = gt_vt_w_trinn[gt_vt_w_trinn['Trinn_end'] != ""]
 
-    new_gt_vt = pd.DataFrame(new_gt_vt_rows)
-    new_gt_vt['Trinn'] = new_gt_vt['Trinn'].str.replace('-', '_')
+    gt_vt_w_trinn = gt_vt_w_trinn.apply(lambda x: x.str.strip() if x.dtype == "object" else x)#removing whitespace from string columns
+        #Merge rows_w_trinn with variabelnavnkode_varkode
+    variabelnavnkode_varkode2 = pd.read_csv('tmp/vnkode_vk2_trinn.csv', sep=";", encoding='utf-8')
+    gt_vt_w_trinn = gt_vt_w_trinn.merge(variabelnavnkode_varkode2, left_on=['Varkode2','Trinn_end'], right_on=['Varkode2_kopi', 'sub_trinn'], how='left')
+    gt_vt_w_trinn_no_hits = gt_vt_w_trinn[gt_vt_w_trinn['TrinnKode'].isna()]#Dataframe that shows rows where merge did not find a match
 
-    new_gt_vt = new_gt_vt.loc[:, ['GTKode', 'Varkode2', 'Trinn', 'Definisjonsgrunnlag']].drop_duplicates()
+    if gt_vt_w_trinn_no_hits.shape[0] > 0: #Creating errormessage and result-file for rows without matches
+        filename = 'tmp/gt_vt_trinn_no_matches.csv'
+        print(f"Warning: Rows without match ({gt_vt_w_trinn_no_hits.shape[0]}):\n written to {filename}")
+        gt_vt_w_trinn_no_hits.to_csv(filename, index=False)
 
-    variabelnavnkode_varkode2 = pd.read_csv('inn_data/variabelnavnkode_varkode2.csv', sep=";")
-    new_gt_vt_done = pd.merge(new_gt_vt, variabelnavnkode_varkode2, left_on='Varkode2', right_on='Varkode2_kopi', how='left')
-    new_gt_vt_done.drop(['Varkode2_kopi'], axis=1, inplace=True)
-
-    new_gt_vt_done.rename(columns={'Kortkode': 'Variabelnavn_kortkode'}, inplace=True)
-    # attempting to replace [] in definisjonsgrunnlag : 
-    import re
-
-    # Define the regex pattern to extract values within square brackets
-    pattern = r'\[([^\]]+)\]'
-
-    # Apply the regex operation to the 'Definisjonsgrunnlag' column
-    new_gt_vt_done['Definisjonsgrunnlag'] = new_gt_vt_done['Definisjonsgrunnlag'].apply(lambda x: re.sub(pattern, r'\1', x))
-    new_gt_vt_done.replace(' ', '', inplace=True)
-    new_gt_vt_done.replace('-', '', inplace=True)
-    new_gt_vt_done.replace('', np.nan, inplace=True)
-
-    new_gt_vt_done.dropna(subset=['Varkode2', 'Trinn', 'Definisjonsgrunnlag', 'Variabelnavn_kortkode'], how='all', inplace=True)
-    new_gt_vt_done['Trinn'] = new_gt_vt_done['Variabelnavn_kortkode'] + "_" + new_gt_vt_done['Trinn'].str.split("_").str[-1] #Adjusting for kortkode of Trinn
-    #new_gt_vt_done.to_csv('tmp/grunntype_variabeltrinn_mapping.csv', index=False, sep=";")
-    new_gt_vt_done.to_csv('ut_data/grunntype_variabeltrinn_mapping.csv', index=False, sep=";")
+    # join gt_vt_w_trinn with gt_vt_no_trinn if gt_vt_no_trinn has rows
+    if gt_vt_no_trinn.shape[0] > 0:# (at the time om implementing this gt_vt_no_trinn has no rows)
+        gt_vt_no_trinn = gt_vt_no_trinn.merge(variabelnavnkode_varkode2, left_on=['Varkode2','Trinn_end'], right_on=['Varkode2_kopi', 'sub_trinn'], how='left')
+        gt_vt_no_trinn = gt_vt_no_trinn.fillna('')
+        gt_vt_w_trinn = pd.concat([gt_vt_w_trinn, gt_vt_no_trinn])
+    gt_vt_done = gt_vt_w_trinn[['GTKode', 'Varkode2', 'TrinnKode', 'VNKode','Definisjonsgrunnlag']]
+    gt_vt_done = gt_vt_done.drop_duplicates()
+    gt_vt_done.to_csv('ut_data/grunntype_variabeltrinn_mapping.csv', index=False, sep=";")
 
 def hovedtype_variabeltrinn_mapping_csv(nin3_typer_orig):
     ht_variabeltrinn = nin3_typer_orig[(nin3_typer_orig['9 HT'] != '0') & (nin3_typer_orig['11 GT']=='0')][['Definisjonsgrunnlag', 'HTKode']]
-
     ht_variabeltrinn = ht_variabeltrinn[~ht_variabeltrinn['Definisjonsgrunnlag'].str.contains(';')]# removing rows with ';' in Definisjonsgrunnlag, disse er uforståelige data
     ht_variabeltrinn['Definisjonsgrunnlag'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.split(',')
     ht_variabeltrinn = ht_variabeltrinn.explode('Definisjonsgrunnlag')
@@ -407,13 +361,18 @@ def hovedtype_variabeltrinn_mapping_csv(nin3_typer_orig):
 
     #writing trinn as trinn.kortkode (adding variabelnavn as prefix):
         #Merge rows_w_trinn with variabelnavnkode_varkodee
-    variabelnavnkode_varkode2 = pd.read_csv('inn_data/vnkode_vk2_trinn.csv', sep=";")
+    variabelnavnkode_varkode2 = pd.read_csv('tmp/vnkode_vk2_trinn.csv', sep=";")
     ht_rows_w_trinn = ht_rows_w_trinn.merge(variabelnavnkode_varkode2, left_on=['Varkode2','Trinn_end'], right_on=['Varkode2_kopi', 'sub_trinn'], how='left')
 
     #prepping ht_rows_no_trinn for join
     ht_rows_no_trinn = ht_rows_no_trinn.merge(variabelnavnkode_varkode2, left_on='Varkode2', right_on='Varkode2_kopi', how='left')
     ht_rows_no_trinn['TrinnKode'] = ''
     ht_rows_no_trinn = ht_rows_no_trinn.fillna('')
+
+    if ht_rows_no_trinn.shape[0] > 0:
+        filename = 'tmp/ht_vt_trinn_no_matches.csv'
+        print(f"Warning: Rows without match ({ht_rows_no_trinn.shape[0]}) \n written to {filename}")
+        ht_rows_no_trinn.to_csv(filename, index=False)
 
     ht_variabeltrinn_join = pd.concat([ht_rows_w_trinn, ht_rows_no_trinn]) #joining rows of ht_rows_w_trinn and ht_rows_no_trinn
     ht_variabeltrinn_join = ht_variabeltrinn_join[ht_variabeltrinn_join['Varkode2'] != ""]#removing noise from joning
@@ -440,11 +399,11 @@ def prepare_konvertering_3_to_23():
         Order by Klasse"""
     df = pd.read_sql_query(query, con)
     con.close()
-    df.to_csv('inn_data/2_3_koder_fra_sqlite_prod.csv', sep=';', index=False)
+    df.to_csv('tmp/2_3_koder_fra_sqlite_prod.csv', sep=';', index=False)
 
     # Load v2.3 koder to dict
     koder23 = {}
-    with open('inn_data/2_3_koder_fra_sqlite_prod.csv', newline='') as csvfile:
+    with open('tmp/2_3_koder_fra_sqlite_prod.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         koder = []
         for row in reader:
@@ -711,7 +670,7 @@ def maaleskala_enhet_csv(nin3_variabler):
     #me_1.head(5) 
 
     # part 2/2
-    with open('inn_data/maaleskala_trinn_enhet.md', 'r') as file:
+    with open('inn_data/maaleskala_trinn_enhet.md', 'r', encoding='utf-8') as file:
         file_string = file.read()
     # Remove leading/trailing white spaces and split the string into lines
     lines = [line.strip() for line in file_string.strip().split('\n')]
@@ -987,7 +946,7 @@ def vnkode_vk2_trinn(nin3_variabler):
         '11 Tr/Kl': 'sub_trinn'
         }, inplace=True)
     vnkode_vk2_trinn['VNKode'] = vnkode_vk2_trinn['TrinnKode'].str.split('_').str[0]
-    vnkode_vk2_trinn.to_csv("inn_data/vnkode_vk2_trinn.csv", index=False, sep=";")
+    vnkode_vk2_trinn.to_csv("tmp/vnkode_vk2_trinn.csv", index=False, sep=";")
 
 
 # MAIN
@@ -1011,6 +970,7 @@ def create_csv_files():
     nin3_typer.to_excel('tmp/nin3_typer.xlsx', index=False)
     print(f"*** Saving nin3_typer as tmp/nin3_typer.xlsx")
     nin3_variabler = load_nin3_variabler_sheet()
+    print(f"*** Creating lookup-file: tmp/vnkode_vk2_trinn.csv")
     vnkode_vk2_trinn(nin3_variabler)
     print(f"*** Creating typer.csv")
     typer_csv(nin3_typer)
@@ -1044,8 +1004,6 @@ def create_csv_files():
     m050_grunntype_mapping_csv(nin3_typer)
     print(f"*** Creating m050_hovedtype_mapping.csv")
     m050_hovedtype_mapping_csv(nin3_typer)
-    print(f"*** Creating variabelnavnkode_varkode2.csv")
-    variabelnavnkode_varkode2_csv(nin3_variabler)
     print(f"*** Creating grunntype_variabeltrinn_mapping.csv")
     grunntype_variabeltrinn_mapping_csv(nin3_typer)
     print(f"*** Creating hovedtype_variabeltrinn_mapping.csv")
