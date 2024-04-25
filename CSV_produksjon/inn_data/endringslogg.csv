@@ -12,3 +12,5 @@ Versjon;Tidspunkt;Beskrivelse
 3.0;20240415;Feil: konverteringer for variabelnavn, trinn-konverteringer var blandet med variabelnavn (#86)
 3.0;20240415;Trinn, alle kortkoder var feil er nå korrigert (#87)
 3.0;20240415;Trinn har fått langkode (#85)
+3.0;20240425;grunntype-variabeltrinn, korrigering (#91)
+3.0;20240425;hovedtype-variabeltrinn, korrigering (#92)
