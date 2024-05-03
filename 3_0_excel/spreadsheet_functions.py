@@ -9,7 +9,7 @@ def fetchDB(branch:str):
     branch = 'develop' # usually 'develop','test' or 'master'
 
     #url = f"https://raw.githubusercontent.com/Artsdatabanken/nin-kode-api/{branch}/NiNKode.WebApi/databases/nin3kodeapi.db" # Henter nin3 database fra nin3 repo branch:develop
-    url = f"https://media.githubusercontent.com/media/Artsdatabanken/nin-kode-api/{branch}/NiNKode.WebApi/databases/nin3kodeapi.db"
+    url = f"https://media.githubusercontent.com/media/Artsdatabanken/nin-kode-api/{branch}/NiNKode.WebApi/databases/nin3kodeapi.db" #Trying to fetch nin3 db as LFS
     response = requests.get(url)
     with open("db/nin3kodeapi.db", "wb") as f:
         f.write(response.content)
@@ -108,6 +108,7 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
         fetchDB(branch)
     conn = getConn()
     df_db_info = db_info_fane()
+    df_endringslogg = endringslogg_fane()
     df_type = type_fane()
     df_htg = hovedtypegruppe_fane()
     df_ht = hovedtype_fane()
@@ -134,6 +135,7 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
     df_gt_konvertering = gt_konvertering()
     df_vn_konvertering = vn_konvertering()
     df_enums = enums()
+    """
     if forEdit:
         df_type = extend_df_with_edit_logg_columns(df_type)
         df_htg = extend_df_with_edit_logg_columns(df_htg)
@@ -160,10 +162,11 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
         df_ht_konvertering = extend_df_with_edit_logg_columns(df_ht_konvertering)
         df_gt_konvertering = extend_df_with_edit_logg_columns(df_gt_konvertering)
         df_vn_konvertering = extend_df_with_edit_logg_columns(df_vn_konvertering)
-        df_enums = extend_df_with_edit_logg_columns(df_enums)
-    excelfile = f"ut/nin3_0_{timestamp()}.xlsx"
+        df_enums = extend_df_with_edit_logg_columns(df_enums)"""
+    excelfile = f"ut/nin3_0_{timestamp()}.xlsx" 
     with pd.ExcelWriter(excelfile) as writer:
         df_db_info.to_excel(writer, sheet_name="db_info", index=False)
+        df_endringslogg.to_excel(writer, sheet_name="endringslogg", index=False)
         df_type.to_excel(writer, sheet_name="Type", index=False)
         df_htg.to_excel(writer, sheet_name="Hovedtypegruppe", index=False)
         df_ht.to_excel(writer, sheet_name="Hovedtype", index=False)
@@ -220,6 +223,28 @@ def db_info_fane(makecsv=False):
         df_db_info.to_csv(f"ut/db_info_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
         print(f"written to 'ut/db_info_fane_{timestamp()}.csv'")
     return df_db_info
+
+def endringslogg_fane(makecsv=False):
+    conn = getConn()
+    endringsloggQ = """
+        SELECT
+            v.Navn as Versjon,
+            e.Tidspunkt,
+            e.Beskrivelse
+        FROM Endringslogg e
+        LEFT JOIN (
+            SELECT 
+                Id,
+                Navn
+            FROM Versjon
+            ) v ON e.VersjonId = v.Id
+    Order by Tidspunkt desc"""
+    df_endringslogg = pd.read_sql_query(endringsloggQ, conn)
+    if makecsv:
+        df_endringslogg.to_csv(f"ut/endringslogg_{timestamp()}.csv", index=False, encoding="utf-8-sig")
+        print(f"written to 'ut/endringslogg_{timestamp()}.csv'")
+    return df_endringslogg
+
 
 def type_fane(makecsv=False):
     conn = getConn()

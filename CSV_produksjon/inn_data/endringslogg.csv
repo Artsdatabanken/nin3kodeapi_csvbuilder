@@ -14,3 +14,5 @@ Versjon;Tidspunkt;Beskrivelse
 3.0;20240415;Trinn har fått langkode (#85)
 3.0;20240425;grunntype-variabeltrinn, korrigering (#91)
 3.0;20240425;hovedtype-variabeltrinn, korrigering (#92)
+3.0;20240429;Definisjonsgrunnlag/variabeltrinn grunntype: "bP_" leses nå inn som "BP_", varkode2 er kun store bokstaver, berører grunntyper I01-001 til I03-036 (#104)
+3.0;20240429;Endringslogg: Fane i rapporter, exceldata (#95)
