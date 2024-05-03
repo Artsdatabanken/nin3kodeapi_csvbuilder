@@ -832,6 +832,26 @@ def variabelnavn_konvertering_csv(nin3_variabler, koder23):
 
     vn_conv.to_csv('ut_data/konvertering_vn_v30.csv', index=False, sep=";")  
 
+def trinn_konvertering_csv(nin3_variabler):
+    trinn_konv = nin3_variabler[['Kortkode','NiN 2 kode','FP','SP','11 Tr/Kl']]
+    trinn_konv = trinn_konv.rename(columns={'NiN 2 kode': 'forrigekode'})
+
+    #filter and 'wash' data
+    trinn_konv = trinn_konv[trinn_konv['11 Tr/Kl']!='W']#removing variabler
+    trinn_konv = trinn_konv.drop('11 Tr/Kl', axis=1)#dropping column '11 Tr/Kl'
+    trinn_konv = trinn_konv[trinn_konv['Kortkode']!='nan']#removing trinn rows without kortkode
+    trinn_konv = trinn_konv[~trinn_konv['forrigekode'].isin(['-', 'nan','ny'])]#removing rows with no previous kode
+    trinn_konv = trinn_konv[trinn_konv['FP']!='ny']
+    trinn_konv['FP'] = trinn_konv['FP'].replace('-', '')#remove '-' from int value, blank is null
+    trinn_konv['FP'] = trinn_konv['FP'].replace('?', '')#remove '?' from int value
+    trinn_konv['SP'] = trinn_konv['SP'].replace('-', '')#remove '-' from int value, blank is null
+    trinn_konv['SP'] = trinn_konv['SP'].replace(r'\<', '', regex=True)#remove '<' from int value
+    trinn_konv['SP'] = trinn_konv['SP'].str.replace(r'\?', '', regex=True)#remove '?' from int value
+
+    trinn_konv['Klasse'] = 'VT'
+    trinn_konv['url'] = ''
+    trinn_konv.to_csv('ut_data/konvertering_trinn.csv', sep=';', index=False)
+
 def adjust_nin3_typer_col_names(nin3_typer):
         nin3_typer.rename(columns={
             '3 AbC': 'Ecosystnivå',
@@ -1039,8 +1059,8 @@ def create_csv_files():
     variabelnavn_maaleskala_mapping_csv(nin3_variabler)
     print(f"*** Creating variabelnavn_konvertering.csv")
     variabelnavn_konvertering_csv(nin3_variabler, koder23)
-
-
+    print(f"*** Creating trinn_konvertering.csv")
+    trinn_konvertering_csv(nin3_variabler)
     print("Done!")
 
 
