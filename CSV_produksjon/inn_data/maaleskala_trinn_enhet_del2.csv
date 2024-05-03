@@ -1,0 +1,134 @@
+Måleskala;Trinn;Trinnverdi;Enhet
+D0 ; 0 ; 0 ; Observert antall
+D0 ; 1 ; 1 ; Observert antall
+D0 ; 2 ; 2 ; Observert antall
+D0 ; 3 ; 3–4 ; Observert antall
+D0 ; 4 ; 5–8 ; Observert antall
+D0 ; 5 ; 9 – 16 ; Observert antall
+D0 ; 6 ; 17 – 32 ; Observert antall
+D0 ; 7 ; 33 – 64 ; Observert antall
+D0 ; 8 ; 65 – 128 ; Observert antall
+D0 ; 9 ; 129 – 256 ; Observert antall
+D0 ; 10 ; < 256 ; Observert antall
+D1a ; 0 ; 0 ; Observert antall
+D1a ; 1 ; 1 ; Observert antall
+D1a ; 2 ; 2 ; Observert antall
+D1a ; 3 ; 3–4 ; Observert antall
+D1a ; 4 ; 5–8 ; Observert antall
+D1a ; 5 ; 9 – 16 ; Observert antall
+D1a ; 6 ; 17 – 32 ; Observert antall
+D1a ; 7 ; 33 – 64 ; Observert antall
+D1a ; 8 ; 65 – 128 ; Observert antall
+D1a ; 9 ; 129 – 256 ; Observert antall
+D1a ; 10 ; < 256 ; Observert antall
+D1b ; 0 ; 0 ; Observert antall
+D1b ; 1 ; 1 ; Observert antall
+D1b ; 2 ; 2-4 ; Observert antall
+D1b ; 3 ; 5-16 ; Observert antall
+D1b ; 4 ; 17-64 ; Observert antall
+D1b ; 5 ; 65-256 ; Observert antall
+D1b ; 6 ; < 256 ; Observert antall
+T0 ; 0 ; 0 ; Tetthet
+T0 ; 1 ; 0 – 1/32 ; Tetthet
+T0 ; 2 ; 1/32 – 1/16 ; Tetthet
+T0 ; 3 ; 1/16 – 1/8 ; Tetthet
+T0 ; 4 ; 1/8 – 1/4 ; Tetthet
+T0 ; 5 ; 1/4 – 1/2 ; Tetthet
+T0 ; 6 ; 1/2 – 1 ; Tetthet
+T0 ; 7 ; >1 – 2 ; Tetthet
+T0 ; 8 ; >2 – 4 ; Tetthet
+T0 ; 9 ; >4 – 8 ; Tetthet
+T0 ; 10 ; >8 – 16 ; Tetthet
+T0 ; 11 ; >16 – 32 ; Tetthet
+T0 ; 12 ; >32 – 64 ; Tetthet
+T0 ; 13 ; >64 – 128 ; Tetthet
+T0 ; 14 ; >128 – 256 ; Tetthet
+T0 ; 15 ; > 256 ; Tetthet
+T1a ; 0 ; 0 ; Tetthet
+T1a ; 1 ; >0 – 1 ; Tetthet
+T1a ; 2 ; >1 – 2 ; Tetthet
+T1a ; 3 ; >2 – 4 ; Tetthet
+T1a ; 4 ; >4 – 8 ; Tetthet
+T1a ; 5 ; >8 – 16 ; Tetthet
+T1a ; 6 ; >16 – 32 ; Tetthet
+T1a ; 7 ; >32 – 64 ; Tetthet
+T1a ; 8 ; >64 – 128 ; Tetthet
+T1a ; 9 ; >128 – 256 ; Tetthet
+T1a ; 10 ; > 256 ; Tetthet
+T1b ; 0 ; 0 ; Tetthet
+T1b ; 1 ; >0 – 1 ; Tetthet
+T1b ; 2 ; >1 – 4 ; Tetthet
+T1b ; 3 ; >4 – 16 ; Tetthet
+T1b ; 4 ; >16 – 64 ; Tetthet
+T1b ; 5 ; >64 – 256 ; Tetthet
+T1b ; 6 ; > 256 ; Tetthet
+T1c ; 0 ; 0 ; Tetthet
+T1c ; 1 ; 0 – 1/32 ; Tetthet
+T1c ; 2 ; 1/32 – 1/16 ; Tetthet
+T1c ; 3 ; 1/16 – 1/8 ; Tetthet
+T1c ; 4 ; 1/8 – 1/4 ; Tetthet
+T1c ; 5 ; 1/4 – 1/2 ; Tetthet
+T1c ; 6 ; 1/2 – 1 ; Tetthet
+T1c ; 7 ; >1 – 2 ; Tetthet
+T1c ; 8 ; >2 – 4 ; Tetthet
+T1c ; 9 ; >4 – 8 ; Tetthet
+T1c ; 10 ; >8 – 16 ; Tetthet
+T1c ; 11 ; >16 – 32 ; Tetthet
+T1c ; 12 ; >32 – 64 ; Tetthet
+T1c ; 13 ; >64 – 128 ; Tetthet
+T1c ; 14 ; >128 – 256 ; Tetthet
+T1c ; 15 ; > 256 ; Tetthet
+P4 ; 0 ; 0 ; Prosent
+P4 ; 1 ; 0-25 ; Prosent
+P4 ; 2 ; 25-50 ; Prosent
+P4 ; 3 ; 50-100 ; Prosent
+P5 ; 0 ; 0 ; Prosent
+P5 ; 1 ; 0-12,5 ; Prosent
+P5 ; 2 ; 12,5-25 ; Prosent
+P5 ; 3 ; 25-50 ; Prosent
+P5 ; 4 ; 50-100 ; Prosent
+P6a ; 0 ; 0 ; Prosent
+P6a ; 1 ; 0-6,25 ; Prosent
+P6a ; 2 ; 6,25-12,5 ; Prosent
+P6a ; 3 ; 12,5-25 ; Prosent
+P6a ; 4 ; 25-50 ; Prosent
+P6a ; 5 ; 50-100 ; Prosent
+P6b ; 0 ; 0 ; Prosent
+P6b ; 1 ; 0-12,5 ; Prosent
+P6b ; 2 ; 12,5-25 ; Prosent
+P6b ; 3 ; 25-50 ; Prosent
+P6b ; 4 ; 50-75 ; Prosent
+P6b ; 5 ; 75-100 ; Prosent
+P7 ; 0 ; 0 ; Prosent
+P7 ; 1 ; 0-6,25 ; Prosent
+P7 ; 2 ; 6,25-12,5 ; Prosent
+P7 ; 3 ; 12,5-25 ; Prosent
+P7 ; 4 ; 25-50 ; Prosent
+P7 ; 5 ; 50-75 ; Prosent
+P7 ; 6 ; 75-100 ; Prosent
+P8 ; 0 ; 0 ; Prosent
+P8 ; 1 ; 0-3,125 ; Prosent
+P8 ; 2 ; 3,125-6,25 ; Prosent
+P8 ; 3 ; 6,25-12,5 ; Prosent
+P8 ; 4 ; 12,5-25 ; Prosent
+P8 ; 5 ; 25-50 ; Prosent
+P8 ; 6 ; 50-75 ; Prosent
+P8 ; 7 ; 75-100 ; Prosent
+P9a ; 0 ; 0 ; Prosent
+P9a ; 1 ; 0 – 3,125 ; Prosent
+P9a ; 2 ; 3.125 – 6,25 ; Prosent
+P9a ; 3 ; 6,25 – 12,5 ; Prosent
+P9a ; 4 ; 12,5 – 25 ; Prosent
+P9a ; 5 ; 25 – 50 ; Prosent
+P9a ; 6 ; 50 – 75 ; Prosent
+P9a ; 7 ; 75– 90 ; Prosent
+P9a ; 8 ; 90 – 100 ; Prosent
+P6c ; 0 ; 0 ; Prosent
+P6c ; 1 ; 0 – 3,125 ; Prosent
+P6c ; 2 ; 3,125 – 12,5 ; Prosent
+P6c ; 3 ; 12,5 – 37,5 ; Prosent
+P6c ; 4 ; 37,5 – 80 ; Prosent
+P6c ; 5 ; 80 – 100 ; Prosent
+B ; 0 ; Fravær ; Binær
+B ; 1 ; Forekomst ; Binær
+K ; * ; * ; Observert antall

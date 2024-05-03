@@ -691,17 +691,9 @@ def maaleskala_enhet_csv(nin3_variabler):
     #me_1.head(5) 
 
     # part 2/2
-    with open('inn_data/maaleskala_trinn_enhet.md', 'r', encoding='utf-8') as file:
-        file_string = file.read()
-    # Remove leading/trailing white spaces and split the string into lines
-    lines = [line.strip() for line in file_string.strip().split('\n')]
-    # Join the lines back together, this time separating them with '\n', and read the result into a DataFrame
-    me_2 = pd.read_csv(StringIO('\n'.join(lines)), sep='|',engine='python')
+    me_2 = pd.read_csv('inn_data/maaleskala_trinn_enhet_del2.csv', sep=";", encoding= 'utf-8')
     # Remove any leading/trailing white spaces from the column names and drop any empty rows
-    me_2.columns = me_2.columns.str.strip()
-    me_2 = me_2.dropna(how='all')
     me_2 = me_2.drop(['Trinn', 'Trinnverdi'], axis=1)
-    me_2 = me_2[me_2['Måleskala'].str.strip() != '--'] #removing rows where Måleskala = "--"
     me_2 = me_2.rename(columns={'Enhet': 'Everdi'})
     me_2['Enhet'] = None
     me_2.loc[me_2['Everdi'].str.strip() == 'Prosent', 'Enhet'] = 'P'
@@ -722,35 +714,23 @@ def maaleskala_trinn_csv(nin3_variabler):
     # part 1/2
     mt1 = nin3_variabler[['Langkode','Kortkode', '8 VarKode2', '10 Målesk', '11 Tr/Kl', 'Trinn/klassebetegnelse']].copy()
     mt1 = mt1[mt1['11 Tr/Kl'] != 'W']
-    #mt1 = mt1.dropna(subset=['10 Målesk'])
     mt1['MåleskalaNavn'] = mt1['8 VarKode2'].astype(str) + '-' + mt1['10 Målesk'].astype(str).str.strip()
     mt1 = mt1[mt1['11 Tr/Kl'] != ''] #Dropping rows where Tr/Kl = ""
     mt1 = mt1[mt1['Kortkode'] != 'nan']
     mt1 = mt1.rename(columns={'11 Tr/Kl': 'Trinn', 'Trinn/klassebetegnelse': 'Trinnverdi'})
     mt1['Trinn'] = mt1['Kortkode']
     mt1 = mt1.drop(['Kortkode', '8 VarKode2', '10 Målesk'], axis=1)
-    #mt1.head(3)
 
     # part 2/2
     # Fetching variabelnavnkode and måleskalakode
     # hent trinn fra md-fil
     # tilpass og concat med del1 dataframe
-    with open('inn_data/maaleskala_trinn_enhet.md', 'r') as file:
-        file_string = file.read()
-    # Remove leading/trailing white spaces and split the string into lines
-    lines = [line.strip() for line in file_string.strip().split('\n')]
-    # Join the lines back together, this time separating them with '\n', and read the result into a DataFrame
-    mt2 = pd.read_csv(StringIO('\n'.join(lines)), sep='|',engine='python')
-    # Remove any leading/trailing white spaces from the column names and drop any empty rows
-    mt2.columns = mt2.columns.str.strip()
-    mt2 = mt2.dropna(how='all')
-
+    mt2 = pd.read_csv('inn_data/maaleskala_trinn_enhet_del2.csv', sep=";", encoding= 'utf-8')
     mt2['Trinnverdi'] = mt2['Trinnverdi'].str.replace(' ', '')
     mt2['MåleskalaNavn'] = mt2['Måleskala'].str.strip()
     mt2 = mt2.drop(['Enhet', 'Måleskala'], axis=1)
     mt2['Trinnverdi'] = mt2['Trinnverdi'].fillna(0)
-    mt2
-    mt = pd.concat([mt1, mt2], ignore_index=True)
+    mt = pd.concat([mt1, mt2], ignore_index=True)#union of the 2 dataframes
     # Strip Trinn for white spaces
     mt['Trinn'] = mt['Trinn'].str.strip()
     # Drop rows where Trinn = '--'
