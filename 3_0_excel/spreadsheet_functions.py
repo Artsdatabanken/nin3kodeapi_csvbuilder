@@ -134,6 +134,7 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
     df_ht_konvertering = ht_konvertering()
     df_gt_konvertering = gt_konvertering()
     df_vn_konvertering = vn_konvertering()
+    df_trinn_konvertering = trinn_konvertering()
     df_enums = enums()
     """
     if forEdit:
@@ -192,6 +193,7 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
         df_ht_konvertering.to_excel(writer, sheet_name="HT_Konvertering", index=False)
         df_gt_konvertering.to_excel(writer, sheet_name="GT_Konvertering", index=False)
         df_vn_konvertering.to_excel(writer, sheet_name="VN_Konvertering", index=False)
+        df_trinn_konvertering.to_excel(writer, sheet_name="Trinn_Konvertering", index=False)
         df_enums.to_excel(writer, sheet_name="Enums", index=False)
     print(f"\n\nExcel data skrevet til {excelfile}")
     closeConn()
@@ -656,6 +658,22 @@ def vn_konvertering(makecsv=False):
         df_vn_konvertering.to_csv(f"ut/vn_konvertering_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
         print(f"written to 'ut/vn_konvertering_fane_{timestamp()}.csv'")
     return df_vn_konvertering
+
+def trinn_konvertering(makecsv=False):
+    conn = getConn()
+    trinn_konverteringQ = """with t as (SELECT Ordinal
+        FROM Enumoppslag
+        WHERE Enumtype = 'KlasseEnum' and Beskrivelse = 'Variabeltrinn')
+        Select t.Langkode, k.Kode, k.ForrigeKode, k.FoelsomhetsPresisjon, k.Spesifiseringsevne,k.Url
+        From Konvertering k
+        LEFT JOIN Trinn t on k.Kode = t.Verdi
+        JOIN t ON t.Ordinal = k.Klasse"""
+    df_trinn_konvertering = pd.read_sql_query(trinn_konverteringQ, conn)
+    if makecsv:
+        df_trinn_konvertering.to_csv(f"ut/trinn_konvertering_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
+        print(f"written to 'ut/trinn_konvertering_fane_{timestamp()}.csv'")
+    return df_trinn_konvertering
+
 
 def enums(makecsv=False):
     conn = getConn()

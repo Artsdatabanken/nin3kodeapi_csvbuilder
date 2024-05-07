@@ -850,7 +850,7 @@ def trinn_konvertering_csv(nin3_variabler):
 
     trinn_konv['Klasse'] = 'VT'
     trinn_konv['url'] = ''
-    trinn_konv.to_csv('ut_data/konvertering_trinn.csv', sep=';', index=False)
+    trinn_konv.to_csv('ut_data/konvertering_trinn_v30.csv', sep=';', index=False)
 
 def adjust_nin3_typer_col_names(nin3_typer):
         nin3_typer.rename(columns={
