@@ -686,6 +686,8 @@ def maaleskala_enhet_csv(nin3_variabler):
     me_1.loc[me_1['Måleskala'] == 'SO', 'Enhet'] = 'VSO'
     me_1.loc[me_1['Måleskala'] == 'SI', 'Enhet'] = 'VSI'
     me_1['MåleskalaNavn'] = me_1['8 VarKode2'] + '-' + me_1['Måleskala']
+    me_1['MåleskalaNavn'] = me_1['MåleskalaNavn'].str.replace(')', '') #112
+    me_1 = me_1[me_1['MåleskalaNavn'] != 'nan-nan'] #113 :nan-nan, removing row where MåleskalaNavn = nan-nan
     me_1 = me_1.drop('8 VarKode2', axis=1)
     me_1 = me_1.drop_duplicates()
     #me_1.head(5) 
@@ -716,7 +718,7 @@ def maaleskala_trinn_csv(nin3_variabler):
     mt1 = mt1[mt1['11 Tr/Kl'] != 'W']
     mt1['MåleskalaNavn'] = mt1['8 VarKode2'].astype(str) + '-' + mt1['10 Målesk'].astype(str).str.strip()
     mt1 = mt1[mt1['11 Tr/Kl'] != ''] #Dropping rows where Tr/Kl = ""
-    mt1 = mt1[mt1['Kortkode'] != 'nan']
+    mt1 = mt1[mt1['Kortkode'] != 'nan']    
     mt1 = mt1.rename(columns={'11 Tr/Kl': 'Trinn', 'Trinn/klassebetegnelse': 'Trinnverdi'})
     mt1['Trinn'] = mt1['Kortkode']
     mt1 = mt1.drop(['Kortkode', '8 VarKode2', '10 Målesk'], axis=1)
@@ -739,6 +741,9 @@ def maaleskala_trinn_csv(nin3_variabler):
     mt.loc[mt['Trinnverdi'].str.len() > 0, 'Trinnverdi'] = mt.loc[mt['Trinnverdi'].str.len() > 0, 'Trinnverdi'].str.replace(';', ':')
     mt['Trinnverdi'] = mt['Trinnverdi'].str.capitalize() # capitalize letters
     mt = mt[mt['Trinn'] != 'nan_nan'] # remove null-rows
+    mt['Langkode'] = mt['Langkode'].str.replace(")", "") #112
+    mt['Trinn'] = mt['Trinn'].str.replace(")", "") #112
+    mt['MåleskalaNavn'] = mt['MåleskalaNavn'].str.replace(")", "") #112
     mt = mt.drop_duplicates() #fix for task #66
     mt = mt.sort_values(by=['MåleskalaNavn']) # order by MåleskalaNavn
     mt.to_csv('ut_data/maaleskala_trinn.csv', index=False, sep=";")
