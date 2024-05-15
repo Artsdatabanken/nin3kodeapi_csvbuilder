@@ -754,6 +754,11 @@ def variabelnavn_maaleskala_mapping_csv(nin3_variabler):
     #display(vn_ms[vn_ms['Kortkode'] == 'LM-KI_e'])
     vn_ms = vn_ms.dropna(subset=['10 Målesk'])  # drop rows where '10 Målesk' has no value
     vn_ms = vn_ms.dropna(subset=['8 VarKode2']) # drop rows where '8 VarKode2' has no value
+
+    # Rewrite invalid maaleskala values [DT*, P*] (#117)
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('DT*', 'D0,T0')
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('P*', 'P6b')
+
     # create a new dataframe to store the replicated rows
     new_rows = []
 
@@ -778,6 +783,8 @@ def variabelnavn_maaleskala_mapping_csv(nin3_variabler):
     # add Varkode2+"-" in front of [10 Målesk]-value if [10 Målesk] is "SO" or "SI"
     mask = (vn_ms_new['10 Målesk'] == 'SO') | (vn_ms_new['10 Målesk'] == 'SI')
     vn_ms_new.loc[mask, '10 Målesk'] = vn_ms_new.loc[mask, '8 VarKode2'] + '-' + vn_ms_new.loc[mask, '10 Målesk']
+
+    
     # replace underscores with dash in Kortkode column
     ##vn_ms_new['Kortkode'] = vn_ms_new['Kortkode'].str.replace('_', '-') ##skips this so reference is not broken (taskboard #52)
     # make all rows unique
