@@ -123,6 +123,15 @@ P9a ; 5 ; 25 – 50 ; Prosent
 P9a ; 6 ; 50 – 75 ; Prosent
 P9a ; 7 ; 75– 90 ; Prosent
 P9a ; 8 ; 90 – 100 ; Prosent
+P9b ; 0 ; 0 ; Prosent
+P9b ; 1 ; 0 – 2,5 ; Prosent
+P9b ; 2 ; 2,5 – 5 ; Prosent
+P9b ; 3 ; 5 – 10 ; Prosent
+P9b ; 4 ; 10 – 25 ; Prosent
+P9b ; 5 ; 25 – 50 ; Prosent
+P9b ; 6 ; 50 – 75 ; Prosent
+P9b ; 7 ; 75 – 90 ; Prosent
+P9b ; 8 ; 90 – 100 ; Prosent
 P6c ; 0 ; 0 ; Prosent
 P6c ; 1 ; 0 – 3,125 ; Prosent
 P6c ; 2 ; 3,125 – 12,5 ; Prosent

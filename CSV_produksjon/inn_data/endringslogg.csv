@@ -18,4 +18,4 @@ Versjon;Tidspunkt;Beskrivelse
 3.0;20240429;Endringslogg: Fane i rapport, exceldata (#95)
 3.0;20240503;Rettet skrivefeil på definisjonsgrunnlag for hovedtype NA-SC02 (#109)
 3.0;20240507;Konverteringer for trinn, samt egen fane i rapport exceldata (#88)
-3.0;20240527;Variabeltrinn som manglet pga ugyldige måleskala (#117)
+3.0;20240527;Variabeltrinn som manglet pga feiltolking av måleskala(DT*,P*) (#117)

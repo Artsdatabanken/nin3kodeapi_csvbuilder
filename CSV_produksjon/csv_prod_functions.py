@@ -755,9 +755,11 @@ def variabelnavn_maaleskala_mapping_csv(nin3_variabler):
     vn_ms = vn_ms.dropna(subset=['10 Målesk'])  # drop rows where '10 Målesk' has no value
     vn_ms = vn_ms.dropna(subset=['8 VarKode2']) # drop rows where '8 VarKode2' has no value
 
-    # Rewrite invalid maaleskala values [DT*, P*] (#117)
-    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('DT*', 'D0,T0')
-    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('P*', 'P6b')
+    # Rewrite multiple maaleskala values [DT*, P*] (#117)
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('DT*', 'D0,D1a,D1b,T0,T1a,T1b,T1c')
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('D*', 'D0,D1a,D1b')
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('T*', 'T0,T1a,T1b,T1c')
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('P*', 'P4,P5,P6a,P6b,P6c,P7,P8,P9a,P9b')
 
     # create a new dataframe to store the replicated rows
     new_rows = []
