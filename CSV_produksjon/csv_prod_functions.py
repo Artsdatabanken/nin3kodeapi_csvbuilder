@@ -40,9 +40,9 @@ def sjekk_unikhet(df: pd.DataFrame, kolonne: str):
     kode_counts_filtered = kode_counts[kode_counts['count'] > 1]
     # display the resulting dataframe
     if kode_counts_filtered.empty:
-        print(f"\tIngen duplikater i kolonnen {kolonne}")
+        print(f"\tNo duplicates in column {kolonne}")
     else:
-        print("\tFant følgende duplikater i kolonnen {kolonne}:\n\n")
+        print("\tFound following duplicates in column {kolonne}:\n\n")
         print(kode_counts_filtered)
     # Empty dataframe = no duplicates in Kode column
 
@@ -219,17 +219,42 @@ def hovedtype_grunntype_mapping_csv(nin3_typer):
     ht_gt_mapping = ht_gt_mapping.drop(['Grunntypenavn'], axis=1).sort_values(by=['GTKode'])
     ht_gt_mapping.to_csv('ut_data/hovedtype_grunntype_mapping.csv', index=False, sep=";")
 
+def validate_last_joint(number, langkode):
+            last_joint = langkode.split('-')[-1]
+            last_joint = last_joint.replace('0', '')            
+            try:
+                last_joint_int = int(last_joint)
+                nr_int = int(number)
+                if (nr_int == last_joint_int):
+                    return langkode
+                else:
+                    new_last_joint = str(nr_int)
+                    if nr_int < 10:
+                        print(f"\tLast joint of langkode and number are not the same: {langkode}, {new_last_joint} attempting fix of langkode")
+                        new_last_joint = '0'+str(nr_int)
+                    langkode = langkode.rsplit('-', 1)[0] + '-' + new_last_joint
+                    return langkode
+            except ValueError:
+                print(f"Error: Last joint '{last_joint}' is not a valid integer.")
+                return langkode
 
 def m005_csv(nin3_typer):
-    nin3_m005 = nin3_typer[['M005-kode', 'M005-navn']]
-    nin3_m005.rename(columns={'M005-kode': 'M005-langkode'}, inplace=True)  # rename column to 'M005-langkode'
+    nin3_m005 = nin3_typer[['M005-kode', 'M005-navn', 'M005']]
+    nin3_m005.rename(columns={'M005-kode': 'M005-langkode'}, inplace=True)  # rename column to 'M005-langkode' 
     nin3_m005 = nin3_m005[nin3_m005['M005-langkode'].str.contains('-M005-')]  # filter: only valid M005-langkode
+    nin3_m005 = nin3_m005.dropna(subset=['M005-langkode'])# remove nan values
+    for index, row in nin3_m005.iterrows():#115
+        langkode = row['M005-langkode']
+        m005 = row['M005']
+        if len(langkode) > 3 and len(row['M005-navn'])>3 and len(row['M005'])>0:
+            langkode = validate_last_joint(m005, langkode)
+            row['M005-langkode'] = langkode
     nin3_m005['M005-kortkode'] = nin3_m005['M005-langkode'].str.extract(r'([A-Z]{2}\d+-M005-\d+)') # extract M005-kortkode
     nin3_m005 = nin3_m005[nin3_m005['M005-navn'].str.len() >= 2]  # remove rows where M005-navn str length is shorter than 2
     nin3_m005.drop_duplicates(subset=['M005-langkode', 'M005-navn'], inplace=True)
-    nin3_m005 = nin3_m005.sort_values(by='M005-langkode')
-    sjekk_unikhet(nin3_m005, 'M005-langkode')
+    nin3_m005['M005_langkode'] = nin3_m005['M005-langkode'].astype(str)# setting all rows to str before sorting    
     nin3_m005.to_csv('ut_data/M005.csv', index=False, sep=";")
+    sjekk_unikhet(nin3_m005, 'M005-langkode')
 
 def m005_grunntype_mapping_csv(nin3_typer):
     m005_gt = nin3_typer[['M005-kode','GTKode']] # select columns
@@ -248,10 +273,17 @@ def m005_hovedtype_mapping_csv(nin3_typer):
     m005_HT = m005_HT.sort_values(by='M005-langkode') # Sorting by M005-langkode
     m005_HT.to_csv('ut_data/m005_hovedtype_mapping.csv', index=False, sep=";")
 
-def m020_csv(nin3_typer, regnearkfil):
-    nin3_m020 = nin3_typer[['M020-kode', 'M020-navn']]
+def m020_csv(nin3_typer):
+    nin3_m020 = nin3_typer[['M020-kode', 'M020-navn', 'M020']]
     nin3_m020.rename(columns={'M020-kode': 'M020-langkode'}, inplace=True)  # rename column to 'M020-langkode'
-    nin3_m020.to_csv('tmp/m020raw.csv',index=False, sep=";")
+    nin3_m020 = nin3_m020[nin3_m020['M020-langkode'].str.contains('-M020-')]
+    nin3_m020 = nin3_m020.dropna(subset=['M020-langkode'])# remove nan values
+    for index, row in nin3_m020.iterrows():#115
+        langkode = row['M020-langkode']
+        m020 = row['M020']
+        if len(langkode) > 3 and len(row['M020-navn'])>3 and len(row['M020'])>0:
+            langkode = validate_last_joint(m020, langkode)
+            row['M020-langkode'] = langkode
     nin3_m020['M020-kortkode'] = nin3_m020['M020-langkode'].str.extract(r'([A-Z]{2}\d+-M020-\d+)')
     nin3_m020_filtered = nin3_m020[nin3_m020['M020-navn'].str.len() > 2] # remove rows where M020-navn str length is shorter than 2
     nin3_m020_filtered.drop_duplicates(subset=['M020-langkode', 'M020-navn'], inplace=True)#remove duplicates
@@ -1038,7 +1070,7 @@ def create_csv_files():
     print(f"*** Creating m005_hovedtype_mapping.csv")
     m005_hovedtype_mapping_csv(nin3_typer)
     print(f"*** Creating m020.csv")
-    m020_csv(nin3_typer, regnearkfil)
+    m020_csv(nin3_typer)
     print(f"*** Creating m020_grunntype_mapping.csv")
     m020_grunntype_mapping_csv(nin3_typer)
     print(f"*** Creating m020_hovedtype_mapping.csv")
