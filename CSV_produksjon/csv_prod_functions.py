@@ -249,10 +249,11 @@ def m005_csv(nin3_typer):
         if len(langkode) > 3 and len(row['M005-navn'])>3 and len(row['M005'])>0:
             langkode = validate_last_joint(m005, langkode)
             row['M005-langkode'] = langkode
+    nin3_m005 = nin3_m005.drop('M005', axis=1)
     nin3_m005['M005-kortkode'] = nin3_m005['M005-langkode'].str.extract(r'([A-Z]{2}\d+-M005-\d+)') # extract M005-kortkode
     nin3_m005 = nin3_m005[nin3_m005['M005-navn'].str.len() >= 2]  # remove rows where M005-navn str length is shorter than 2
     nin3_m005.drop_duplicates(subset=['M005-langkode', 'M005-navn'], inplace=True)
-    nin3_m005['M005_langkode'] = nin3_m005['M005-langkode'].astype(str)# setting all rows to str before sorting    
+    nin3_m005 = nin3_m005.sort_values('M005-langkode') #order by M005-langkode  
     nin3_m005.to_csv('ut_data/M005.csv', index=False, sep=";")
     sjekk_unikhet(nin3_m005, 'M005-langkode')
 
@@ -284,6 +285,7 @@ def m020_csv(nin3_typer):
         if len(langkode) > 3 and len(row['M020-navn'])>3 and len(row['M020'])>0:
             langkode = validate_last_joint(m020, langkode)
             row['M020-langkode'] = langkode
+    nin3_m020 = nin3_m020.drop('M020', axis=1)# remove column M020
     nin3_m020['M020-kortkode'] = nin3_m020['M020-langkode'].str.extract(r'([A-Z]{2}\d+-M020-\d+)')
     nin3_m020_filtered = nin3_m020[nin3_m020['M020-navn'].str.len() > 2] # remove rows where M020-navn str length is shorter than 2
     nin3_m020_filtered.drop_duplicates(subset=['M020-langkode', 'M020-navn'], inplace=True)#remove duplicates
