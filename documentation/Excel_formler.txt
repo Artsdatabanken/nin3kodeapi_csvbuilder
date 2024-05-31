@@ -1,6 +1,0 @@
-OBS må oppdateres i forhold til plassering:
-
-Typekode: F(3 AbC), G (4 kat1), H(5 kat2)  = Formel: =F2 & "-" &G2 & "-" & H2
-HTGKode: H(5 kat2), J(7 HTG) = Formel: =H2 & "-" & J2
-HTKode: J(7 HTG), L(8 Pk), M(9 HT) = Formel: = J2 & "_" & L2 & "-" & M2
-GTKode: J(7 HTG), L(8 Pk), M(9 HT), Q(11 GT), Formel: = J2 & "-" & L2 & "-" & M2 & "-" & Q2
