@@ -8,7 +8,8 @@ conn = None
 def fetchDB(branch:str):
     branch = 'develop' # usually 'develop','test' or 'master'
 
-    url = f"https://raw.githubusercontent.com/Artsdatabanken/nin3-kode-api/{branch}/NiN3.WebApi/nin3kodeapi.db" # Henter nin3 database fra nin3 repo branch:develop
+    #url = f"https://raw.githubusercontent.com/Artsdatabanken/nin-kode-api/{branch}/NiNKode.WebApi/databases/nin3kodeapi.db" # Henter nin3 database fra nin3 repo branch:develop
+    url = f"https://media.githubusercontent.com/media/Artsdatabanken/nin-kode-api/{branch}/NiNKode.WebApi/databases/nin3kodeapi.db" #Trying to fetch nin3 db as LFS
     response = requests.get(url)
     with open("db/nin3kodeapi.db", "wb") as f:
         f.write(response.content)
@@ -100,13 +101,14 @@ def excel_autoadjust_col(path, target_excel, padding):
 # Main method
 def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
     from conf import localdbpath
-    import shutil
+    import shutil, os
     if dbfromlocal:
         fetchDBfromLocal(localdbpath)
     else:
         fetchDB(branch)
     conn = getConn()
     df_db_info = db_info_fane()
+    df_endringslogg = endringslogg_fane()
     df_type = type_fane()
     df_htg = hovedtypegruppe_fane()
     df_ht = hovedtype_fane()
@@ -132,7 +134,9 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
     df_ht_konvertering = ht_konvertering()
     df_gt_konvertering = gt_konvertering()
     df_vn_konvertering = vn_konvertering()
+    df_trinn_konvertering = trinn_konvertering()
     df_enums = enums()
+    """
     if forEdit:
         df_type = extend_df_with_edit_logg_columns(df_type)
         df_htg = extend_df_with_edit_logg_columns(df_htg)
@@ -159,10 +163,11 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
         df_ht_konvertering = extend_df_with_edit_logg_columns(df_ht_konvertering)
         df_gt_konvertering = extend_df_with_edit_logg_columns(df_gt_konvertering)
         df_vn_konvertering = extend_df_with_edit_logg_columns(df_vn_konvertering)
-        df_enums = extend_df_with_edit_logg_columns(df_enums)
-    excelfile = f"ut/nin3_0_{timestamp()}.xlsx"
+        df_enums = extend_df_with_edit_logg_columns(df_enums)"""
+    excelfile = f"ut/nin3_0_{timestamp()}.xlsx" 
     with pd.ExcelWriter(excelfile) as writer:
         df_db_info.to_excel(writer, sheet_name="db_info", index=False)
+        df_endringslogg.to_excel(writer, sheet_name="endringslogg", index=False)
         df_type.to_excel(writer, sheet_name="Type", index=False)
         df_htg.to_excel(writer, sheet_name="Hovedtypegruppe", index=False)
         df_ht.to_excel(writer, sheet_name="Hovedtype", index=False)
@@ -188,6 +193,7 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
         df_ht_konvertering.to_excel(writer, sheet_name="HT_Konvertering", index=False)
         df_gt_konvertering.to_excel(writer, sheet_name="GT_Konvertering", index=False)
         df_vn_konvertering.to_excel(writer, sheet_name="VN_Konvertering", index=False)
+        df_trinn_konvertering.to_excel(writer, sheet_name="Trinn_Konvertering", index=False)
         df_enums.to_excel(writer, sheet_name="Enums", index=False)
     print(f"\n\nExcel data skrevet til {excelfile}")
     closeConn()
@@ -202,9 +208,11 @@ def createExcel(dbfromlocal=False, branch='develop', forEdit=True):
         shutil.copy(excelfile, destination_file)
         print(f"adjusting column width in: {destination_file}")
         excel_autoadjust_col("ut/api", "nin3_0.xlsx", 2)
-
-    # adjust column width in resulting excels
-
+    os.remove(excelfile)#removing temporary file
+    print("Done!")
+    
+        
+    
 def timestamp():
     from datetime import datetime
     return datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -217,6 +225,28 @@ def db_info_fane(makecsv=False):
         df_db_info.to_csv(f"ut/db_info_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
         print(f"written to 'ut/db_info_fane_{timestamp()}.csv'")
     return df_db_info
+
+def endringslogg_fane(makecsv=False):
+    conn = getConn()
+    endringsloggQ = """
+        SELECT
+            v.Navn as Versjon,
+            e.Tidspunkt,
+            e.Beskrivelse
+        FROM Endringslogg e
+        LEFT JOIN (
+            SELECT 
+                Id,
+                Navn
+            FROM Versjon
+            ) v ON e.VersjonId = v.Id
+    Order by Tidspunkt desc"""
+    df_endringslogg = pd.read_sql_query(endringsloggQ, conn)
+    if makecsv:
+        df_endringslogg.to_csv(f"ut/endringslogg_{timestamp()}.csv", index=False, encoding="utf-8-sig")
+        print(f"written to 'ut/endringslogg_{timestamp()}.csv'")
+    return df_endringslogg
+
 
 def type_fane(makecsv=False):
     conn = getConn()
@@ -515,7 +545,7 @@ def maaleskala_fane(makecsv=False):
 def trinn_fane(makecsv=False):
     conn = getConn()
     t_Q = """
-    SELECT t.Verdi, t.Beskrivelse, ms.MaaleskalaNavn
+    SELECT t.Langkode, t.Verdi, t.Beskrivelse, ms.MaaleskalaNavn
     FROM Trinn t
     LEFT JOIN Maaleskala ms ON t.MaaleskalaId = ms.Id"""
     df_t = pd.read_sql_query(t_Q, conn)
@@ -628,6 +658,22 @@ def vn_konvertering(makecsv=False):
         df_vn_konvertering.to_csv(f"ut/vn_konvertering_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
         print(f"written to 'ut/vn_konvertering_fane_{timestamp()}.csv'")
     return df_vn_konvertering
+
+def trinn_konvertering(makecsv=False):
+    conn = getConn()
+    trinn_konverteringQ = """with t as (SELECT Ordinal
+        FROM Enumoppslag
+        WHERE Enumtype = 'KlasseEnum' and Beskrivelse = 'Variabeltrinn')
+        Select t.Langkode, k.Kode, k.ForrigeKode, k.FoelsomhetsPresisjon, k.Spesifiseringsevne,k.Url
+        From Konvertering k
+        LEFT JOIN Trinn t on k.Kode = t.Verdi
+        JOIN t ON t.Ordinal = k.Klasse"""
+    df_trinn_konvertering = pd.read_sql_query(trinn_konverteringQ, conn)
+    if makecsv:
+        df_trinn_konvertering.to_csv(f"ut/trinn_konvertering_fane_{timestamp()}.csv", index=False, encoding="utf-8-sig")
+        print(f"written to 'ut/trinn_konvertering_fane_{timestamp()}.csv'")
+    return df_trinn_konvertering
+
 
 def enums(makecsv=False):
     conn = getConn()

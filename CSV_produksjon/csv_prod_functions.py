@@ -1,4 +1,14 @@
 import pandas as pd
+import shutil
+import os
+
+def copy_changelog():
+    src = 'inn_data/endringslogg.csv'
+    dst = 'ut_data/endringslogg.csv'
+    if not os.path.exists('ut_data'):
+        os.makedirs('ut_data')
+    shutil.copyfile(src, dst)
+    
 
 def find_rows_with_semicolon(df, key_column):
     df_sk = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
@@ -30,9 +40,9 @@ def sjekk_unikhet(df: pd.DataFrame, kolonne: str):
     kode_counts_filtered = kode_counts[kode_counts['count'] > 1]
     # display the resulting dataframe
     if kode_counts_filtered.empty:
-        print(f"\tIngen duplikater i kolonnen {kolonne}")
+        print(f"\tNo duplicates in column {kolonne}")
     else:
-        print("\tFant følgende duplikater i kolonnen {kolonne}:\n\n")
+        print("\tFound following duplicates in column {kolonne}:\n\n")
         print(kode_counts_filtered)
     # Empty dataframe = no duplicates in Kode column
 
@@ -69,16 +79,6 @@ def make_list_nin2kode(nin2kode):
             reslist.append(n2)
     return reslist
 
-def variabelnavnkode_varkode2_csv(nin3_variabler):
-    vnkode_varkode2 = nin3_variabler[nin3_variabler['11 Tr/Kl'] == 'W'][['Kortkode', '8 VarKode2', '10 Målesk']]
-    #display(vnkode_varkode2)
-    vnkode_varkode2 = vnkode_varkode2.rename(columns={'8 VarKode2': 'Varkode2_kopi'})
-    #vnkode_varkode2 = vnkode_varkode2[vnkode_varkode2['10 Målesk'].isin(['SO', 'SI','SO,K'])]
-    vnkode_varkode2 = vnkode_varkode2[vnkode_varkode2['10 Målesk'].str.contains('SO|SI')]
-    vnkode_varkode2 = vnkode_varkode2.drop_duplicates()
-    vnkode_varkode2 = vnkode_varkode2.drop(['10 Målesk'], axis=1)
-    vnkode_varkode2.to_csv('inn_data/variabelnavnkode_varkode2.csv', index=False, sep=";")
-
 def load_nin3_variabler_sheet():
     import pandas as p
     import conf
@@ -86,7 +86,8 @@ def load_nin3_variabler_sheet():
     pd.set_option('display.max_rows', 500)
     pd.set_option('display.max_columns', 500)
     pd.set_option('display.width', 1000)
-    nin3_variabler = pd.read_excel(regnearkfil, sheet_name='Variabler')
+    nin3_variabler = pd.read_excel(regnearkfil, sheet_name='Variabler',
+                                   dtype={'FP':str, 'SP':str})
     nin3_variabler = nin3_variabler.applymap(lambda x: x.strip() if isinstance(x, str) else x) # removing whitespace
     nin3_variabler = nin3_variabler.astype(str) # setting all columns to string
     return nin3_variabler
@@ -122,7 +123,7 @@ def backup_and_remove_previous_csv_files():
     folder_path = 'ut_data'
     # Taking backup of previous csv files
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    zip_filename = f'csv_files_{timestamp}.zip'
+    zip_filename = f'archive/csv_files_{timestamp}.zip'
     
     with zipfile.ZipFile(zip_filename, 'w') as zipf:
         for file_name in os.listdir(folder_path):
@@ -146,25 +147,25 @@ def typer_csv(nin3_typer):
     #typer2.to_json('ut_data/type.json', orient="table", index=False) # NaN blir null i json, orient: tablestruktur istedenfor seriesstuktur
 
 def hovedtypegruppe_csv(nin3_typer):
-    hovedtypegrupper = nin3_typer[['HTGKode','Typekategori','Typekategori2','Hovedtypegruppe', 'Hovedtypegruppenavn', 'Typekategori3']]
+    hovedtypegrupper = nin3_typer[['HTGKode','Typekategori','Typekategori2','Hovedtypegruppe', 'Hovedtypegruppenavn', 'Typekategori3', 'Hovedtype']]
     hovedtypegrupper = hovedtypegrupper.applymap(lambda x: x.strip() if isinstance(x, str) else x) #Setter alle kolonner til string
-    #hovedtypegrupper['Kode'] = hovedtypegrupper['Typekategori2'].map(str)+'-'+hovedtypegrupper['Hovedtypegruppe'].map(str)
     hovedtypegrupper['Typekategori3'] = hovedtypegrupper['Typekategori3'].replace('', '0').fillna('0') # BYTTER UT tomme verdier med 0 på Typekategori3
 
     # Convert all columns to string type for consistency
     hovedtypegrupper = hovedtypegrupper.astype(str)
-    hovedtypegrupper.rename(columns={'HTGKode': 'Kode'}, inplace=True)
 
     # Replace NaN values with a consistent value
     hovedtypegrupper = hovedtypegrupper.fillna('0')
     hovedtypegrupper = hovedtypegrupper[hovedtypegrupper['Hovedtypegruppenavn'] != '0']
-    hovedtypegrupper2 = hovedtypegrupper.loc[:, ['Typekategori2', 'Hovedtypegruppe', 'Hovedtypegruppenavn', 'Typekategori3', 'Kode']]
-    hovedtypegrupper2 = hovedtypegrupper2.drop_duplicates()
-    #hovedtypegrupper2.to_csv('tmp/tmp_hovedtypegrupper.csv', index=False, sep=";")
+    hovedtypegrupper2 = hovedtypegrupper.loc[:, ['Typekategori2', 'Hovedtypegruppe', 'Hovedtypegruppenavn', 'Typekategori3', 'HTGKode']]
+
+    hovedtypegrupper2 = hovedtypegrupper2.drop_duplicates(subset=['HTGKode'])
+    hovedtypegrupper2 = hovedtypegrupper2.sort_values(by=['HTGKode'])
     hovedtypegrupper2.to_csv('ut_data/hovedtypegrupper.csv', index=False, sep=";")
+    
     # Controlling uniqueness of Kode column
     #--------------------------------------
-    sjekk_unikhet(hovedtypegrupper2, 'Kode')
+    sjekk_unikhet(hovedtypegrupper2, 'HTGKode')
 
 
 def type_htg_mapping_csv(nin3_typer):
@@ -180,14 +181,16 @@ def type_htg_mapping_csv(nin3_typer):
     typer_htg.to_csv('ut_data/type_htg_mapping.csv', index=False, sep=";")
 
 def hovedtype_csv_first(nin3_typer):
-    ht_df = nin3_typer[['HTKode', 'Hovedtypenavn', 'Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'HTGKode']]
+    ht_df = nin3_typer[['HTKode', 'Hovedtypenavn', 'Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'HTGKode', 'Grunntype']]
     ht1 = ht_df[ht_df['Hovedtype'] != '-'] # dropping rows where Hovedtype is '-'
+    ht1 = ht1[ht1['Grunntype']=='0']
     #Filter away fake hovedtype
     ht1.drop_duplicates(subset=['HTKode', 'Hovedtypenavn'], inplace=True)
     
-    ht1 = ht1[ht1['Hovedtypenavn'].str.len() > 0]  # Drop rows where string length of Hovedtypenavn-value is 0
+    ht1 = ht1[ht1['Hovedtypenavn'].str.len() > 1]  # Drop rows where string length of Hovedtypenavn-value smaller than 2
     # Create hovedtype.csv
     ht1 = ht1.reindex(columns=['HTKode', 'Hovedtypenavn', 'Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'HTGKode'])
+    ht1 = ht1.sort_values(by=['HTKode'])
     return ht1
 
 def hovedtype_csv(nin3_typer):
@@ -216,17 +219,43 @@ def hovedtype_grunntype_mapping_csv(nin3_typer):
     ht_gt_mapping = ht_gt_mapping.drop(['Grunntypenavn'], axis=1).sort_values(by=['GTKode'])
     ht_gt_mapping.to_csv('ut_data/hovedtype_grunntype_mapping.csv', index=False, sep=";")
 
+def validate_last_joint(number, langkode):
+            last_joint = langkode.split('-')[-1]
+            last_joint = last_joint.replace('0', '')            
+            try:
+                last_joint_int = int(last_joint)
+                nr_int = int(number)
+                if (nr_int == last_joint_int):
+                    return langkode
+                else:
+                    new_last_joint = str(nr_int)
+                    if nr_int < 10:
+                        print(f"\tLast joint of langkode and number are not the same: {langkode}, {new_last_joint} attempting fix of langkode")
+                        new_last_joint = '0'+str(nr_int)
+                    langkode = langkode.rsplit('-', 1)[0] + '-' + new_last_joint
+                    return langkode
+            except ValueError:
+                print(f"Error: Last joint '{last_joint}' is not a valid integer.")
+                return langkode
 
 def m005_csv(nin3_typer):
-    nin3_m005 = nin3_typer[['M005-kode', 'M005-navn']]
-    nin3_m005.rename(columns={'M005-kode': 'M005-langkode'}, inplace=True)  # rename column to 'M005-langkode'
+    nin3_m005 = nin3_typer[['M005-kode', 'M005-navn', 'M005']]
+    nin3_m005.rename(columns={'M005-kode': 'M005-langkode'}, inplace=True)  # rename column to 'M005-langkode' 
     nin3_m005 = nin3_m005[nin3_m005['M005-langkode'].str.contains('-M005-')]  # filter: only valid M005-langkode
+    nin3_m005 = nin3_m005.dropna(subset=['M005-langkode'])# remove nan values
+    for index, row in nin3_m005.iterrows():#115
+        langkode = row['M005-langkode']
+        m005 = row['M005']
+        if len(langkode) > 3 and len(row['M005-navn'])>3 and len(row['M005'])>0:
+            langkode = validate_last_joint(m005, langkode)
+            row['M005-langkode'] = langkode
+    nin3_m005 = nin3_m005.drop('M005', axis=1)
     nin3_m005['M005-kortkode'] = nin3_m005['M005-langkode'].str.extract(r'([A-Z]{2}\d+-M005-\d+)') # extract M005-kortkode
     nin3_m005 = nin3_m005[nin3_m005['M005-navn'].str.len() >= 2]  # remove rows where M005-navn str length is shorter than 2
     nin3_m005.drop_duplicates(subset=['M005-langkode', 'M005-navn'], inplace=True)
-    nin3_m005 = nin3_m005.sort_values(by='M005-langkode')
-    sjekk_unikhet(nin3_m005, 'M005-langkode')
+    nin3_m005 = nin3_m005.sort_values('M005-langkode') #order by M005-langkode  
     nin3_m005.to_csv('ut_data/M005.csv', index=False, sep=";")
+    sjekk_unikhet(nin3_m005, 'M005-langkode')
 
 def m005_grunntype_mapping_csv(nin3_typer):
     m005_gt = nin3_typer[['M005-kode','GTKode']] # select columns
@@ -245,10 +274,18 @@ def m005_hovedtype_mapping_csv(nin3_typer):
     m005_HT = m005_HT.sort_values(by='M005-langkode') # Sorting by M005-langkode
     m005_HT.to_csv('ut_data/m005_hovedtype_mapping.csv', index=False, sep=";")
 
-def m020_csv(nin3_typer, regnearkfil):
-    nin3_m020 = nin3_typer[['M020-kode', 'M020-navn']]
+def m020_csv(nin3_typer):
+    nin3_m020 = nin3_typer[['M020-kode', 'M020-navn', 'M020']]
     nin3_m020.rename(columns={'M020-kode': 'M020-langkode'}, inplace=True)  # rename column to 'M020-langkode'
-    nin3_m020.to_csv('tmp/m020raw.csv',index=False, sep=";")
+    nin3_m020 = nin3_m020[nin3_m020['M020-langkode'].str.contains('-M020-')]
+    nin3_m020 = nin3_m020.dropna(subset=['M020-langkode'])# remove nan values
+    for index, row in nin3_m020.iterrows():#115
+        langkode = row['M020-langkode']
+        m020 = row['M020']
+        if len(langkode) > 3 and len(row['M020-navn'])>3 and len(row['M020'])>0:
+            langkode = validate_last_joint(m020, langkode)
+            row['M020-langkode'] = langkode
+    nin3_m020 = nin3_m020.drop('M020', axis=1)# remove column M020
     nin3_m020['M020-kortkode'] = nin3_m020['M020-langkode'].str.extract(r'([A-Z]{2}\d+-M020-\d+)')
     nin3_m020_filtered = nin3_m020[nin3_m020['M020-navn'].str.len() > 2] # remove rows where M020-navn str length is shorter than 2
     nin3_m020_filtered.drop_duplicates(subset=['M020-langkode', 'M020-navn'], inplace=True)#remove duplicates
@@ -298,239 +335,108 @@ def m050_hovedtype_mapping_csv(nin3_typer):
     m050_HT = m050_HT.sort_values(by='M050-langkode') # Sorting by M050-langkode
     m050_HT.to_csv('ut_data/m050_hovedtype_mapping.csv', index=False, sep=";")# create csv
 
-""" #todo: assuming no longer in use
-# depends on typer_csv() being run first
-def typeklasser_langkode_mapping_csv(nin3_typer):
-    typer = nin3_typer[['Ecosystnivå', 'Typekategori', 'Typekategori2']]#.unique()
-    typer2 = typer.groupby(['Ecosystnivå','Typekategori', 'Typekategori2']).count().reset_index()
-    #typer2.replace(0, np.nan, inplace=True) # BYTTER UT int 0-verdi med NaN (blank string i csv, null i json)
-    typer2['Kode'] = typer2['Ecosystnivå'].map(str)+'-'+typer2['Typekategori'].map(str)+'-'+typer2['Typekategori2'].map(str)
-    typer_lk = nin3_typer[['Ecosystnivå', 'Typekategori', 'Typekategori2', 'Hovedtypegruppe', 'Hovedtypegruppenavn','Hovedtype', 'Prosedyrekategori','Langkode']]#.unique()
-    #typer2.replace(0, np.nan, inplace=True) # BYTTER UT int 0-verdi med NaN (blank string i csv, null i json)
-    typer_lk['Type_kode'] = typer2['Ecosystnivå'].map(str)+'-'+typer2['Typekategori'].map(str)+'-'+typer2['Typekategori2'].map(str)
-    typer_lk['Hovedtypegruppe_kode'] = typer_lk['Typekategori2'].map(str)+'-'+typer_lk['Hovedtypegruppe'].map(str)
-    typer_lk['Hovedtype_kode'] = typer_lk['Hovedtypegruppe'].map(str)+'-'+typer_lk['Prosedyrekategori'].map(str)+'-'+typer_lk['Hovedtype'].map(str)
-    typeklasser_langkode = typer_lk[['Type_kode', 'Hovedtypegruppe_kode', 'Hovedtype_kode', 'Langkode']]
-    typeklasser_langkode.to_csv('ut_data/typeklasser_langkode_mapping.csv', index=False, sep=";") # NaN blir blank string i csv
-"""
-def grunntype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
-    import numpy as np
-    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype', 'Definisjonsgrunnlag', 'oLkM', 'Grunntype', 'Grunntypenavn', 'GTKode']]
-    #gt_vt.rename(columns={'11 GT': 'Grunntype'}, inplace=True)
-
+def grunntype_variabeltrinn_mapping_csv(nin3_typer):
+    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['GTKode', 'Definisjonsgrunnlag', 'Grunntypenavn']]
     gt_vt_1 = gt_vt[(gt_vt['Grunntypenavn'] != '-')
-                        & (gt_vt['Grunntypenavn'] != '')]
-
-    #gt_vt_1.to_csv('ut_data/sample_gt_vt_1.csv', index=False, sep=";")
-
+                        & (gt_vt['Grunntypenavn'] != '')]#Removing rows where grunntype has no name(assert their not a grunntype)
+    gt_vt_1 = gt_vt_1[['GTKode', 'Definisjonsgrunnlag']]#Removing column not needed anymore
     gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('[\[\]]', '')
+    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('[', '')#removing brackets 1/2
+    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace(']', '')#removing brackets 2/2
+    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('-','_')#correcting notation for trinn(ref taskboard #64)
+    #generate,duplicate rows based on ','-separator in Definisjonsgrunnlag
+    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.split(',')
+    gt_vt_1 = gt_vt_1.explode('Definisjonsgrunnlag')
 
-    #gt_vt_1['GTKode'] = gt_vt_1['Hovedtypegruppe'].apply(str) + '-' + gt_vt_1['Prosedyrekategori'].apply(str) + '-' + gt_vt_1['Hovedtype'].apply(str) + '-' + gt_vt_1['Grunntype'].apply(str)
-    #gt_vt_1['GTKode'] = gt_vt_1[['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype']].apply(lambda x: '-'.join(x.astype(str)), axis=1)
-    gt_vt_1 = gt_vt_1.dropna(subset=['Definisjonsgrunnlag'])
+    gt_vt_1 = gt_vt_1[gt_vt_1['Definisjonsgrunnlag'] != "_"]#removing rows with no varkode2 or trinn
+    gt_vt_1 = gt_vt_1[gt_vt_1['Definisjonsgrunnlag'] != ""]#removing rows with no varkode2 or trinn
+    gt_vt_1['Varkode2'] = gt_vt_1['Definisjonsgrunnlag'].str.split('_').str[0] #create columns for varkode2
+    gt_vt_1['Varkode2'] = gt_vt_1['Varkode2'].str.upper() #varkode2 is always uppercase (issue #104)
+    
 
-    new_gt_vt_rows = []
-    gt_vt_1[['Varkode2', 'Trinn']] = None
-    gt_vt_1 = gt_vt_1.loc[:, ['GTKode', 'Varkode2', 'Trinn', 'Definisjonsgrunnlag']].drop_duplicates()
+    gt_vt_1['Trinn_end'] = gt_vt_1['Definisjonsgrunnlag'].str.split('_').str[1] #create row with collection of trinn characters
+    gt_vt_1['Trinn_end'] = gt_vt_1['Trinn_end'].fillna('')
+    gt_vt_w_trinn = gt_vt_1[gt_vt_1['Trinn_end'] != '']
+    gt_vt_no_trinn = gt_vt_1[gt_vt_1['Trinn_end'] == '']#in case there are rows with varkode2 but no trinn
 
-    for index, row in gt_vt_1.iterrows():
-        if ',' in row['Definisjonsgrunnlag']:
-            values = row['Definisjonsgrunnlag'].split(',')
-            for value in values:
-                new_row = row.copy()
-                value = value.replace('[', '').replace(']', '').strip()
-                vk2andTrinns = value.split('_')
-                if len(vk2andTrinns) > 1:
-                    vk2 = vk2andTrinns[0].upper()
-                    trinns = vk2andTrinns[1]
-                    for char in trinns:
-                        char_row = new_row.copy()
-                        char_row['Varkode2'] = vk2
-                        char_row['Trinn'] = vk2 + "-" + char.strip()
-                        new_gt_vt_rows.append(char_row)
-                else:
-                    char_row = new_row.copy()
-                    char_row['Varkode2'] = vk2
-                    char_row['Trinn'] = ''
-                    new_gt_vt_rows.append(char_row)
-        else:
-            new_row = row.copy()
-            row['Definisjonsgrunnlag'] = row['Definisjonsgrunnlag'].replace('[', '').replace(']', '').strip()
-            vk2andTrinns = row['Definisjonsgrunnlag'].split('_')
-            vk2 = vk2andTrinns[0].upper()
-            if len(vk2andTrinns) > 1:
-                trinns = vk2andTrinns[1]
-                for char in trinns:
-                    char_row = new_row.copy()
-                    char_row['Varkode2'] = vk2
-                    char_row['Trinn'] = vk2 + "-" + char.strip()
-                    new_gt_vt_rows.append(char_row)
-            else:
-                char_row = new_row.copy()
-                char_row['Varkode2'] = vk2
-                char_row['Trinn'] = ''
-                new_gt_vt_rows.append(char_row)
+    # Explode() into seperate rows per characters in Trinn_end
+    gt_vt_w_trinn['Trinn_end'] = gt_vt_w_trinn['Trinn_end'].str.split('')
+    gt_vt_w_trinn = gt_vt_w_trinn.explode('Trinn_end')
+    gt_vt_w_trinn = gt_vt_w_trinn[gt_vt_w_trinn['Trinn_end'] != ""]
 
-    new_gt_vt = pd.DataFrame(new_gt_vt_rows)
-    new_gt_vt['Trinn'] = new_gt_vt['Trinn'].str.replace('-', '_')
+    gt_vt_w_trinn = gt_vt_w_trinn.apply(lambda x: x.str.strip() if x.dtype == "object" else x)#removing whitespace from string columns
+        #Merge rows_w_trinn with variabelnavnkode_varkode
+    variabelnavnkode_varkode2 = pd.read_csv('tmp/vnkode_vk2_trinn.csv', sep=";", encoding='utf-8')
+    gt_vt_w_trinn = gt_vt_w_trinn.merge(variabelnavnkode_varkode2, left_on=['Varkode2','Trinn_end'], right_on=['Varkode2_kopi', 'sub_trinn'], how='left')
+    gt_vt_w_trinn_no_hits = gt_vt_w_trinn[gt_vt_w_trinn['TrinnKode'].isna()]#Dataframe that shows rows where merge did not find a match
 
-    new_gt_vt = new_gt_vt.loc[:, ['GTKode', 'Varkode2', 'Trinn', 'Definisjonsgrunnlag']].drop_duplicates()
+    if gt_vt_w_trinn_no_hits.shape[0] > 0: #Creating errormessage and result-file for rows without matches
+        filename = 'tmp/gt_vt_trinn_no_matches.csv'
+        print(f"Warning: Rows without match ({gt_vt_w_trinn_no_hits.shape[0]}):\n written to {filename}")
+        gt_vt_w_trinn_no_hits.to_csv(filename, index=False)
 
-    variabelnavnkode_varkode2 = pd.read_csv('inn_data/variabelnavnkode_varkode2.csv', sep=";")
-    new_gt_vt_done = pd.merge(new_gt_vt, variabelnavnkode_varkode2, left_on='Varkode2', right_on='Varkode2_kopi', how='left')
-    new_gt_vt_done.drop(['Varkode2_kopi'], axis=1, inplace=True)
-    new_gt_vt_done.rename(columns={'Kortkode': 'Variabelnavn_kortkode'}, inplace=True)
+    # join gt_vt_w_trinn with gt_vt_no_trinn if gt_vt_no_trinn has rows
+    if gt_vt_no_trinn.shape[0] > 0:# (at the time om implementing this gt_vt_no_trinn has no rows)
+        gt_vt_no_trinn = gt_vt_no_trinn.merge(variabelnavnkode_varkode2, left_on=['Varkode2','Trinn_end'], right_on=['Varkode2_kopi', 'sub_trinn'], how='left')
+        gt_vt_no_trinn = gt_vt_no_trinn.fillna('')
+        gt_vt_w_trinn = pd.concat([gt_vt_w_trinn, gt_vt_no_trinn])
+    gt_vt_done = gt_vt_w_trinn[['GTKode', 'Varkode2', 'TrinnKode', 'VNKode','Definisjonsgrunnlag']]
+    gt_vt_done = gt_vt_done.drop_duplicates()
+    gt_vt_done = gt_vt_done.sort_values(by=['GTKode'])
+    gt_vt_done.to_csv('ut_data/grunntype_variabeltrinn_mapping.csv', index=False, sep=";")
 
-    gt_vt = nin3_typer[nin3_typer['10 GT/kE'] == 'G'][['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype', 'Definisjonsgrunnlag', 'oLkM', 'Grunntypenavn', 'GTKode']]
-    #gt_vt.rename(columns={'11 GT': 'Grunntype'}, inplace=True)
+def hovedtype_variabeltrinn_mapping_csv(nin3_typer_orig):
+    ht_variabeltrinn = nin3_typer_orig[(nin3_typer_orig['9 HT'] != '0') & (nin3_typer_orig['11 GT']=='0')][['Definisjonsgrunnlag', 'HTKode']]
+    ht_variabeltrinn = ht_variabeltrinn[~ht_variabeltrinn['Definisjonsgrunnlag'].str.contains(';')]# removing rows with ';' in Definisjonsgrunnlag, disse er uforståelige data
+    ht_variabeltrinn['Definisjonsgrunnlag'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.split(',')
+    ht_variabeltrinn = ht_variabeltrinn.explode('Definisjonsgrunnlag')
+    ht_variabeltrinn['Definisjonsgrunnlag'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.replace("(‒)", "") #removing '(-)' from definisjonsgrunnlag
+    ht_variabeltrinn['Definisjonsgrunnlag'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.replace("( ‒)", "") #removing '( ‒)' from definisjonsgrunnlag
+    ht_variabeltrinn['Definisjonsgrunnlag'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.replace("[", "") #removing left brackets
+    ht_variabeltrinn['Definisjonsgrunnlag'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.replace("]", "") #removing right brackets
+    ht_variabeltrinn['Definisjonsgrunnlag'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.strip() #removing sourrounding whitespace
+    ht_variabeltrinn['Definisjonsgrunnlag'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.split(',')
+    ht_variabeltrinn = ht_variabeltrinn.explode('Definisjonsgrunnlag') # explode dataframe to sperate list elements into separate rows
+    ht_variabeltrinn['Definisjonsgrunnlag'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.split(' ')
+    ht_variabeltrinn = ht_variabeltrinn.explode('Definisjonsgrunnlag') # explode dataframe to separate list elements into separate rows
 
-    gt_vt_1 = gt_vt[(gt_vt['Grunntypenavn'] != '-')
-                        & (gt_vt['Grunntypenavn'] != '')]
+    ht_variabeltrinn['Varkode2'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.split('_').str[0]
+    ht_variabeltrinn['Varkode2'] = ht_variabeltrinn['Varkode2'].str.upper() #varkode2 is always uppercase (issue #104)
+    #removing invalid Varkode2 values UK, NS, N, K, '‒)'
+    ht_variabeltrinn = ht_variabeltrinn[~ht_variabeltrinn['Varkode2'].isin(['UK','NS','N','K', '‒)'])]
+    ht_variabeltrinn['Trinn_end'] = ht_variabeltrinn['Definisjonsgrunnlag'].str.split('_').str[1]
+    ht_variabeltrinn['Trinn_end'] = ht_variabeltrinn['Trinn_end'].fillna('')
+    ht_rows_w_trinn = ht_variabeltrinn[ht_variabeltrinn['Trinn_end'] != '']
+    ht_rows_no_trinn = ht_variabeltrinn[ht_variabeltrinn['Trinn_end'] == '']
 
-    #gt_vt_1.to_csv('ut_data/sample_gt_vt_1.csv', index=False, sep=";")
+    # Split Trinn_end into separate characters
+    ht_rows_w_trinn['Trinn_end'] = ht_rows_w_trinn['Trinn_end'].str.split('')
+    ht_rows_w_trinn = ht_rows_w_trinn.explode('Trinn_end') #Split and explode Trinn_end to separate characters
+    ht_rows_w_trinn = ht_rows_w_trinn[ht_rows_w_trinn['Trinn_end'] != ''] #removing empty trinn values
 
-    gt_vt_1['Definisjonsgrunnlag'] = gt_vt_1['Definisjonsgrunnlag'].str.replace('[\[\]]', '')
+    #writing trinn as trinn.kortkode (adding variabelnavn as prefix):
+        #Merge rows_w_trinn with variabelnavnkode_varkodee
+    variabelnavnkode_varkode2 = pd.read_csv('tmp/vnkode_vk2_trinn.csv', sep=";")
+    ht_rows_w_trinn = ht_rows_w_trinn.merge(variabelnavnkode_varkode2, left_on=['Varkode2','Trinn_end'], right_on=['Varkode2_kopi', 'sub_trinn'], how='left')
 
-    #gt_vt_1['GTKode'] = gt_vt_1[['Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'Grunntype']].apply(lambda x: '-'.join(x.astype(str)), axis=1)
-    gt_vt_1 = gt_vt_1.dropna(subset=['Definisjonsgrunnlag'])
+    #prepping ht_rows_no_trinn for join
+    ht_rows_no_trinn = ht_rows_no_trinn.merge(variabelnavnkode_varkode2, left_on='Varkode2', right_on='Varkode2_kopi', how='left')
+    ht_rows_no_trinn['TrinnKode'] = ''
+    ht_rows_no_trinn = ht_rows_no_trinn.fillna('')
 
-    new_gt_vt_rows = []
-    gt_vt_1[['Varkode2', 'Trinn']] = None
-    gt_vt_1 = gt_vt_1.loc[:, ['GTKode', 'Varkode2', 'Trinn', 'Definisjonsgrunnlag']].drop_duplicates()
+    if ht_rows_no_trinn.shape[0] > 0:
+        filename = 'tmp/ht_vt_trinn_no_matches.csv'
+        print(f"Warning: Rows without match ({ht_rows_no_trinn.shape[0]}) \n written to {filename}")
+        ht_rows_no_trinn.to_csv(filename, index=False)
 
-    for index, row in gt_vt_1.iterrows():
-        if ',' in row['Definisjonsgrunnlag']:
-            values = row['Definisjonsgrunnlag'].split(',')
-            for value in values:
-                new_row = row.copy()
-                value = value.replace('[', '').replace(']', '').strip()
-                vk2andTrinns = value.split('_')
-                if len(vk2andTrinns) > 1:
-                    vk2 = vk2andTrinns[0].upper()
-                    trinns = vk2andTrinns[1]
-                    for char in trinns:
-                        char_row = new_row.copy()
-                        char_row['Varkode2'] = vk2
-                        char_row['Trinn'] = vk2 + "-" + char.strip()
-                        new_gt_vt_rows.append(char_row)
-                else:
-                    char_row = new_row.copy()
-                    char_row['Varkode2'] = vk2
-                    char_row['Trinn'] = ''
-                    new_gt_vt_rows.append(char_row)
-        else:
-            new_row = row.copy()
-            row['Definisjonsgrunnlag'] = row['Definisjonsgrunnlag'].replace('[', '').replace(']', '').strip()
-            vk2andTrinns = row['Definisjonsgrunnlag'].split('_')
-            vk2 = vk2andTrinns[0].upper()
-            if len(vk2andTrinns) > 1:
-                trinns = vk2andTrinns[1]
-                for char in trinns:
-                    char_row = new_row.copy()
-                    char_row['Varkode2'] = vk2
-                    char_row['Trinn'] = vk2 + "-" + char.strip()
-                    new_gt_vt_rows.append(char_row)
-            else:
-                char_row = new_row.copy()
-                char_row['Varkode2'] = vk2
-                char_row['Trinn'] = ''
-                new_gt_vt_rows.append(char_row)
+    ht_variabeltrinn_join = pd.concat([ht_rows_w_trinn, ht_rows_no_trinn]) #joining rows of ht_rows_w_trinn and ht_rows_no_trinn
+    ht_variabeltrinn_join = ht_variabeltrinn_join[ht_variabeltrinn_join['Varkode2'] != ""]#removing noise from joning
+    ht_variabeltrinn_done = ht_variabeltrinn_join[['HTKode','Varkode2','TrinnKode','VNKode', 'Definisjonsgrunnlag']]
+    #ht_variabeltrinn_done = ht_variabeltrinn_done.rename(columns={"Kortkode": "Variabelnavn_kortkode"})
+    ht_variabeltrinn_done = ht_variabeltrinn_done.drop_duplicates()
+    ht_variabeltrinn_done = ht_variabeltrinn_done.sort_values(by=['HTKode'])
 
-    new_gt_vt = pd.DataFrame(new_gt_vt_rows)
-    new_gt_vt['Trinn'] = new_gt_vt['Trinn'].str.replace('-', '_')
-
-    new_gt_vt = new_gt_vt.loc[:, ['GTKode', 'Varkode2', 'Trinn', 'Definisjonsgrunnlag']].drop_duplicates()
-
-    variabelnavnkode_varkode2 = pd.read_csv('inn_data/variabelnavnkode_varkode2.csv', sep=";")
-    new_gt_vt_done = pd.merge(new_gt_vt, variabelnavnkode_varkode2, left_on='Varkode2', right_on='Varkode2_kopi', how='left')
-    new_gt_vt_done.drop(['Varkode2_kopi'], axis=1, inplace=True)
-    new_gt_vt_done.rename(columns={'Kortkode': 'Variabelnavn_kortkode'}, inplace=True)
-    # attempting to replace [] in definisjonsgrunnlag : 
-    import re
-
-    # Define the regex pattern to extract values within square brackets
-    pattern = r'\[([^\]]+)\]'
-
-    # Apply the regex operation to the 'Definisjonsgrunnlag' column
-    new_gt_vt_done['Definisjonsgrunnlag'] = new_gt_vt_done['Definisjonsgrunnlag'].apply(lambda x: re.sub(pattern, r'\1', x))
-    new_gt_vt_done.replace(' ', '', inplace=True)
-    new_gt_vt_done.replace('-', '', inplace=True)
-    new_gt_vt_done.replace('', np.nan, inplace=True)
-    new_gt_vt_done.dropna(subset=['Varkode2', 'Trinn', 'Definisjonsgrunnlag', 'Variabelnavn_kortkode'], how='all', inplace=True)
-    new_gt_vt_done.to_csv('ut_data/grunntype_variabeltrinn_mapping.csv', index=False, sep=";")
-
-def hovedtype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig):
-    class varkode2_Trinn:
-        Variabelnavn_kortkode:str = ''
-        Trinn:str = ''
-        Varkode2:str = ''
-
-    variabelnavnkode_varkode2 = pd.read_csv('inn_data/variabelnavnkode_varkode2.csv', sep=";")
-    def handle_definisjonsgrunnlag(dg)->list:
-        trinnlist = []
-        dg = dg.replace('[', '').replace(']', '').replace('(‒)','').strip()
-        dg = dg.replace('-', '').strip()
-        v2_ts = dg.split(",")
-        for v2t in v2_ts:
-            v2t_sp = v2t.split("_")
-            varkode2 = v2t_sp[0].upper()
-            variabelnavnkode_varkode2_row = variabelnavnkode_varkode2[variabelnavnkode_varkode2['Varkode2_kopi'] == varkode2]
-            Variabelnavn_kortkode = ''
-            if not variabelnavnkode_varkode2_row.empty:
-                Variabelnavn_kortkode = variabelnavnkode_varkode2_row['Kortkode'].values[0]
-            if len(v2t_sp) == 2:
-                for t in v2t_sp[1]:
-                        vt = varkode2_Trinn()
-                        vt.Variabelnavn_kortkode = Variabelnavn_kortkode
-                        vt.Trinn = varkode2.strip()+"_"+t.strip()
-                        vt.Varkode2 = varkode2.strip()
-                        trinnlist.append(vt)
-            else:
-                vt = varkode2_Trinn()
-                vt.Variabelnavn_kortkode = Variabelnavn_kortkode,
-                vt.Varkode2 = varkode2
-                trinnlist.append(vt)
-        return trinnlist
-
-    variabeltrinnList = []
-    # prepare a class with all output fields
-
-    # fetch dataframe with varkode2<>variabelnavn_kortkode mapping
-    variabelnavnkode_varkode2 = pd.read_csv('inn_data/variabelnavnkode_varkode2.csv', sep=";")
-
-    # Fetch the columns + definfisjonsgrunnlag
-    ht_variabeltrinn = nin3_typer_orig[(nin3_typer_orig['9 HT'] != '0') & (nin3_typer_orig['11 GT']=='0')][['7 HTG', '8 Pk','9 HT', 'Definisjonsgrunnlag', '5 kat2', 'HTKode']]
-    ## Create a valid Hovedtypekode from the row values
-    #ht_variabeltrinn['HTKode'] = ht_variabeltrinn['5 kat2'].str[0]+ht_variabeltrinn['7 HTG'].map(str)+'-'+ht_variabeltrinn['8 Pk'].map(str)+'-'+ht_variabeltrinn['9 HT'].map(str)
-    ht_variabeltrinn_filtered = ht_variabeltrinn[(ht_variabeltrinn['Definisjonsgrunnlag'] != '') & (ht_variabeltrinn['Definisjonsgrunnlag'] != '-')]
-    # dataframe for storing trinn-results
-    ht_trinn_df = pd.DataFrame({
-        'HTkode': [],
-        'Varkode2': [],
-        'Trinn': [],
-        'Variabelnavn_kortkode': [],
-        'Definisjonsgrunnlag': []
-    })
-    for index, row in ht_variabeltrinn_filtered.iterrows():
-        # Create a dataframe series for each trinn given in Definisjonsgrunnlag
-        varkode_trinnList = handle_definisjonsgrunnlag(row['Definisjonsgrunnlag'])
-
-        for vt in varkode_trinnList:
-            # add the new row to the final dataframe
-            new_row = {
-                'HTkode': row['HTKode'], 
-                'Varkode2': vt.Varkode2, 
-                'Trinn': vt.Trinn,
-                'Variabelnavn_kortkode': vt.Variabelnavn_kortkode if str(vt.Variabelnavn_kortkode) != "('',)" else '',
-                'Definisjonsgrunnlag': row['Definisjonsgrunnlag']
-            }
-            # add the new row to the final dataframe
-            #ht_trinn_df.append(new_row, ignore_index=True)
-            ht_trinn_df.loc[len(ht_trinn_df)] = new_row
-            #ht_trinn_df = pd.concat([ht_trinn_df, new_series], ignore_index=True)
-
-    # save dataframe to CSV file with ; as separator
-    ht_trinn_df.to_csv('ut_data/hovedtype_variabeltrinn_mapping.csv', sep=';', index=False)
+    ht_variabeltrinn_done.to_csv('ut_data/hovedtype_variabeltrinn_mapping.csv', index=False, sep=";")
 
 
 def prepare_konvertering_3_to_23():
@@ -548,11 +454,11 @@ def prepare_konvertering_3_to_23():
         Order by Klasse"""
     df = pd.read_sql_query(query, con)
     con.close()
-    df.to_csv('inn_data/2_3_koder_fra_sqlite_prod.csv', sep=';', index=False)
+    df.to_csv('tmp/2_3_koder_fra_sqlite_prod.csv', sep=';', index=False)
 
     # Load v2.3 koder to dict
     koder23 = {}
-    with open('inn_data/2_3_koder_fra_sqlite_prod.csv', newline='') as csvfile:
+    with open('tmp/2_3_koder_fra_sqlite_prod.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         koder = []
         for row in reader:
@@ -788,15 +694,20 @@ def variabelnavn_variabel_mapping_csv(nin3_variabler):
                             '6 FG/EK': 'Variabeltype', '7 Varkode1': 'Variabelgruppe', '8 VarKode2': 'Variabelnavn_kode', 'VarNavn': 'Variabelnavn_navn'})
     vvm['Variabel_kode'] = vvm[['3 ABC', '4 NM']].apply(lambda x: '-'.join(x), axis=1)
     #dupl = vvm['Variabelnavn_kode'].duplicated().any()
-    
-    def variabel_csv(nin3_variabler):
-        # hent unike kombinasjoner av kolonnene '3 ABC' og '4 NM'
-        variabler = nin3_variabler[['3 ABC', '4 NM']].drop_duplicates().dropna().sort_values(by=['3 ABC', '4 NM'])
-        variabler['Variabel_kode'] = variabler[['3 ABC', '4 NM']].apply(lambda x: '-'.join(x), axis=1)
-
-        variabler.to_csv('ut_data/variabel.csv', index=False, sep=";")
     vvm.to_csv('ut_data/variabelnavn_variabel_mapping.csv', index=False, sep=";")
 
+"""
+Generates a CSV file containing information about measurement scales and units used in the NiN3 dataset.
+
+The function `maaleskala_enhet_csv` takes a Pandas DataFrame `nin3_variabler` as input, which is assumed to contain the NiN3 dataset. It then processes the data to extract information about measurement scales and units, and writes this information to a CSV file named `maaleskala_enhet.csv` in the `ut_data` directory.
+
+The function performs the following steps:
+
+1. Separates the input DataFrame into two parts: one containing rows where the '11 Tr/Kl' column is not 'W', and the other containing rows where it is 'W'.
+2. For the first part, it extracts the '8 VarKode2' and '10 Målesk' columns, renames the '10 Målesk' column to 'Måleskala', and fills in the 'Enhet' column with 'VSO' or 'VSI' based on the 'Måleskala' value.
+3. For the second part, it reads a Markdown file named `maaleskala_trinn_enhet.md` from the `inn_data` directory, processes the contents of the file to create a Pandas DataFrame, and then extracts and processes the 'Måleskala' and 'Enhet' columns from this DataFrame.
+4. Finally, it concatenates the two DataFrames and writes the resulting DataFrame to the `maaleskala_enhet.csv` file in the `ut_data` directory.
+"""
 def maaleskala_enhet_csv(nin3_variabler):
     from tabulate import tabulate
     from io import StringIO
@@ -809,21 +720,16 @@ def maaleskala_enhet_csv(nin3_variabler):
     me_1.loc[me_1['Måleskala'] == 'SO', 'Enhet'] = 'VSO'
     me_1.loc[me_1['Måleskala'] == 'SI', 'Enhet'] = 'VSI'
     me_1['MåleskalaNavn'] = me_1['8 VarKode2'] + '-' + me_1['Måleskala']
+    me_1['MåleskalaNavn'] = me_1['MåleskalaNavn'].str.replace(')', '') #112
+    me_1 = me_1[me_1['MåleskalaNavn'] != 'nan-nan'] #113 :nan-nan, removing row where MåleskalaNavn = nan-nan
     me_1 = me_1.drop('8 VarKode2', axis=1)
     me_1 = me_1.drop_duplicates()
     #me_1.head(5) 
+
     # part 2/2
-    with open('inn_data/maaleskala_trinn_enhet.md', 'r') as file:
-        file_string = file.read()
-    # Remove leading/trailing white spaces and split the string into lines
-    lines = [line.strip() for line in file_string.strip().split('\n')]
-    # Join the lines back together, this time separating them with '\n', and read the result into a DataFrame
-    me_2 = pd.read_csv(StringIO('\n'.join(lines)), sep='|',engine='python')
+    me_2 = pd.read_csv('inn_data/maaleskala_trinn_enhet_del2.csv', sep=";", encoding= 'utf-8')
     # Remove any leading/trailing white spaces from the column names and drop any empty rows
-    me_2.columns = me_2.columns.str.strip()
-    me_2 = me_2.dropna(how='all')
     me_2 = me_2.drop(['Trinn', 'Trinnverdi'], axis=1)
-    me_2 = me_2[me_2['Måleskala'].str.strip() != '--'] #removing rows where Måleskala = "--"
     me_2 = me_2.rename(columns={'Enhet': 'Everdi'})
     me_2['Enhet'] = None
     me_2.loc[me_2['Everdi'].str.strip() == 'Prosent', 'Enhet'] = 'P'
@@ -842,53 +748,53 @@ def maaleskala_trinn_csv(nin3_variabler):
     from tabulate import tabulate
     from io import StringIO
     # part 1/2
-    mt1 = nin3_variabler[['Kortkode', '8 VarKode2', '10 Målesk', '11 Tr/Kl', 'Trinn/klassebetegnelse']].copy()
+    mt1 = nin3_variabler[['Langkode','Kortkode', '8 VarKode2', '10 Målesk', '11 Tr/Kl', 'Trinn/klassebetegnelse']].copy()
     mt1 = mt1[mt1['11 Tr/Kl'] != 'W']
-    mt1 = mt1.dropna(subset=['10 Målesk'])
     mt1['MåleskalaNavn'] = mt1['8 VarKode2'].astype(str) + '-' + mt1['10 Målesk'].astype(str).str.strip()
+    mt1 = mt1[mt1['11 Tr/Kl'] != ''] #Dropping rows where Tr/Kl = ""
+    mt1 = mt1[mt1['Kortkode'] != 'nan']    
     mt1 = mt1.rename(columns={'11 Tr/Kl': 'Trinn', 'Trinn/klassebetegnelse': 'Trinnverdi'})
-    mt1['Trinn'] = mt1['8 VarKode2'].astype(str) + '_' + mt1['Trinn'].astype(str)
+    mt1['Trinn'] = mt1['Kortkode']
     mt1 = mt1.drop(['Kortkode', '8 VarKode2', '10 Målesk'], axis=1)
-    #mt1.head(3)
 
     # part 2/2
-    # TODO-Fetch variabelnavnkode and måleskalakode
+    # Fetching variabelnavnkode and måleskalakode
     # hent trinn fra md-fil
     # tilpass og concat med del1 dataframe
-    with open('inn_data/maaleskala_trinn_enhet.md', 'r') as file:
-        file_string = file.read()
-    # Remove leading/trailing white spaces and split the string into lines
-    lines = [line.strip() for line in file_string.strip().split('\n')]
-    # Join the lines back together, this time separating them with '\n', and read the result into a DataFrame
-    mt2 = pd.read_csv(StringIO('\n'.join(lines)), sep='|',engine='python')
-    # Remove any leading/trailing white spaces from the column names and drop any empty rows
-    mt2.columns = mt2.columns.str.strip()
-    mt2 = mt2.dropna(how='all')
-
+    mt2 = pd.read_csv('inn_data/maaleskala_trinn_enhet_del2.csv', sep=";", encoding= 'utf-8')
     mt2['Trinnverdi'] = mt2['Trinnverdi'].str.replace(' ', '')
     mt2['MåleskalaNavn'] = mt2['Måleskala'].str.strip()
     mt2 = mt2.drop(['Enhet', 'Måleskala'], axis=1)
     mt2['Trinnverdi'] = mt2['Trinnverdi'].fillna(0)
-    mt2
-    mt = pd.concat([mt1, mt2], ignore_index=True)
+    mt = pd.concat([mt1, mt2], ignore_index=True)#union of the 2 dataframes
     # Strip Trinn for white spaces
     mt['Trinn'] = mt['Trinn'].str.strip()
     # Drop rows where Trinn = '--'
     mt = mt[mt['Trinn'] != '--']
     # Set first letter in trinnverdi to upper case
     mt.loc[mt['Trinnverdi'].str.len() > 0, 'Trinnverdi'] = mt.loc[mt['Trinnverdi'].str.len() > 0, 'Trinnverdi'].str.replace(';', ':')
-    mt['Trinnverdi'] = mt['Trinnverdi'].str.capitalize() # capitalize first letter
-    mt = mt[mt['Trinn'] != 'nan_nan']
+    mt['Trinnverdi'] = mt['Trinnverdi'].str.capitalize() # capitalize letters
+    mt = mt[mt['Trinn'] != 'nan_nan'] # remove null-rows
+    mt['Langkode'] = mt['Langkode'].str.replace(")", "") #112
+    mt['Trinn'] = mt['Trinn'].str.replace(")", "") #112
+    mt['MåleskalaNavn'] = mt['MåleskalaNavn'].str.replace(")", "") #112
+    mt = mt.drop_duplicates() #fix for task #66
+    mt = mt.sort_values(by=['MåleskalaNavn']) # order by MåleskalaNavn
     mt.to_csv('ut_data/maaleskala_trinn.csv', index=False, sep=";")
-    #display(mt.head(3))
-    #mt.tail(10)
-
+    
 def variabelnavn_maaleskala_mapping_csv(nin3_variabler):
     vn_ms = nin3_variabler[nin3_variabler['11 Tr/Kl'] == 'W'][['Kortkode', '8 VarKode2', '10 Målesk']].drop_duplicates()
     #display(vn_ms)
     #display(vn_ms[vn_ms['Kortkode'] == 'LM-KI_e'])
     vn_ms = vn_ms.dropna(subset=['10 Målesk'])  # drop rows where '10 Målesk' has no value
     vn_ms = vn_ms.dropna(subset=['8 VarKode2']) # drop rows where '8 VarKode2' has no value
+
+    # Rewrite multiple maaleskala values [DT*, P*] (#117)
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('DT*', 'D0,D1a,D1b,T0,T1a,T1b,T1c')
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('D*', 'D0,D1a,D1b')
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('T*', 'T0,T1a,T1b,T1c')
+    vn_ms['10 Målesk'] = vn_ms['10 Målesk'].str.replace('P*', 'P4,P5,P6a,P6b,P6c,P7,P8,P9a,P9b')
+
     # create a new dataframe to store the replicated rows
     new_rows = []
 
@@ -913,8 +819,10 @@ def variabelnavn_maaleskala_mapping_csv(nin3_variabler):
     # add Varkode2+"-" in front of [10 Målesk]-value if [10 Målesk] is "SO" or "SI"
     mask = (vn_ms_new['10 Målesk'] == 'SO') | (vn_ms_new['10 Målesk'] == 'SI')
     vn_ms_new.loc[mask, '10 Målesk'] = vn_ms_new.loc[mask, '8 VarKode2'] + '-' + vn_ms_new.loc[mask, '10 Målesk']
+
+    
     # replace underscores with dash in Kortkode column
-    vn_ms_new['Kortkode'] = vn_ms_new['Kortkode'].str.replace('_', '-')
+    ##vn_ms_new['Kortkode'] = vn_ms_new['Kortkode'].str.replace('_', '-') ##skips this so reference is not broken (taskboard #52)
     # make all rows unique
     vn_ms_new = vn_ms_new.drop_duplicates()
     vn_ms_new = vn_ms_new.drop(['8 VarKode2'], axis=1)
@@ -923,69 +831,74 @@ def variabelnavn_maaleskala_mapping_csv(nin3_variabler):
     vn_ms_new.to_csv('ut_data/variabelnavn_maaleskala_mapping.csv', index=False, sep=";")  
 
 def variabelnavn_konvertering_csv(nin3_variabler, koder23):
-    import csv
-    # hent alle nødvendige kolonner
-    # kjør string trim på alle kolonner
-    konv = nin3_variabler[['Kortkode', 'NiN 2 kode', 'FP', 'SP']].copy()
-    konv = konv.drop(konv[(konv['NiN 2 kode'] == '') | (konv['NiN 2 kode'] == '-')].index) # remove rows where 'NiN 2 kode' is empty
-    konv = konv.drop(konv[(konv['Kortkode'] == '') | (konv['Kortkode'] == '-') |(konv['Kortkode'] == 'nan')].index) # remove rows where 'Kortkode' is empty
-    konv = konv.dropna(subset=['Kortkode'])
-    konv = konv.drop(konv[(konv['NiN 2 kode'] == 'nan')].index)
-    konv['NiN 2 kode'] = konv['NiN 2 kode'].str.replace('&', ',') # '&' means ',' so change to ','
-    konv['NiN 2 kode'] = konv['NiN 2 kode'].str.replace(' ', '') # remove whitespace in 'NiN 2 kode'
-    konv = konv.drop(konv[(konv['Kortkode'] == '') | (konv['Kortkode'] == '-') |(konv['Kortkode'] == 'nan')].index)
-    konv['SP'] = konv['SP'].str.replace('.0', '').str.replace('nan', '')
-    konv['FP'] = konv['SP'].str.replace('.0', '').str.replace('nan', '')
-    konv['NiN 2 kode'] = konv['NiN 2 kode'].str.replace('·', '-')
-    konv = konv.rename(columns={'NiN 2 kode': 'forrigekode'})
-    konv['Klasse'] = 'VN'# setter alle rader i kolonnen 'Klasse' til 'VN'
-    konv.to_csv('tmp/variabelnavn_konv_tmp.csv', index=False, sep=";")
-    #konv.info() 
-    # store to temp csv file
+    vn_conv = nin3_variabler[nin3_variabler['11 Tr/Kl'] == 'W'][['Kortkode','NiN 2 kode', 'FP', 'SP']]
+    vn_conv = vn_conv[vn_conv['NiN 2 kode'] != '-']
+    vn_conv = vn_conv[vn_conv['NiN 2 kode'] != '']
+    vn_conv = vn_conv[vn_conv['NiN 2 kode'] != 'nan']
+    vn_conv = vn_conv[vn_conv['FP'] != 'ny']
 
-    # FROM GT<>KONV example
-    gt_rows = []
-    with open('tmp/variabelnavn_konv_tmp.csv', newline='') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=';')
-        all_rows = []
-        #check rows for multiple nin2koder
-        for r in reader:
-            if "," in r.get("forrigekode"):
-                n2list = make_list_nin2kode(r.get("forrigekode"))
-                for n2 in n2list:
-                    new_row = r.copy()
-                    new_row["forrigekode"] = n2.strip()
-                    all_rows.append(new_row)
+    # replace invalid values; 'nan',']','-' on FP,SP with ''
+    vn_conv.loc[vn_conv['FP'] == 'nan', 'FP'] = ''
+    vn_conv.loc[vn_conv['SP'] == 'nan', 'SP'] = ''
+    vn_conv['SP'] = vn_conv['SP'].str.replace(']', "")
+    vn_conv['FP'] = vn_conv['FP'].str.replace('-', "")
+    vn_conv['SP'] = vn_conv['SP'].str.replace('-', "")
+    # remove rows where NiN 2 kode = 'ny'
+    vn_conv = vn_conv[vn_conv['NiN 2 kode'] != 'ny']
         
-        #loop over rows
-        for row in all_rows:
-            new = {} # new dict to store the new row
-            new['VNKode']=row['Kortkode']
-            new['FP']=row['FP']
-            new['SP']=row['SP']
-            new['Klasse']=row['Klasse']
-            result = create_v23_variabel_url(row['forrigekode'], koder23)
-            new['forrigekode']=result.get('kode23')
-            new['url']=result.get('url')
-            if not new.get('url'):# bytter siste "-" med "_" og prøver igjen
-                kode = row['forrigekode'].rsplit('-', 1)
-                kode = '_'.join(kode)
-                result = create_v23_variabel_url(kode, koder23)
-                new['forrigekode']=result.get('kode23', koder23)
-                new['url']=result.get('url')
-            # Sjekker om excel-kolonnen forrigekode (nin 2 koden) hadde match i koder23-dictonary 
-            if not new.get('url'):
-                new['forrigekode']=row['forrigekode'] 
-                print(f"\t\tFant ikke url for NiN2kode:{row['forrigekode']}")
-            gt_rows.append(new)
 
-    # Creating konvertering csv for GT
-    with open('ut_data/konvertering_vn_v30.csv', 'w', newline='') as csvfile:
-        fieldnames = ['VNKode','forrigekode','FP','SP','Klasse', 'url']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';')
-        writer.writeheader()
-        writer.writerows(gt_rows)
-        print(f"\n\nFile written to {csvfile.name}")   
+
+    # split rows with multiple NiN 2 kode values
+    vn_conv['NiN 2 kode'] = vn_conv['NiN 2 kode'].str.split(',')
+    vn_conv = vn_conv.explode('NiN 2 kode')
+    vn_conv['NiN 2 kode'] = vn_conv['NiN 2 kode'].str.split(';')
+    vn_conv = vn_conv.explode('NiN 2 kode')
+
+    # remove whitespace
+    vn_conv['NiN 2 kode'] = vn_conv['NiN 2 kode'].str.strip()
+
+    # drop duplicates
+    vn_conv = vn_conv.drop_duplicates()
+    vn_conv = vn_conv.rename(columns={'NiN 2 kode': 'forrigekode'})
+    # add columns 'Klasse' and 'url'
+    vn_conv['Klasse'] = 'VN'
+    vn_conv['url'] = ''
+
+    #Iterates through each row in the `vn_conv` DataFrame and updates the 'url' column for that row based on the 'forrigekode' value and the `koder23` lookup data.
+
+    #For each row:
+    #1. Converts the 'forrigekode' value to lowercase and stores it in `forrigeKode_lookupkey`.
+    #2. Calls the `create_v23_variabel_url()` function, passing `forrigeKode_lookupkey` and `koder23` as arguments, and stores the returned URL in the `url` variable.
+    #3. Updates the 'url' column for the current row in the `vn_conv` DataFrame with the value from the `url` variable.
+
+    for index, row in vn_conv.iterrows():
+        # iterate through each row
+        forrigeKode_lookupkey = row['forrigekode'].lower()
+        result = create_v23_variabel_url(forrigeKode_lookupkey, koder23)
+        url = result.get('url')
+        vn_conv.at[index, 'url'] = url
+
+    vn_conv.to_csv('ut_data/konvertering_vn_v30.csv', index=False, sep=";")  
+
+def trinn_konvertering_csv(nin3_variabler):
+    trinn_konv = nin3_variabler[['Kortkode','NiN 2 kode','FP','SP','11 Tr/Kl']]
+    trinn_konv = trinn_konv.rename(columns={'NiN 2 kode': 'forrigekode'})
+
+    #filter and 'wash' data
+    trinn_konv = trinn_konv[trinn_konv['11 Tr/Kl']!='W']#removing variabler
+    trinn_konv = trinn_konv.drop('11 Tr/Kl', axis=1)#dropping column '11 Tr/Kl'
+    trinn_konv = trinn_konv[trinn_konv['Kortkode']!='nan']#removing trinn rows without kortkode
+    trinn_konv = trinn_konv[~trinn_konv['forrigekode'].isin(['-', 'nan','ny'])]#removing rows with no previous kode
+    trinn_konv = trinn_konv[trinn_konv['FP']!='ny']
+    trinn_konv['FP'] = trinn_konv['FP'].replace('-', '')#remove '-' from int value, blank is null
+    trinn_konv['FP'] = trinn_konv['FP'].replace('?', '')#remove '?' from int value
+    trinn_konv['SP'] = trinn_konv['SP'].replace('-', '')#remove '-' from int value, blank is null
+    trinn_konv['SP'] = trinn_konv['SP'].replace(r'\<', '', regex=True)#remove '<' from int value
+    trinn_konv['SP'] = trinn_konv['SP'].str.replace(r'\?', '', regex=True)#remove '?' from int value
+
+    trinn_konv['Klasse'] = 'VT'
+    trinn_konv['url'] = ''
+    trinn_konv.to_csv('ut_data/konvertering_trinn_v30.csv', sep=';', index=False)
 
 def adjust_nin3_typer_col_names(nin3_typer):
         nin3_typer.rename(columns={
@@ -1099,6 +1012,17 @@ def create_kortkoder_for_nin3_typer_orig(nin3_typer_orig):
         x['8 Pk'],
         x['9 HT'],
         x['11 GT']), axis=1)
+    
+def vnkode_vk2_trinn(nin3_variabler):
+    vnkode_vk2_trinn = nin3_variabler[nin3_variabler['11 Tr/Kl'] != 'W'][['Kortkode', '8 VarKode2', '11 Tr/Kl']]
+    vnkode_vk2_trinn = vnkode_vk2_trinn[vnkode_vk2_trinn['8 VarKode2']!='nan']
+    vnkode_vk2_trinn.rename(columns={
+        'Kortkode': 'TrinnKode',
+        '8 VarKode2': 'Varkode2_kopi',
+        '11 Tr/Kl': 'sub_trinn'
+        }, inplace=True)
+    vnkode_vk2_trinn['VNKode'] = vnkode_vk2_trinn['TrinnKode'].str.split('_').str[0]
+    vnkode_vk2_trinn.to_csv("tmp/vnkode_vk2_trinn.csv", index=False, sep=";")
 
 
 # MAIN
@@ -1107,6 +1031,8 @@ def create_csv_files():
     regnearkfil = conf.regnearkfil
     print(f"*** Backing up and removing previous csv files")
     backup_and_remove_previous_csv_files()
+    print("*** Fetching endringslog.csv")
+    copy_changelog()
     print(f"*** Fetching data from Excel file: {regnearkfil}")
     nin3_typer = load_nin3_typer_sheet()
     nin3_typer_orig = nin3_typer.copy(deep=True)
@@ -1115,13 +1041,16 @@ def create_csv_files():
     nin3_typer_orig = nin3_typer_orig.astype(str)
     nin3_typer = adjust_nin3_typer_col_names(nin3_typer)
     # Setting kortkode columns for type
-    create_kortkoder_for_nin3_typer(nin3_typer)
+    create_kortkoder_for_nin3_typer(nin3_typer)  
+    # issue #107  
+    issue_107 = nin3_typer[['HTKode', 'HTGKode']]
+    issue_107.to_csv("tmp/issue_107.csv", index=False, sep=";")#For validation   
     create_kortkoder_for_nin3_typer_orig(nin3_typer_orig)
-
-    
-    nin3_typer.to_excel('tmp/nin3_typer.xlsx', index=False)
+    #nin3_typer.to_excel('tmp/nin3_typer.xlsx', index=False)
     print(f"*** Saving nin3_typer as tmp/nin3_typer.xlsx")
     nin3_variabler = load_nin3_variabler_sheet()
+    print(f"*** Creating lookup-file: tmp/vnkode_vk2_trinn.csv")
+    vnkode_vk2_trinn(nin3_variabler)
     print(f"*** Creating typer.csv")
     typer_csv(nin3_typer)
     print(f"*** Creating hovedtypegrupper.csv")
@@ -1143,7 +1072,7 @@ def create_csv_files():
     print(f"*** Creating m005_hovedtype_mapping.csv")
     m005_hovedtype_mapping_csv(nin3_typer)
     print(f"*** Creating m020.csv")
-    m020_csv(nin3_typer, regnearkfil)
+    m020_csv(nin3_typer)
     print(f"*** Creating m020_grunntype_mapping.csv")
     m020_grunntype_mapping_csv(nin3_typer)
     print(f"*** Creating m020_hovedtype_mapping.csv")
@@ -1154,14 +1083,10 @@ def create_csv_files():
     m050_grunntype_mapping_csv(nin3_typer)
     print(f"*** Creating m050_hovedtype_mapping.csv")
     m050_hovedtype_mapping_csv(nin3_typer)
-    #print(f"*** Creating typeklasser_langkode_mapping.csv") #todo: assuming no longer in use
-    #typeklasser_langkode_mapping_csv(nin3_typer) 
-    print(f"*** Creating variabelnavnkode_varkode2.csv")
-    variabelnavnkode_varkode2_csv(nin3_variabler)
     print(f"*** Creating grunntype_variabeltrinn_mapping.csv")
-    grunntype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig)
+    grunntype_variabeltrinn_mapping_csv(nin3_typer)
     print(f"*** Creating hovedtype_variabeltrinn_mapping.csv")
-    hovedtype_variabeltrinn_mapping_csv(nin3_typer, nin3_typer_orig)
+    hovedtype_variabeltrinn_mapping_csv(nin3_typer_orig)
     print(f"*** Creating preperation_for 3.0 to 23 convertions")
     koder23 = prepare_konvertering_3_to_23()
     print(f"*** Creating htg_konv.csv")
@@ -1182,8 +1107,8 @@ def create_csv_files():
     variabelnavn_maaleskala_mapping_csv(nin3_variabler)
     print(f"*** Creating variabelnavn_konvertering.csv")
     variabelnavn_konvertering_csv(nin3_variabler, koder23)
-
-
+    print(f"*** Creating trinn_konvertering.csv")
+    trinn_konvertering_csv(nin3_variabler)
     print("Done!")
 
 

@@ -343,3 +343,18 @@ API/logs/
 API/nin3kodeapi.db
 CSV_produksjon/kortkodefix.ipynb
 nin3 console db.session.sql
+drupal_import/out/
+CSV_produksjon/nin2prod.db-shm
+CSV_produksjon/nin2prod.db-wal
+CSV_produksjon/issue91.ipynb
+CSV_produksjon/issue92_ht_vt.ipynb
+CSV_produksjon/issue87_trinn.ipynb
+CSV_produksjon/inn_data/vnkode_vk2_trinn.csv
+CSV_produksjon/issue91_gt_vt.ipynb
+3_0_excel/db/nin3.db
+CSV_produksjon/archive/hovedtype.csv
+CSV_produksjon/inn_data/~$NiN3.0_Tot_e15_20230901_import_kodebase.xlsx
+CSV_produksjon/issue_115.ipynb
+kladd_debugging/
+documentation/
+Database/
