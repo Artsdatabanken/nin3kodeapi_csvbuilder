@@ -20,4 +20,11 @@ Prerequisites:
     - VS Code with jupyter + Python extension
         - 'Rainbow CSV' extension for working with the csv-files
         - 'SQLTools' extension for looking at the sqlite file(s)
-        
+- If missing: run these
+```python
+pip install requests
+pip install pandas
+pip install openpyxl
+pip install tabulate
+```
+
