@@ -187,7 +187,7 @@ def hovedtype_csv_first(nin3_typer):
     #Filter away fake hovedtype
     ht1.drop_duplicates(subset=['HTKode', 'Hovedtypenavn'], inplace=True)
     
-    ht1 = ht1[ht1['Hovedtypenavn'].str.len() > 0]  # Drop rows where string length of Hovedtypenavn-value is 0
+    ht1 = ht1[ht1['Hovedtypenavn'].str.len() > 1]  # Drop rows where string length of Hovedtypenavn-value smaller than 2
     # Create hovedtype.csv
     ht1 = ht1.reindex(columns=['HTKode', 'Hovedtypenavn', 'Hovedtypegruppe', 'Prosedyrekategori', 'Hovedtype', 'HTGKode'])
     ht1 = ht1.sort_values(by=['HTKode'])
