@@ -210,6 +210,7 @@ def grunntyper_csv(nin3_typer):
     grunntyper.rename(columns = {'11 GT':'Grunntype'}, inplace = True)
     grunntyper_vasket2 = grunntyper[grunntyper['Grunntypenavn'].str.len() > 1]#Filter: GT with name only
     grunntyper_vasket2 = grunntyper_vasket2.sort_values(by=['GTKode'])
+    grunntyper_vasket2 = grunntyper_vasket2.drop_duplicates()
     grunntyper_vasket2.to_csv('ut_data/grunntyper.csv', index=False, sep=";") # NaN blir blank string i csv
     sjekk_unikhet(grunntyper_vasket2,'GTKode')
 
@@ -217,6 +218,7 @@ def hovedtype_grunntype_mapping_csv(nin3_typer):
     ht_gt_mapping= nin3_typer[['HTKode', 'GTKode', 'Grunntypenavn']]
     ht_gt_mapping = ht_gt_mapping[ht_gt_mapping['Grunntypenavn'].str.len() > 1]#Filter: GT with name only   
     ht_gt_mapping = ht_gt_mapping.drop(['Grunntypenavn'], axis=1).sort_values(by=['GTKode'])
+    ht_gt_mapping = ht_gt_mapping.drop_duplicates()
     ht_gt_mapping.to_csv('ut_data/hovedtype_grunntype_mapping.csv', index=False, sep=";")
 
 def validate_last_joint(number, langkode):
