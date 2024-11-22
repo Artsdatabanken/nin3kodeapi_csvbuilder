@@ -223,7 +223,9 @@ def hovedtype_grunntype_mapping_csv(nin3_typer):
 
 def validate_last_joint(number, langkode):
             last_joint = langkode.split('-')[-1]
-            last_joint = last_joint.replace('0', '')            
+            last_joint = last_joint.replace('0', '')
+            number = number.replace('0', '') 
+            number = number.replace('*', '')        
             try:
                 last_joint_int = int(last_joint)
                 nr_int = int(number)
@@ -238,6 +240,7 @@ def validate_last_joint(number, langkode):
                     return langkode
             except ValueError:
                 print(f"Error: Last joint '{last_joint}' is not a valid integer.")
+                print(f"number '{number}' and last_joint '{last_joint}'")
                 return langkode
 
 def m005_csv(nin3_typer):
