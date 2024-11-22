@@ -267,7 +267,7 @@ def m005_grunntype_mapping_csv(nin3_typer):
     m005_gt.rename(columns = {'M005-kode':'M005-langkode','GTKode':'grunntype_kode'}, inplace = True) #rename columns
     m005_gt = m005_gt[m005_gt['M005-langkode'].str.contains('-M005-')] # Removing rows where langkode does not contain '-M005-'
     m005_gt.drop_duplicates(subset=['M005-langkode', 'grunntype_kode']) # Removing duplicates
-    m005_gt = m005_gt.sort_values(by='M005-langkode') # Sorting by M005-langkode
+    m005_gt = m005_gt.sort_values(by=['M005-langkode','grunntype_kode']) # Sorting by M005-langkode
     m005_gt.to_csv('ut_data/m005_grunntype_mapping.csv', index=False, sep=";")
     
 
@@ -784,7 +784,7 @@ def maaleskala_trinn_csv(nin3_variabler):
     mt['Trinn'] = mt['Trinn'].str.replace(")", "") #112
     mt['MåleskalaNavn'] = mt['MåleskalaNavn'].str.replace(")", "") #112
     mt = mt.drop_duplicates() #fix for task #66
-    mt = mt.sort_values(by=['MåleskalaNavn']) # order by MåleskalaNavn
+    mt = mt.sort_values(by=['Langkode']) # order by MåleskalaNavn
     mt.to_csv('ut_data/maaleskala_trinn.csv', index=False, sep=";")
     
 def variabelnavn_maaleskala_mapping_csv(nin3_variabler):
