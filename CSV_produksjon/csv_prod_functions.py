@@ -1035,8 +1035,8 @@ def create_csv_files():
     import conf
     regnearkfil = conf.regnearkfil
     print(f"*** Backing up and removing previous csv files")
-    backup_and_remove_previous_csv_files()
-    print("*** Fetching endringslog.csv")
+    #backup_and_remove_previous_csv_files()
+    #print("*** Fetching endringslog.csv")
     copy_changelog()
     print(f"*** Fetching data from Excel file: {regnearkfil}")
     nin3_typer = load_nin3_typer_sheet()
